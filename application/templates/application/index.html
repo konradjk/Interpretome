@@ -3,35 +3,33 @@
   <head>
     <title>RSID Browser</title>
     <meta charset="utf-8"/>
-    <meta name="author" content="Nicholas Tatonetti">
 
     <link rel="stylesheet" type="text/css" href="/media/css/interpretome.css">
     <link rel='stylesheet' type='text/css' href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
 
+    <script type="text/javascript" 
+      src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
+    <script type="text/javascript" 
+      src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js"></script>
     <script type="text/javascript"
-    src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js">
-    </script>
-    <script type="text/javascript"
-    src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js">
-    </script>
-    <script type="text/javascript"
-    src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js">
-    </script>
-    <script type="text/javascript" src="/media/js/User.js">
-    </script>
-    
+      src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+      
+    <script type="text/javascript" src="/media/js/User.js"></script>
+    <!--#include virtual="/media/js/template.js" -->
     <script id="snp-tmpl" type="text/x-jquery-tmpl">
-      <tr><td>${dbsnp}</td><td>${genotype}</td></tr>
-    </script>
+  <tr><td>${dbsnp}</td><td>${genotype}</td></tr>
+</script>
     
-    <script id="chromosome-tmpl" type="text/x-jquery-tmpl">
-      <tr><td>${chromosome}</td><td>${count}</td></tr>
-    </script>
-    <script id="status-tmpl" type="text/x-jquery-tmpl">
-      Loaded ${count} SNPs.
-      <br />
-      <b><a href="">Clear my file</a></b>
-    </script>
+<script id="chromosome-tmpl" type="text/x-jquery-tmpl">
+  <tr><td>${chromosome}</td><td>${count}</td></tr>
+</script>
+<script id="status-tmpl" type="text/x-jquery-tmpl">
+  Loaded ${count} SNPs.
+  <br />
+  <b><a href="">Clear my file</a></b>
+</script>
+
+    
     <script>
       var user;
       $(document).ready( function() {
@@ -56,9 +54,9 @@
           reader.readAsText(fin);
         });
         
-        $("#ethnicity").change(function(e) {
+        $("#population").change(function(e) {
           if (user != undefined) {
-            user.ethnicity = $("#ethnicity option:selected").val();
+            user.population = $("#population option:selected").val();
           }
         });
         
@@ -79,10 +77,31 @@
         });
         
         $("input[value='Impute SNP']").click(function(e) {
-          console.log('klick');
-          var dbsnp = $("#input[name='impute']").val();
-          $.get("/linked", function(response) {
+          var dbsnp = $("input[name='dbsnp']").val();
+          $.get("/linked/", {dbsnp: dbsnp, population: "CEU"}, function(response) {
+            var user_values = {};
             console.log(response);
+            $.each(response, function(i, v) {
+              console.log(v);
+              var user_value1 = user.lookup("rs" + v.dbSNP1); 
+              var user_value2 = user.lookup("rs" + v.dbSNP2); 
+              if (user_value1 != undefined) {
+                var value = user_value1;
+              }
+              if (user_value2 != undefined) {
+                var value = user_value2;
+              }
+              
+              if (value != undefined) {
+                console.log(value);
+                $.get("/impute/", {dbsnp: user_value}, function(response) {
+                  console.log(response);
+                  $("#snp-table").append(response);
+                });
+              } else {
+                $("#snp-table").append("Unable to impute SNP.");
+              }
+            });
           });
         });
         $("#tabs").tabs({});
@@ -121,10 +140,10 @@
           </div>
           
           
-          <div id="select-ethnicity">
-            <h3>Select your ethnicity</h3>
+          <div id="select-population">
+            <h3>Select your population</h3>
             <p>
-              <select id="ethnicity" class="on-user-change">
+              <select id="population" class="on-user-change">
                 <option>European</option>
                 <option>Japanese</option>
                 <option>Chinese</option>
@@ -162,7 +181,7 @@
               </tr>
             </table>
           </div>
-          <input type="text" name="impute" />
+          <input type="text" name="dbsnp" />
           <input type="submit" value="Impute SNP" />
         </div>
       </div>
