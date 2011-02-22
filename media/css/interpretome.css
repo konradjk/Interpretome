@@ -1,5 +1,5 @@
 * {
-  font-family: myriad pro, helvetica;
+  font-family: 'myriad pro', helvetica;
   margin: 0;
   padding: 0;
   font-size: 0.99em;
@@ -26,28 +26,23 @@ div#wrap {
   float: center;
 }
 div#header {
-  background-color: #88BCCF;
-  color: white;
-  height: 70px;
+  height: 90px;
   padding: 5px;
+  line-height: 90px;
+  margin: auto;
 }
 div#header-text {
-  line-height: 60px;
   float: left;
   padding-left: 1%;
-  width: 85%;
+  width: 50%;
   font-size: 2.5em;
 }
 div#status {
-  padding-top: 15px;
   float: right:
+  width: 20%;
+  padding-right: 2%;
   text-align: right;
-}
-div#main {
   margin: auto;
-  background-color: white;
-  padding: 10px 0px;
-  min-height: 700px;
 }
 div#footer {
   margin: auto;
@@ -62,4 +57,8 @@ div#footer {
   font-style: italic;
   font-size: 0.8em;
   color: #111;
+}
+
+.clear {
+  clear: both;
 }
