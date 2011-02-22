@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>RSID Browser</title>
+    <meta charset="utf-8"/>
+    <meta name="author" content="Nicholas Tatonetti">
+
+    <link rel="stylesheet" type="text/css" href="/media/css/interpretome.css">
+    <link rel='stylesheet' type='text/css' href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
+
+    <script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js">
+    </script>
+    <script type="text/javascript"
+    src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js">
+    </script>
+    <script type="text/javascript"
+    src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js">
+    </script>
+    <script type="text/javascript" src="/media/js/User.js">
+    </script>
+    
+    <script id="snp-tmpl" type="text/x-jquery-tmpl">
+      <tr><td>${dbsnp}</td><td>${genotype}</td></tr>
+    </script>
+    
+    <script id="chromosome-tmpl" type="text/x-jquery-tmpl">
+      <tr><td>${chromosome}</td><td>${count}</td></tr>
+    </script>
+    <script id="status-tmpl" type="text/x-jquery-tmpl">
+      Loaded ${count} SNPs.
+      <br />
+      <b><a href="">Clear my file</a></b>
+    </script>
+    <script>
+      var user;
+      $(document).ready( function() {
+        $("#genotype-file").change(function(e) {
+          var fin = e.target.files[0];
+          var reader = new FileReader();
+
+          reader.onloadend = function(e) {
+            user = new User();
+            user.parseGenome(this.result.split("\n"));
+            
+            $("#status").empty();
+            $("#status-tmpl").tmpl({count: user.rsids.length}).appendTo("#status");
+            
+            $("#about-you").show()
+            $.each(user.chromosomes, function(i, v) {
+              $("#chromosome-tmpl").tmpl({chromosome: i, count: v}).appendTo("#chromosomes-table")
+            });
+            
+            $(".on-user-change").change();
+          }
+          reader.readAsText(fin);
+        });
+        
+        $("#ethnicity").change(function(e) {
+          if (user != undefined) {
+            user.ethnicity = $("#ethnicity option:selected").val();
+          }
+        });
+        
+        $("#lookup-snps").click(function() {
+          $("#snp-table").parent().show();
+          $("#snp-table tr:first ~ tr").remove();
+          $.each($("#snps-textarea").val().split("\n"), function(i, v) {
+            v = $.trim(v);
+            if (v == "") return;
+            
+            var genotype = user.lookup(v);
+            if (genotype == undefined) genotype = "no value";
+
+            $("#snp-tmpl").tmpl({
+              dbsnp: v, genotype: genotype
+            }).appendTo("#snp-table");
+          });
+        });
+        
+        $("input[value='Impute SNP']").click(function(e) {
+          console.log('klick');
+          var dbsnp = $("#input[name='impute']").val();
+          $.get("/linked", function(response) {
+            console.log(response);
+          });
+        });
+        $("#tabs").tabs({});
+      });
+    </script>
+  </head>
+  <body>
+    <div id="wrap">
+      <div id="header">
+        <div id="header-text">
+          M'Analyze Me
+        </div>
+        <div id="status">
+          No genome loaded.
+        </div>
+      </div>
+      <div id="tabs">
+        <ul>
+          <li>
+            <a href="#start">Start</a>
+          </li>
+          <li>
+            <a href="#lookup">Lookup</a>
+          </li>
+        </ul>
+        <div id="start">
+          <h2>Explore your genome</h2>
+          <p>Load your file and choose some of the analyses above.</p>
+          <br />
+          
+          <div id="load-genotype">
+            <h3>Load your Genotype</h3>
+            <p>
+              <input id="genotype-file" type="file" name="file" />
+            </p>
+          </div>
+          
+          
+          <div id="select-ethnicity">
+            <h3>Select your ethnicity</h3>
+            <p>
+              <select id="ethnicity" class="on-user-change">
+                <option>European</option>
+                <option>Japanese</option>
+                <option>Chinese</option>
+              </select>
+            </p>
+          </div>
+          <p class="note">
+            Privacy: your genotype will not be uploaded to any server. 
+            All of your information remains on your local computer.
+          </p>
+          
+          <div id="about-you" class="hidden">
+            <h2>About You</h2>
+            <p>
+            </p>
+            <div>
+              <table id="chromosomes-table">
+                <tr><th>Chromosome</th><th>SNPs</th></tr>
+              </table>
+            </div>
+          </div>
+           
+        </div>
+        <div id="lookup">
+          <h3>Enter SNPs to lookup (one per line)</h3>
+          <p>
+            <textarea id="snps-textarea" rows="5" cols="30" placeholder="rs17822931"></textarea>
+            <br/>
+            <input id="lookup-snps" type="submit" value="Lookup SNPs" />
+          </p>
+          <div class="hidden">
+            <table id="snp-table">
+              <tr>
+                <th>dbSNP ID</th><th>Genotype</th>
+              </tr>
+            </table>
+          </div>
+          <input type="text" name="impute" />
+          <input type="submit" value="Impute SNP" />
+        </div>
+      </div>
+      <div id="footer">
+        &copy; 2011 Karczewski, Tatonetti, <b>Tirrell</b> and Zimmerman
+      </div>
+    </div>
+  </body>
+</html>
