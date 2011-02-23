@@ -69,6 +69,8 @@ $('#impute-snp').live('click', function(e) {
           $('#snp-table').append(response);
         });
       } else {
+        console.log(v.dbSNP1);
+        console.log(v.dbSNP2);
         $('#snp-table').append('Unable to impute SNP.');
       }
     });

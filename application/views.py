@@ -59,10 +59,6 @@ def impute(request):
   
   genotype = phase[dbSNP.genotype[0]] + phase[dbSNP.genotype[1]]
   
-  my_query_snp = SNP(query_rsid, genotype = genotype, r_squared = r_squared, 
-                     nearest_snp = anchor_rsid, 
-                     hapmap_consensus = str(phase_count) + "/" + str(total))
-  
   dbSNP = int(dbSNP)
   return http.HttpResponse(simplejson.dumps("Success"), mimetype = "application/json")
 
