@@ -1,6 +1,6 @@
-<h3>Enter SNPs to lookup (one per line)</h3>
+<h1>Enter SNPs to lookup (one per line)</h1>
 <div>
-  <textarea id='snps-textarea' rows='5' cols='30'>17822931</textarea>
+  <textarea id='snps' rows='5' cols='30'>17822931</textarea>
   <br/>
 
   <button id='lookup-snps' type='submit'>
@@ -9,13 +9,11 @@
 </div>
 <br />
 
-<div class='hidden'>
-  <table id='snp-table'>
-    <tr>
-      <th>dbSNP ID</th><th>Genotype</th>
-    </tr>
-  </table>
-</div>
+<table id='snp-table' class='hidden'>
+  <tr>
+    <th>dbSNP ID</th><th>Genotype</th>
+  </tr>
+</table>
 <br />
 <input type='text' name='dbSNP' />
 <button id='impute-snp' type='submit'>

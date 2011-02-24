@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <title>RSID Browser</title>
+    <meta charset='utf-8'/>
+
+    <link rel='stylesheet' type='text/css'
+    href='/media/css/interpretome.css'>
+
+    <link rel='stylesheet' type='text/css'
+    href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
+
+    <script type='text/javascript'
+    src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
+    </script>
+    <script type='text/javascript'
+    src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'>
+    </script>
+    <script type='text/javascript'
+    src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'>
+    </script>
+    <script type='text/javascript' src='http://documentcloud.github.com/underscore/underscore-min.js'>
+    </script>
+    <script type='text/javascript'
+    src='http://documentcloud.github.com/backbone/backbone.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/tmpl.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/interpretome.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/model/user.js'>
+    </script>
+  </head>
+  <body>
+    <div id='wrap'>
+      <div id='header'>
+        <div id='title'>
+          Analyze Me
+        </div>
+        <div id='genome'>
+          <span id='population'>
+            <input type='radio' id='CEU' name='radio' /><label for='CEU'>European</label>
+            <input type='radio' id='CHB' name='radio' /><label for='CHB'>Chinese</label>
+            <input type='radio' id='JPT' name='radio' /><label for='JPT'>Japanese</label>
+          </span>
+          <label>
+            Load your genome
+          </label>
+          <input id='genome-file' type='file' name='file' />
+          <button id='clear-genome' class='hidden'>
+            Clear my genome
+          </button>
+        </div>
+      </div>
+      <br class='clear' />
+      <div id='tabs'>
+        <ul>
+          <li>
+            <a href='#start'>Start</a>
+          </li>
+          <li>
+            <a href='#lookup'>Lookup</a>
+          </li>
+        </ul>
+        <div id='start'>
+        </div>
+        <div id='lookup'>
+        </div>
+      </div>
+      <div id='footer'>
+        &copy; 2011 Karczewski, Tatonetti, <b>Tirrell</b> and Zimmerman
+      </div>
+    </div>
+  </body>
+</html>

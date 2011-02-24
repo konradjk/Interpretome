@@ -2,18 +2,10 @@
   font-family: 'myriad pro', helvetica;
   margin: 0;
   padding: 0;
-  font-size: 0.99em;
 }
 body {
   background-color: white;
 }
-ul, li {
-  display: inline;
-}
-p {
-  margin: 10px 0;
-}
-
 div#wrap {
   -moz-box-shadow: 0px 0px 5px #888;
   -webkit-box-shadow: 0px 0px 5px #888;
@@ -26,24 +18,37 @@ div#wrap {
   float: center;
 }
 div#header {
-  height: 90px;
+  height: 100px;
   padding: 5px;
-  line-height: 90px;
   margin: auto;
+  line-height: 100px;
 }
-div#header-text {
+
+.well-padded {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+div#title {
   float: left;
-  padding-left: 1%;
-  width: 50%;
+  width: 25%;
   font-size: 2.5em;
+  padding-left: 1%;
 }
-div#status {
-  float: right:
-  width: 20%;
-  padding-right: 2%;
+
+div#genome {
+  float: right;
   text-align: right;
-  margin: auto;
+  width: 70%;
+  padding-right: 2%;
 }
+
+div#genome label {
+  font-weight: bold;
+}
+div#genome input, select {
+}
+
 div#footer {
   margin: auto;
   background-color: white;

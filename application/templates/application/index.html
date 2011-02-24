@@ -19,13 +19,31 @@
     <script type='text/javascript'
       src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'></script>
       
+    <script type='text/javascript'
+      src='http://documentcloud.github.com/underscore/underscore-min.js'></script>
+      
     <script type='text/javascript' src='/media/js/model/user.js'></script>
     <script type='text/javascript' src='/media/js/tmpl.js'></script>
     
     <script>
+      var baseURL = 'http://esquilax.stanford.edu/';
+      
+      // Config-related options.
+      var iome = {
+        URLs: {
+          start: baseURL + '',
+          lookup: {
+            linked: baseURL + 'lookup/linked/',
+            impute: baseURL + 'lookup/impute/'  
+          }
+        }
+      };
+      
       // Global user.
       var user;
+      
       $(document).ready(function() {$.getScript('/media/js/ready.js');});
+      
     </script>
   </head>
   <body>
@@ -41,12 +59,8 @@
       </div>
       <div id='tabs'>
         <ul>
-          <li>
-            <a href='#start'>Start</a>
-          </li>
-          <li>
-            <a href='#lookup'>Lookup</a>
-          </li>
+          <li><a href='#start'>Start</a></li>
+          <li><a href='#lookup'>Lookup</a></li>
         </ul>
         
         <div id='start'></div>

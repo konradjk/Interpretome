@@ -1,0 +1,44 @@
+<html lang='en'>
+  <head>
+    <script type='text/javascript'
+    src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
+    </script>
+    <script type='text/javascript'>
+      $(document).ready( function() {
+        var canvas = document.getElementById('canvas');
+        var context = canvas.getContext('2d');
+        
+        // Cap and right upper segment.
+        context.arc(100, 100, 25, Math.PI, 0, false);
+        context.lineTo(125, 150);
+        context.stroke();
+        
+        // Left upper segment.
+        context.moveTo(75, 100);
+        context.lineTo(75, 150);
+        
+        // Left join.
+        context.quadraticCurveTo(75, 160, 85, 170);
+        context.quadraticCurveTo(75, 180, 75, 190);
+        context.stroke();
+        
+        // Right join and right lower segment.
+        context.moveTo(125, 150);
+        context.quadraticCurveTo(125, 160, 115, 170);
+        context.quadraticCurveTo(125, 180, 125, 190);
+        context.lineTo(125, 240);
+        context.stroke();
+        
+        // Left lower segment and cap.
+        context.moveTo(75, 190);
+        context.lineTo(75, 240);
+        context.arc(100, 240, 25, Math.PI, 0, true);
+        context.stroke()
+      });
+    </script>
+  </head>
+  <body>
+    <canvas id='canvas' width='500' height='500'>
+    </canvas>
+  </body>
+</html>

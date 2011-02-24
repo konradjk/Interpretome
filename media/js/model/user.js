@@ -1,44 +1,29 @@
 function User() {
+	this.population = null;
+	this.rsids = [];
+	this.chromosomes = {};
+	this.snps = {};
+	
   this.parseGenome = function(lines) {
-    
-    this.snps = {};
-    this.rsids = [];
-    
     var regex = new RegExp(/^[a-z]+/);
-    for (var i in lines) {
-      if (lines[i].indexOf('#') == 0 || lines[i] == '') continue;
+    
+    for (i in lines) {
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line == '') continue;
       
-      var tokens = lines[i].split('\t');
-      var dbSNP = parseInt($.trim(tokens[0]).replace(regex, ''));
-      this.snps[dbSNP] = {chromosome: $.trim(tokens[1]), genotype: $.trim(tokens[3])};
-      this.rsids.push(dbSNP);
-    }
-    
-    this.chromosomes = {};
-    this.heterozygosity = [0, 0];
-    
-    for (i in this.rsids) {
-      var snp = this.snps[this.rsids[i]];
-      if (this.chromosomes[snp.chromosome] == undefined) {
-        this.chromosomes[snp.chromosome] = 1; 
-      } else {
-        this.chromosomes[snp.chromosome]++;
-      }
+      var tokens = _.map(line.split('\t'), $.trim);
+      var dbsnp = parseInt(tokens[0].replace(regex, ''));
+      var chromosome = parseInt(tokens[1]);
       
-      if (snp.genotype.length == 2) {
-        if (snp.genotype[0] != snp.genotype[1]) {
-          this.heterozygosity[0]++;
-        }
-        this.heterozygosity[1]++;
-      }
+      this.rsids.push(dbsnp);
+      if (chromosome in this.chromosomes) this.chromosomes[chromosome]++;
+      else this.chromosomes[chromosome] = 1;
+        
+      this.snps[dbsnp] = {chromosome: chromosome, genotype: tokens[3]};
     }
-    
-    // Other attributes.
-    this.ethnicity = null;
   }
+  
   this.lookup = function(rsid) {
-    var snp = this.snps[rsid];
-    if (snp != undefined) return this.snps[rsid].genotype;
+    return this.snps[rsid];
   }
 }
-

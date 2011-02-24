@@ -30,12 +30,14 @@ def linked(request):
   dbSNP = int(dbSNP)
   cursor = connections['default'].dict_cursor()
   
-  cursor.execute('''
+  query = '''
     SELECT dbSNP1, dbSNP2, R_square 
     FROM var_ld_data.ld_%s 
     WHERE dbSNP1 = %d OR dbSNP2 = %d
-    ORDER BY R_square DESC;''' % (population, dbSNP, dbSNP)
-  )
+    ORDER BY R_square DESC;
+    ''' % (population, dbSNP, dbSNP)
+    
+  cursor.execute(query)
   result = cursor.fetchall()
   
   return http.HttpResponse(
@@ -64,7 +66,9 @@ def impute(request):
 
 def get_individuals(rsid, population):
   query = '''
-        SELECT individual_allele, allele FROM hapmap_individuals.phased_individual_%s where rsid="%s"
+    SELECT individual_allele, allele 
+    FROM hapmap_individuals.phased_individual_%s 
+    WHERE rsid = '%s';
     ''' % (population, rsid)
   cursor.execute(query)
   individuals = {}
@@ -106,4 +110,5 @@ def get_best_phases(query_snp_hash, anchor_snp_hash):
     return phase_output, phase_2, phase_1 + phase_2
   
 def index(request):
-	return shortcuts.render_to_response('application/index.html', {})
+  return shortcuts.render_to_response('application/interpretome.html', {})
+
