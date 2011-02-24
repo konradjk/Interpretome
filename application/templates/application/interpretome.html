@@ -10,25 +10,36 @@
     <link rel='stylesheet' type='text/css'
     href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
 
-    <script type='text/javascript'
-    src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
+    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
     </script>
-    <script type='text/javascript'
-    src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'>
+    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'>
     </script>
-    <script type='text/javascript'
-    src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'>
+    <script type='text/javascript' src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'>
     </script>
     <script type='text/javascript' src='http://documentcloud.github.com/underscore/underscore-min.js'>
     </script>
-    <script type='text/javascript'
-    src='http://documentcloud.github.com/backbone/backbone.js'>
+    <script type='text/javascript' src='http://documentcloud.github.com/backbone/backbone.js'>
     </script>
     <script type='text/javascript' src='/media/js/tmpl.js'>
     </script>
-    <script type='text/javascript' src='/media/js/interpretome.js'>
-    </script>
+    <!-- Models. -->
     <script type='text/javascript' src='/media/js/model/user.js'>
+    </script>
+    <!-- Controllers. -->
+    <script type='text/javascript'
+    src='/media/js/controller/app.js'>
+    </script>
+    <!-- Views. -->
+    <script type='text/javascript'
+    src='/media/js/view/app.js'>
+    </script>
+    <script type='text/javascript'
+    src='/media/js/view/start.js'>
+    </script>
+    <script type='text/javascript'
+    src='/media/js/view/lookup.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
   </head>
   <body>
@@ -37,19 +48,40 @@
         <div id='title'>
           Analyze Me
         </div>
-        <div id='genome'>
-          <span id='population'>
-            <input type='radio' id='CEU' name='radio' /><label for='CEU'>European</label>
-            <input type='radio' id='CHB' name='radio' /><label for='CHB'>Chinese</label>
-            <input type='radio' id='JPT' name='radio' /><label for='JPT'>Japanese</label>
-          </span>
-          <label>
-            Load your genome
-          </label>
-          <input id='genome-file' type='file' name='file' />
-          <button id='clear-genome' class='hidden'>
-            Clear my genome
-          </button>
+        <div id='global-settings'>
+          <div id='genome' class='stack'>
+            <div id='please-load-genome' title='Load your genome' class='dialog hidden'>
+              Please load your genome first.
+            </div>
+            <div class='setting-label'>
+              <label>Load your genome</label>
+            </div>
+            <div class='setting'>
+              <input id='genome-file' type='file' name='file' />
+            </div>
+	          <button id='clear-genome' class='hidden'>
+	            Clear my genome
+	          </button>
+	          <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
+	            Are you sure you want to clear your genome? 
+	          </div>
+          </div>
+          <div id='population' class='stack'>
+            <div class='setting-label'>
+              <label>Select your population</label>
+            </div>
+            <div id='please-select-population' title='Select your population' class='dialog hidden'>
+              Please select your population first. 
+            </div>
+            <div id='population' class='setting'>
+              <input type='radio' id='CEU' name='radio' />
+              <label for='CEU'>European</label>
+              <input type='radio' id='CHB' name='radio' />
+              <label for='CHB'>Chinese</label>
+              <input type='radio' id='JPT' name='radio' />
+              <label for='JPT'>Japanese</label>
+            </div>
+          </div>
         </div>
       </div>
       <br class='clear' />

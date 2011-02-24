@@ -1,6 +1,6 @@
 function User() {
 	this.population = null;
-	this.rsids = [];
+	this.dbsnps = [];
 	this.chromosomes = {};
 	this.snps = {};
 	
@@ -15,7 +15,7 @@ function User() {
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       var chromosome = parseInt(tokens[1]);
       
-      this.rsids.push(dbsnp);
+      this.dbsnps.push(dbsnp);
       if (chromosome in this.chromosomes) this.chromosomes[chromosome]++;
       else this.chromosomes[chromosome] = 1;
         
@@ -23,7 +23,7 @@ function User() {
     }
   }
   
-  this.lookup = function(rsid) {
-    return this.snps[rsid];
+  this.lookup = function(dbsnp) {
+    return this.snps[dbsnp];
   }
 }

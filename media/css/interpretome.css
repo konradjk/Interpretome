@@ -14,41 +14,47 @@ div#wrap {
   padding-left: 2%;
   margin-right: 8%;
   padding-right: 2%;
-  width: 80%; 
+  width: 80%;
   float: center;
 }
 div#header {
   height: 100px;
   padding: 5px;
   margin: auto;
-  line-height: 100px;
 }
-
-.well-padded {
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
 div#title {
   float: left;
   width: 25%;
   font-size: 2.5em;
   padding-left: 1%;
+  line-height: 100px;
 }
-
-div#genome {
+div#global-settings {
   float: right;
   text-align: right;
-  width: 70%;
-  padding-right: 2%;
+  width: 40%;
 }
-
-div#genome label {
+div#global-settings div.stack {
+  line-height: 50px;
+  height: 50px;
+}
+div#global-settings div.setting-label {
   font-weight: bold;
+  float: left;
+  width: 40%;
 }
-div#genome input, select {
+div#global-settings div.setting {
+  float: right;
+  width: 60%;
 }
-
+div.main {
+  float: left;
+  width: 60%;
+}
+div.help {
+  float: left;
+  width: 35%;
+}
 div#footer {
   margin: auto;
   background-color: white;
@@ -63,7 +69,6 @@ div#footer {
   font-size: 0.8em;
   color: #111;
 }
-
 .clear {
   clear: both;
 }

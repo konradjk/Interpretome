@@ -9,12 +9,6 @@ from django import shortcuts
 import MySQLdb.cursors
 from django.db.backends.mysql import base
 
-population_map = {
-  'European': 'CEU',
-  'Japanese': 'JPT',
-  'Chinese': 'CHB'
-}
-
 def dict_cursor(self):
   cursor = self._cursor()
   cursor.close()
@@ -22,12 +16,12 @@ def dict_cursor(self):
 base.DatabaseWrapper.dict_cursor = dict_cursor
 
 def linked(request):
-  dbSNP = request.GET.get('dbSNP', None)
+  dbsnp = request.GET.get('dbsnp', None)
   population = request.GET.get('population', None)
-  if dbSNP is None or population is None:
+  if dbsnp is None or population is None:
     return http.HttpResponseBadRequest()
   
-  dbSNP = int(dbSNP)
+  dbsnp = int(dbsnp)
   cursor = connections['default'].dict_cursor()
   
   query = '''
@@ -35,10 +29,11 @@ def linked(request):
     FROM var_ld_data.ld_%s 
     WHERE dbSNP1 = %d OR dbSNP2 = %d
     ORDER BY R_square DESC;
-    ''' % (population, dbSNP, dbSNP)
+    ''' % (population, dbsnp, dbsnp)
     
   cursor.execute(query)
   result = cursor.fetchall()
+  result = {'dbsnp': dbsnp, 'snps': result};
   
   return http.HttpResponse(
     simplejson.dumps(result),
@@ -46,22 +41,26 @@ def linked(request):
   )
   
 def impute(request):
-  dbSNP = request.GET.get('dbSNP', None)
+  '''Impute one or more SNPs.
+  
+  dbsnp will be one or more dbSNP identifiers (only rsIDs), separated by commas.
+  '''
+  dbsnp = request.GET.get('dbsnp', None)
   population = request.GET.get('population', None)
-  if dbSNP is None or population is None:
+  if dbsnp is None or population is None:
     return http.HttpResponseBadRequest()
   
-  query_snp_in_hapmap = get_individuals(dbSNP, population)
+  query_snp_in_hapmap = get_individuals(dbsnp, population)
   if len(query_snp_in_hapmap) == 0:
     return None
   
-  anchor_snp_in_hapmap = get_individuals(dbSNP, population)
+  anchor_snp_in_hapmap = get_individuals(dbsnp, population)
   
   phase, phase_count, total = get_best_phases(query_snp_in_hapmap, anchor_snp_in_hapmap)
   
-  genotype = phase[dbSNP.genotype[0]] + phase[dbSNP.genotype[1]]
+  genotype = phase[dbsnp.genotype[0]] + phase[dbsnp.genotype[1]]
   
-  dbSNP = int(dbSNP)
+  dbsnp = int(dbsnp)
   return http.HttpResponse(simplejson.dumps("Success"), mimetype = "application/json")
 
 def get_individuals(rsid, population):
