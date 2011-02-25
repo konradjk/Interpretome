@@ -1,7 +1,9 @@
 <div class='main'>
 	<h2>Enter SNPs to lookup (one per line)</h2>
 	<div>
-	  <textarea id='lookup-snps-textarea' rows='5' cols='30'>7407</textarea>
+	  <textarea id='lookup-snps-textarea' rows='5' cols='30'>7407
+7417
+6684820</textarea>
 	  <br/>
 	
 	  <button id='lookup-snps' type='submit'>
@@ -16,38 +18,15 @@
 	    <th>dbSNP ID</th><th>Genotype</th>
 	  </tr>
 	  <script id='lookup-snp-template' type='text/template'>
-		  <tr><td><%= dbsnp %></td><td><%= genotype %></td></tr>
+		  <tr><td><%= dbsnp %></td><td><%= genotype %></td><td><%= rsquared %></td></tr>
 		</script>
 	</table>
 	
-	<br />
-	
-	<input id='impute-snp-input' type='text' />
-	<button id='impute-snp' type='submit'>
-	  Impute SNP
-	</button>
-	<button id='help-imputation' class='help-button'>About Imputation</button>
-	<div id='have-snp' title='No need!' class='hidden'>
-	  There's no need to impute this SNP, as your genotype at it is already known (it's in your file).
-	</div>
-	
-	<table id='impute-snps-table' class='hidden'>
-	  <tr>
-	    <th>dbSNP ID</th><th>Genotype</th><th>R squared</th>
-	  </tr>
-	  <script id='lookup-snp-template' type='text/template'>
-	    <tr><td><%= dbsnp %></td><td><%= genotype %></td><td><%= Rsquared %></td></tr>
-	  </script>
-	</table>
 </div>
 
 <div class='help'>
   <div id='help-lookup-help'>
     <h2>Lookup is...</h2>
-  </div>
-  <div id='help-imputation-help'>
-    <h2>Imputation is the process of...</h2>
-    <p>When imputing a SNP</p>
   </div>
 </div>
 

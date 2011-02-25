@@ -7,6 +7,7 @@ from django.utils import simplejson
 from django import shortcuts
 
 import MySQLdb.cursors
+import helpers
 from django.db.backends.mysql import base
 
 def dict_cursor(self):
@@ -16,27 +17,30 @@ def dict_cursor(self):
 base.DatabaseWrapper.dict_cursor = dict_cursor
 
 def linked(request):
-  dbsnp = request.GET.get('dbsnp', None)
+  dbsnp_request = request.GET.get('dbsnps', None)
   population = request.GET.get('population', None)
-  if dbsnp is None or population is None:
+  if dbsnp_request is None or population is None:
     return http.HttpResponseBadRequest()
   
-  dbsnp = int(dbsnp)
+  dbsnps = [int(element) for element in dbsnp_request.split(',')]
   cursor = connections['default'].dict_cursor()
   
-  query = '''
-    SELECT dbSNP1, dbSNP2, R_square 
-    FROM var_ld_data.ld_%s 
-    WHERE dbSNP1 = %d OR dbSNP2 = %d
-    ORDER BY R_square DESC;
-    ''' % (population, dbsnp, dbsnp)
+  results = {}
+  for dbsnp in dbsnps:
     
-  cursor.execute(query)
-  result = cursor.fetchall()
-  result = {'dbsnp': dbsnp, 'snps': result};
+    query = '''
+      SELECT dbSNP1, dbSNP2, R_square 
+      FROM var_ld_data.ld_%s 
+      WHERE dbSNP1 = %d OR dbSNP2 = %d
+      ORDER BY R_square DESC;
+      ''' % (population, dbsnp, dbsnp)
+    
+    cursor.execute(query)
+    result = cursor.fetchall()
+    results[dbsnp] = result
   
   return http.HttpResponse(
-    simplejson.dumps(result),
+    simplejson.dumps(results),
     mimetype = 'application/json'
   )
   
@@ -45,68 +49,30 @@ def impute(request):
   
   dbsnp will be one or more dbSNP identifiers (only rsIDs), separated by commas.
   '''
-  dbsnp = request.GET.get('dbsnp', None)
+  dbsnp_request = request.GET.get('dbsnps', None)
   population = request.GET.get('population', None)
-  if dbsnp is None or population is None:
+  
+  if dbsnp_request is None or population is None:
     return http.HttpResponseBadRequest()
+  dbsnps = [int(element) for element in dbsnp_request.split(',')]
+  cursor = connections['default'].dict_cursor()
   
-  query_snp_in_hapmap = get_individuals(dbsnp, population)
-  if len(query_snp_in_hapmap) == 0:
-    return None
-  
-  anchor_snp_in_hapmap = get_individuals(dbsnp, population)
-  
-  phase, phase_count, total = get_best_phases(query_snp_in_hapmap, anchor_snp_in_hapmap)
-  
-  genotype = phase[dbsnp.genotype[0]] + phase[dbsnp.genotype[1]]
-  
-  dbsnp = int(dbsnp)
-  return http.HttpResponse(simplejson.dumps("Success"), mimetype = "application/json")
+  phases = {}
+  for dbsnp in dbsnps:
+    query_snp_in_hapmap = helpers.get_individuals(cursor, dbsnp, population)
+    
+    if len(query_snp_in_hapmap) == 0:
+      return None
+    
+    anchor_snp_in_hapmap = helpers.get_individuals(cursor, dbsnp, population)
+    
+    phase, phase_count, total = helpers.get_best_phases(query_snp_in_hapmap, anchor_snp_in_hapmap)
+    phases[dbsnp] = phase
+    
+    #genotype = phase[dbsnp.genotype[0]] + phase[dbsnp.genotype[1]]
+    
+  return http.HttpResponse(simplejson.dumps(phases), mimetype = "application/json")
 
-def get_individuals(rsid, population):
-  query = '''
-    SELECT individual_allele, allele 
-    FROM hapmap_individuals.phased_individual_%s 
-    WHERE rsid = '%s';
-    ''' % (population, rsid)
-  cursor.execute(query)
-  individuals = {}
-  for individual, allele in cursor.fetchall():
-    individuals[individual] = allele
-  return individuals
-
-def get_best_phases(query_snp_hash, anchor_snp_hash):
-  anchor_snp_options = []
-  query_snp_options = []
-  for anchor_allele in anchor_snp_hash.values():
-    anchor_snp_options.append(anchor_allele)
-  for query_allele in query_snp_hash.values():
-    query_snp_options.append(query_allele)
-  anchor_snp_option_1, anchor_snp_option_2 = list(set(anchor_snp_options))
-  query_snp_option_1, query_snp_option_2 = list(set(query_snp_options))
-  phase_1 = 0
-  phase_2 = 0
-  for individual, anchor_allele in anchor_snp_hash.items():
-    query_allele = query_snp_hash[individual]
-    if anchor_allele == anchor_snp_option_1:
-      if query_allele == query_snp_option_1:
-        phase_1 += 1
-      else:
-        phase_2 += 1
-    else:
-      if query_allele == query_snp_option_2:
-        phase_1 += 1
-      else:
-        phase_2 += 1
-  phase_output = {}
-  if phase_1 >= phase_2:
-    phase_output[anchor_snp_option_1] = query_snp_option_1
-    phase_output[anchor_snp_option_2] = query_snp_option_2
-    return phase_output, phase_1, phase_1 + phase_2
-  else:
-    phase_output[anchor_snp_option_1] = query_snp_option_2
-    phase_output[anchor_snp_option_2] = query_snp_option_1
-    return phase_output, phase_2, phase_1 + phase_2
   
 def index(request):
   return shortcuts.render_to_response('application/interpretome.html', {})
