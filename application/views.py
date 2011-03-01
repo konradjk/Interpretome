@@ -27,16 +27,44 @@ def linked(request):
   
   results = {}
   for dbsnp in dbsnps:
+    query = '''
+      SELECT *
+      FROM var_hapmap.hapmap_phased_%s 
+      WHERE dbSNP = %s;
+    ''' % (population, dbsnp)
+    
+    cursor.execute(query)
+    hapmap_result = cursor.fetchone()
     
     query = '''
       SELECT dbSNP1, dbSNP2, R_square 
       FROM var_ld_data.ld_%s 
       WHERE dbSNP1 = %d OR dbSNP2 = %d
       ORDER BY R_square DESC;
-      ''' % (population, dbsnp, dbsnp)
+    ''' % (population, dbsnp, dbsnp)
     
     cursor.execute(query)
-    result = cursor.fetchall()
+    raw_result = cursor.fetchall()
+    
+    if hapmap_result is None or raw_result is None:
+      results[dbsnp] = []
+      continue
+    
+    result = []
+    for entry in raw_result:
+      if entry['dbSNP1'] == dbsnp:
+        other_dbsnp = entry['dbSNP2']
+      else:
+        other_dbsnp = entry['dbSNP1']
+      query = '''
+        SELECT *
+        FROM var_hapmap.hapmap_phased_%s 
+        WHERE dbSNP = %s;
+      ''' % (population, other_dbsnp)
+      cursor.execute(query)
+      if cursor.fetchone() is not None:
+        result.append(entry)
+      
     results[dbsnp] = result
   
   return http.HttpResponse(
@@ -50,27 +78,26 @@ def impute(request):
   dbsnp will be one or more dbSNP identifiers (only rsIDs), separated by commas.
   '''
   dbsnp_request = request.GET.get('dbsnps', None)
+  user_dbsnp_request = request.GET.get('user_dbsnps', None)
+  rsquared_request = request.GET.get('r_squareds', None)
   population = request.GET.get('population', None)
   
-  if dbsnp_request is None or population is None:
+  if None in (dbsnp_request, population, user_dbsnp_request, rsquared_request):
     return http.HttpResponseBadRequest()
   dbsnps = [int(element) for element in dbsnp_request.split(',')]
+  user_dbsnps = [int(element) for element in user_dbsnp_request.split(',')]
+  rsquareds = [float(element) for element in rsquared_request.split(',')]
   cursor = connections['default'].dict_cursor()
   
   phases = {}
-  for dbsnp in dbsnps:
+  for index, dbsnp in enumerate(dbsnps):
     query_snp_in_hapmap = helpers.get_individuals(cursor, dbsnp, population)
-    
-    if len(query_snp_in_hapmap) == 0:
-      return None
-    
-    anchor_snp_in_hapmap = helpers.get_individuals(cursor, dbsnp, population)
-    
-    phase, phase_count, total = helpers.get_best_phases(query_snp_in_hapmap, anchor_snp_in_hapmap)
+    anchor_snp_in_hapmap = helpers.get_individuals(cursor, user_dbsnps[index], population)
+    phase = helpers.get_best_phases(query_snp_in_hapmap, anchor_snp_in_hapmap)
+    phase['user_snp'] = user_dbsnps[index]
+    phase['r_squared'] = rsquareds[index]
     phases[dbsnp] = phase
-    
-    #genotype = phase[dbsnp.genotype[0]] + phase[dbsnp.genotype[1]]
-    
+  
   return http.HttpResponse(simplejson.dumps(phases), mimetype = "application/json")
 
   

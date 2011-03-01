@@ -46,31 +46,39 @@ window.LookupView = Backbone.View.extend({
     var lookupDbsnps = [];
     $.each(dbsnps, function(i, v) {
       var dbsnp = window.App.user.lookup(v);
+      console.log(dbsnp)
       if (dbsnp == undefined) lookupDbsnps.push(v);
       else haveDbsnps.push(v);
     });
-    if (lookupDbsnps.length == 0) return this.gotPhases(dbsnps, [], {});
+    console.log(lookupDbsnps.length)
+    if (lookupDbsnps.length == 0) return this.gotPhases(dbsnps, haveDbsnps, [], {});
     
     var self = this;
     $.get(
       '/lookup/linked/', 
       {population: window.App.user.population, dbsnps: lookupDbsnps.join(',')},
-      function(response) {return self.gotLinked(haveDbsnps, response);}
+      function(response) {return self.gotLinked(dbsnps, haveDbsnps, response);}
     );
   },
   
-  gotLinked: function(haveDbsnps, response) {
+  gotLinked: function(all_dbsnps, haveDbsnps, response) {
     var unimputableDbsnps = [];
+    var userDbsnps = [];
     var requestDbsnps = [];
+    var r_squareds = [];
+    console.log(response)
     $.each(Object.keys(response), function(i, v) {
       var any = false;
       $.each(response[v], function(i, linkedSnp) {
+        if (any) return;
         if (parseInt(v) != linkedSnp.dbSNP1) var linkedDbsnp = linkedSnp.dbSNP1; 
         else var linkedDbsnp = linkedSnp.dbSNP2;
         
         var userSnp = window.App.user.lookup(linkedDbsnp);
         if (userSnp != undefined) {
-          requestDbsnps.push(linkedDbsnp);
+          requestDbsnps.push(parseInt(v));
+          userDbsnps.push(linkedDbsnp);
+          r_squareds.push(linkedSnp.R_square);
           any = true;
           return;
         }
@@ -82,19 +90,50 @@ window.LookupView = Backbone.View.extend({
     console.log('Requesting:', requestDbsnps);
     var self = this;
     $.get(
-      '/lookup/impute/',
-      {population: window.App.user.population, dbsnps: requestDbsnps.join(',')},
-      function(response) {
-        self.gotPhases(haveDbsnps, unimputableDbsnps, response);
+      '/lookup/impute/', {
+        population: window.App.user.population,
+        dbsnps: requestDbsnps.join(','), user_dbsnps: userDbsnps.join(','),
+        r_squareds: r_squareds.join(',')
+      }, function(response) {
+        self.gotPhases(all_dbsnps, haveDbsnps, unimputableDbsnps, response);
       }
     );
   },
   
-  gotPhases: function(haveDbsnps, unimputableDbsnps, response) {
+  gotPhases: function(all_dbsnps, haveDbsnps, unimputableDbsnps, response) {
+    var self = this;
     console.log('Have:', haveDbsnps);
     console.log('Unimputable:', unimputableDbsnps);
     console.log('Response:', response);
-    
-  }
-});
+    imputableSnps = {};
+    $.each(response, function(requestSnp, info) {
+      var userSnp = window.App.user.lookup(info.user_snp);
+      imputableSnps[requestSnp] = {};
+      imputableSnps[requestSnp]['genotype'] = info[userSnp.genotype[0]] + info[userSnp.genotype[1]];
+      imputableSnps[requestSnp]['linked_snp'] = info.user_snp;
+      imputableSnps[requestSnp]['r_squared'] = info.r_squared;
+    });
+    console.log('All imputable:', imputableSnps);
+    $.each(all_dbsnps, function(i, v){
+      print_snp = {};
+      print_snp['dbsnp'] = v;
+      print_snp['imputed_from'] = '';
+      print_snp['r_squared'] = '';
+      if ($.inArray(v, haveDbsnps) == 0){
+        print_snp['genotype'] = window.App.user.lookup(v).genotype;
+      }
+      else if ($.inArray(v, unimputableDbsnps) == 0){
+        print_snp['genotype'] = 'Cannot Impute';
+      }else if (v in imputableSnps){
+        print_snp['genotype'] = imputableSnps[v]['genotype'];
+        print_snp['imputed_from'] = imputableSnps[v]['linked_snp'];
+        print_snp['r_squared'] = imputableSnps[v]['r_squared'];
+      }
+      console.log('Going to print:', print_snp)
+      self.el.find('#lookup-snps-table').append(_.template(self.lookupSnpTemplate, print_snp));
+    });
+    self.el.find('#lookup-snps-table').show();
+
+  },
+  });
 });

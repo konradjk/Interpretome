@@ -15,10 +15,10 @@
 	
 	<table id='lookup-snps-table' class='hidden'>
 	  <tr>
-	    <th>dbSNP ID</th><th>Genotype</th>
+	    <th>dbSNP ID</th><th>Genotype</th><th>Imputed From</th><th>R-Squared</th><th>Comments</th>
 	  </tr>
 	  <script id='lookup-snp-template' type='text/template'>
-		  <tr><td><%= dbsnp %></td><td><%= genotype %></td><td><%= rsquared %></td></tr>
+		  <tr><td><%= dbsnp %></td><td><%= genotype %></td><td><%= imputed_from %></td><td><%=  r_squared %></td><td><%=  r_squared %></td></tr>
 		</script>
 	</table>
 	
