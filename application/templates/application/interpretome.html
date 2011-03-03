@@ -39,6 +39,9 @@
     <script type='text/javascript'
     src='/media/js/view/lookup.js'>
     </script>
+    <script type='text/javascript'
+    src='/media/js/view/warfarin.js'>
+    </script>
     <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
   </head>
@@ -76,6 +79,8 @@
             <div id='population' class='setting'>
               <input type='radio' id='CEU' name='radio' />
               <label for='CEU'>European</label>
+              <input type='radio' id='YRI' name='radio' />
+              <label for='YRI'>African</label>
               <input type='radio' id='CHB' name='radio' />
               <label for='CHB'>Chinese</label>
               <input type='radio' id='JPT' name='radio' />
@@ -93,10 +98,15 @@
           <li>
             <a href='#lookup'>Lookup</a>
           </li>
+          <li>
+            <a href='#warfarin'>Warfarin</a>
+          </li>
         </ul>
         <div id='start'>
         </div>
         <div id='lookup'>
+        </div>
+        <div id='warfarin'>
         </div>
       </div>
       <div id='footer'>

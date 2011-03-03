@@ -4,11 +4,13 @@ window.LookupView = Backbone.View.extend({
 
   events: {
     'click #lookup-snps': 'clickLookupSnps',
+    'click #lookup-by-file': 'clickLookupByFile',
+    'click #clear-snps': 'clickClearSnps',
     'click .help-button': 'clickHelp'
   },
 
   initialize: function() {
-    _.bindAll(this, 'clickLookupSnps', 'clickHelp', 'loaded', 'gotLinked', 'gotPhases');
+    _.bindAll(this, 'clickLookupSnps', 'clickClearSnps', 'clickHelp', 'loaded', 'gotLinked', 'gotPhases');
   },
   
   render: function() {
@@ -38,10 +40,34 @@ window.LookupView = Backbone.View.extend({
     this.el.find('.help > div').hide().parent().find(id).show('normal');
   },
   
+  clickClearSnps: function(event) {
+    this.el.find('#lookup-snps-table tr').slice(1).remove();
+    this.el.find('#lookup-snps-table').hide();
+  },
+  
+  clickLookupByFile: function(event) {
+    var reader = new FileReader();
+    reader.onloadend = this.loadSnpFile;
+    reader.readAsText(event.target.files[0]);
+  },
+  
+  loadSnpFile: function(event) {
+    $.each(event.target.result.split('\n'), function (i, v){
+        var line = v.split('\s');
+        var rsid = line[0];
+        var info = line.join(' ');
+        console.log(rsid)
+    });
+  },
+  
   clickLookupSnps: function(event) {
     if (window.App.checkAll() == false) return;
     
     var dbsnps = this.filterIdentifiers(this.el.find('#lookup-snps-textarea').val().split('\n'));
+    return this.lookupSnps(dbsnps);
+  },
+  
+  lookupSnps: function(dbsnps) {
     var haveDbsnps = [];
     var lookupDbsnps = [];
     $.each(dbsnps, function(i, v) {
@@ -119,10 +145,10 @@ window.LookupView = Backbone.View.extend({
       print_snp['dbsnp'] = v;
       print_snp['imputed_from'] = '';
       print_snp['r_squared'] = '';
-      if ($.inArray(v, haveDbsnps) == 0){
+      if ($.inArray(v, haveDbsnps) >= 0){
         print_snp['genotype'] = window.App.user.lookup(v).genotype;
       }
-      else if ($.inArray(v, unimputableDbsnps) == 0){
+      else if ($.inArray(v, unimputableDbsnps) >= 0){
         print_snp['genotype'] = 'Cannot Impute';
       }else if (v in imputableSnps){
         print_snp['genotype'] = imputableSnps[v]['genotype'];

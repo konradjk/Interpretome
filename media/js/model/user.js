@@ -3,6 +3,13 @@ function User() {
 	this.dbsnps = [];
 	this.chromosomes = {};
 	this.snps = {};
+  
+  this.age = null;
+  this.height = null;
+  this.weight = null;
+  this.race = null;
+  this.enzyme = null;
+  this.amiodarone = null;
 	
   this.parseGenome = function(lines) {
     var regex = new RegExp(/^[a-z]+/);

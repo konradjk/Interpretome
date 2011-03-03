@@ -17,6 +17,10 @@ div#wrap {
   width: 80%;
   float: center;
 }
+.required{
+  color: red;
+}
+
 div#header {
   height: 100px;
   padding: 5px;
@@ -41,11 +45,11 @@ div#global-settings div.stack {
 div#global-settings div.setting-label {
   font-weight: bold;
   float: left;
-  width: 40%;
+  width: 30%;
 }
 div#global-settings div.setting {
   float: right;
-  width: 60%;
+  width: 70%;
 }
 div.main {
   float: left;
