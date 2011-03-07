@@ -10,7 +10,9 @@ function User() {
   this.race = null;
   this.enzyme = null;
   this.amiodarone = null;
-	
+  
+  this.sex = null;
+  
   this.parseGenome = function(lines) {
     var regex = new RegExp(/^[a-z]+/);
     

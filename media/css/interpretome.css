@@ -28,7 +28,7 @@ div#header {
 }
 div#title {
   float: left;
-  width: 25%;
+  width: 20%;
   font-size: 2.5em;
   padding-left: 1%;
   line-height: 100px;
@@ -36,7 +36,7 @@ div#title {
 div#global-settings {
   float: right;
   text-align: right;
-  width: 40%;
+  width: 60%;
 }
 div#global-settings div.stack {
   line-height: 50px;
@@ -75,4 +75,36 @@ div#footer {
 }
 .clear {
   clear: both;
+}
+
+table.results-table th {
+  border-style: double;
+  border-width: 0 0 4px 0;
+  border-color: #222;
+  vertical-align: bottom;
+  text-align: left;
+}
+
+table.results-table{
+  border-collapse:collapse;
+}
+
+table.results-table th,
+table.results-table td {
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+
+.ui-button-text {
+   font-size: inherit !important;
+} 
+
+.small-button {
+   font-size: .8em !important;
+}
+
+/* Allow accordion to compute dimensions. */
+.ui-tabs .ui-tabs-hide {
+    position: absolute;
+    left: -10000px;
 }

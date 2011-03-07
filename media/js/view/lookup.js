@@ -1,16 +1,20 @@
 $(function() {
 window.LookupView = Backbone.View.extend({
   el: $('#lookup'),
+  has_loaded: false,
 
   events: {
-    'click #lookup-snps': 'clickLookupSnps',
-    'click #lookup-by-file': 'clickLookupByFile',
-    'click #clear-snps': 'clickClearSnps',
-    'click .help-button': 'clickHelp'
+    'click #lookup-snps': 'click_lookup_snps',
+    'click #lookup-by-file': 'click_lookup_file',
+    'click #clear-snps': 'click_clear_snps',
+    'click .help-button': 'click_help'
   },
 
   initialize: function() {
-    _.bindAll(this, 'clickLookupSnps', 'clickClearSnps', 'clickHelp', 'loaded', 'gotLinked', 'gotPhases');
+    _.bindAll(this,  'click_lookup_file',
+      'click_lookup_snps', 'click_clear_snps', 'click_help', 
+      'loaded', 'got_linked', 'got_phases'
+    );
   },
   
   render: function() {
@@ -18,145 +22,169 @@ window.LookupView = Backbone.View.extend({
   },
     
   loaded: function(response) {
+    $('#tabs').tabs('select', '#lookup');
 	  this.el.append(response);
 	  this.el.find('button').button();
 	  this.el.find('.help-button').button({
       icons: {primary: 'ui-icon-help'}	    
 	  });
-	  this.lookupSnpTemplate = $('#lookup-snp-template').html();
+	  this.lookup_snp_template = $('#lookup-snp-template').html();
 	  this.el.find('.help > div').hide();
+	  this.el.find('#lookup-accordion').accordion();
+	  this.has_loaded = true;
   },
   
-  filterIdentifiers: function(ids) {
+  filter_identifiers: function(ids) {
     return _.select(
       _.map(ids, function(v) {return parseInt(v);}), 
       function(v) {return !_.isNaN(v)}
     );
   },
   
-  clickHelp: function(event) {
+  click_help: function(event) {
     var id = '#' + event.currentTarget.id + '-help';
     console.log(id);
     this.el.find('.help > div').hide().parent().find(id).show('normal');
   },
   
-  clickClearSnps: function(event) {
+  click_clear_snps: function(event) {
     this.el.find('#lookup-snps-table tr').slice(1).remove();
     this.el.find('#lookup-snps-table').hide();
   },
   
-  clickLookupByFile: function(event) {
+  click_lookup_file: function(event) {
     var reader = new FileReader();
-    reader.onloadend = this.loadSnpFile;
-    reader.readAsText(event.target.files[0]);
+    reader.onloadend = this.load_dbsnp_file;
+    reader.readAsText(this.el.find('#lookup-file').attr('files')[0]);
   },
   
-  loadSnpFile: function(event) {
+  load_dbsnp_file: function(event) {
+    var input_dbsnps = [];
+    var dbsnp_comments = {};
     $.each(event.target.result.split('\n'), function (i, v){
-        var line = v.split('\s');
-        var rsid = line[0];
-        var info = line.join(' ');
-        console.log(rsid)
+      var line = v.split(/\s/g);
+      var rsid = line.shift();
+      dbsnp_comments[rsid] = line.join(' ');
+      input_dbsnps.push(rsid);
     });
+    var dbsnps = filter_identifier(input_dbsnps);
+    console.log(dbsnps);
+    return [dbsnps, dbsnp_comments];
   },
   
-  clickLookupSnps: function(event) {
-    if (window.App.checkAll() == false) return;
+  click_lookup_snps: function(event) {
+    if (window.App.check_all() == false) return;
     
-    var dbsnps = this.filterIdentifiers(this.el.find('#lookup-snps-textarea').val().split('\n'));
-    return this.lookupSnps(dbsnps);
+    var dbsnps = this.filter_identifiers(
+      this.el.find('#lookup-snps-textarea').val().split('\n')
+    );
+    return this.lookup_snps(dbsnps);
   },
   
-  lookupSnps: function(dbsnps) {
-    var haveDbsnps = [];
-    var lookupDbsnps = [];
+  lookup_snps: function(dbsnps) {
+    var have_dbsnps = [];
+    var lookup_dbsnps = [];
     $.each(dbsnps, function(i, v) {
       var dbsnp = window.App.user.lookup(v);
       console.log(dbsnp)
-      if (dbsnp == undefined) lookupDbsnps.push(v);
-      else haveDbsnps.push(v);
+      if (dbsnp == undefined) 
+        lookup_dbsnps.push(v);
+      else 
+        have_dbsnps.push(v);
     });
-    console.log(lookupDbsnps.length)
-    if (lookupDbsnps.length == 0) return this.gotPhases(dbsnps, haveDbsnps, [], {});
+    console.log(lookup_dbsnps.length)
+    
+    if (lookup_dbsnps.length == 0) 
+      return this.got_phases(dbsnps, have_dbsnps, [], {});
     
     var self = this;
     $.get(
-      '/lookup/linked/', 
-      {population: window.App.user.population, dbsnps: lookupDbsnps.join(',')},
-      function(response) {return self.gotLinked(dbsnps, haveDbsnps, response);}
+      '/lookup/linked/', {
+        population: window.App.user.population, 
+        dbsnps: lookup_dbsnps.join(',')
+      }, function(response) {
+        return self.got_linked(dbsnps, have_dbsnps, response);
+      }
     );
   },
   
-  gotLinked: function(all_dbsnps, haveDbsnps, response) {
-    var unimputableDbsnps = [];
-    var userDbsnps = [];
-    var requestDbsnps = [];
+  got_linked: function(all_dbsnps, have_dbsnps, response) {
+    var unimputable_dbsnps = [];
+    var user_dbsnps = [];
+    var request_dbsnps = [];
     var r_squareds = [];
     console.log(response)
     $.each(Object.keys(response), function(i, v) {
       var any = false;
-      $.each(response[v], function(i, linkedSnp) {
+      $.each(response[v], function(i, linked_snp) {
         if (any) return;
-        if (parseInt(v) != linkedSnp.dbSNP1) var linkedDbsnp = linkedSnp.dbSNP1; 
-        else var linkedDbsnp = linkedSnp.dbSNP2;
+        if (parseInt(v) != linked_snp.dbSNP1) var linked_dbsnp = linked_snp.dbSNP1; 
+        else var linked_dbsnp = linked_snp.dbSNP2;
         
-        var userSnp = window.App.user.lookup(linkedDbsnp);
-        if (userSnp != undefined) {
-          requestDbsnps.push(parseInt(v));
-          userDbsnps.push(linkedDbsnp);
-          r_squareds.push(linkedSnp.R_square);
+        var user_snp = window.App.user.lookup(linked_dbsnp);
+        if (user_snp != undefined) {
+          request_dbsnps.push(parseInt(v));
+          user_dbsnps.push(linked_dbsnp);
+          r_squareds.push(linked_snp.R_square);
           any = true;
           return;
         }
       });
       if (!any) {
-        unimputableDbsnps.push(parseInt(v));
+        unimputable_dbsnps.push(parseInt(v));
       }
     });
-    console.log('Requesting:', requestDbsnps);
+    console.log('Requesting:', request_dbsnps);
     var self = this;
     $.get(
       '/lookup/impute/', {
         population: window.App.user.population,
-        dbsnps: requestDbsnps.join(','), user_dbsnps: userDbsnps.join(','),
+        dbsnps: request_dbsnps.join(','), user_dbsnps: user_dbsnps.join(','),
         r_squareds: r_squareds.join(',')
       }, function(response) {
-        self.gotPhases(all_dbsnps, haveDbsnps, unimputableDbsnps, response);
+        self.got_phases(all_dbsnps, have_dbsnps, unimputable_dbsnps, response);
       }
     );
   },
   
-  gotPhases: function(all_dbsnps, haveDbsnps, unimputableDbsnps, response) {
+  got_phases: function(all_dbsnps, have_dbsnps, unimputable_dbsnps, response) {
     var self = this;
-    console.log('Have:', haveDbsnps);
-    console.log('Unimputable:', unimputableDbsnps);
+    console.log('Have:', have_dbsnps);
+    console.log('Unimputable:', unimputable_dbsnps);
     console.log('Response:', response);
-    imputableSnps = {};
-    $.each(response, function(requestSnp, info) {
-      var userSnp = window.App.user.lookup(info.user_snp);
-      imputableSnps[requestSnp] = {};
-      imputableSnps[requestSnp]['genotype'] = info[userSnp.genotype[0]] + info[userSnp.genotype[1]];
-      imputableSnps[requestSnp]['linked_snp'] = info.user_snp;
-      imputableSnps[requestSnp]['r_squared'] = info.r_squared;
+    imputable_dbsnps = {};
+    $.each(response, function(request_snp, info) {
+      var user_snp = window.App.user.lookup(info.user_snp);
+      imputable_dbsnps[request_snp] = {};
+      imputable_dbsnps[request_snp]['genotype'] = info[user_snp.genotype[0]] + info[user_snp.genotype[1]];
+      imputable_dbsnps[request_snp]['linked_snp'] = info.user_snp;
+      imputable_dbsnps[request_snp]['r_squared'] = info.r_squared;
     });
-    console.log('All imputable:', imputableSnps);
+    console.log('All imputable:', imputable_dbsnps);
     $.each(all_dbsnps, function(i, v){
       print_snp = {};
       print_snp['dbsnp'] = v;
       print_snp['imputed_from'] = '';
       print_snp['r_squared'] = '';
-      if ($.inArray(v, haveDbsnps) >= 0){
+      console.log(v)
+      console.log(imputable_dbsnps[v])
+      // Careful with in... it's not always going to do what you think. Use _.include to test
+      // whether a collection includes an element.
+      if (_.include(have_dbsnps, v)) {
         print_snp['genotype'] = window.App.user.lookup(v).genotype;
-      }
-      else if ($.inArray(v, unimputableDbsnps) >= 0){
+      } 
+      else if (_.include(unimputable_dbsnps, v)) {
         print_snp['genotype'] = 'Cannot Impute';
-      }else if (v in imputableSnps){
-        print_snp['genotype'] = imputableSnps[v]['genotype'];
-        print_snp['imputed_from'] = imputableSnps[v]['linked_snp'];
-        print_snp['r_squared'] = imputableSnps[v]['r_squared'];
+      } 
+      else if (v in imputable_dbsnps) {
+        print_snp['genotype'] = imputable_dbsnps[v]['genotype'];
+        print_snp['imputed_from'] = imputable_dbsnps[v]['linked_snp'];
+        print_snp['r_squared'] = imputable_dbsnps[v]['r_squared'];
+      } else {
+        return; //Because this doesn't make any sense
       }
       console.log('Going to print:', print_snp)
-      self.el.find('#lookup-snps-table').append(_.template(self.lookupSnpTemplate, print_snp));
+      self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, print_snp));
     });
     self.el.find('#lookup-snps-table').show();
 

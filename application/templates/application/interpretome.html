@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang='en'>
   <head>
-    <title>RSID Browser</title>
+    <title>Analyze Me</title>
     <meta charset='utf-8'/>
 
     <link rel='stylesheet' type='text/css'
@@ -30,17 +30,17 @@
     src='/media/js/controller/app.js'>
     </script>
     <!-- Views. -->
-    <script type='text/javascript'
-    src='/media/js/view/app.js'>
+    <script type='text/javascript' src='/media/js/view/app.js'>
     </script>
-    <script type='text/javascript'
-    src='/media/js/view/start.js'>
+    <script type='text/javascript' src='/media/js/view/start.js'>
     </script>
-    <script type='text/javascript'
-    src='/media/js/view/lookup.js'>
+    <script type='text/javascript' src='/media/js/view/lookup.js'>
     </script>
-    <script type='text/javascript'
-    src='/media/js/view/warfarin.js'>
+    <script type='text/javascript' src='/media/js/view/warfarin.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/view/diabetes.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/view/height.js'>
     </script>
     <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
@@ -78,13 +78,13 @@
             </div>
             <div id='population' class='setting'>
               <input type='radio' id='CEU' name='radio' />
-              <label for='CEU'>European</label>
+              <label for='CEU' class='small-button'>European</label>
               <input type='radio' id='YRI' name='radio' />
-              <label for='YRI'>African</label>
+              <label for='YRI' class='small-button'>African</label>
               <input type='radio' id='CHB' name='radio' />
-              <label for='CHB'>Chinese</label>
+              <label for='CHB' class='small-button' >Chinese</label>
               <input type='radio' id='JPT' name='radio' />
-              <label for='JPT'>Japanese</label>
+              <label for='JPT' class='small-button'>Japanese</label>
             </div>
           </div>
         </div>
@@ -101,12 +101,22 @@
           <li>
             <a href='#warfarin'>Warfarin</a>
           </li>
+          <li>
+            <a href='#diabetes'>Diabetes</a>
+          </li>
+          <li>
+            <a href='#height'>Height</a>
+          </li>
         </ul>
         <div id='start'>
         </div>
         <div id='lookup'>
         </div>
         <div id='warfarin'>
+        </div>
+        <div id='diabetes'>
+        </div>
+        <div id='height'>
         </div>
       </div>
       <div id='footer'>

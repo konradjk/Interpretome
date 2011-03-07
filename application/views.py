@@ -100,7 +100,25 @@ def impute(request):
   
   return http.HttpResponse(simplejson.dumps(phases), mimetype = "application/json")
 
-  
+def get_diabetes_snps(request):
+  query = '''
+    SELECT * FROM var_disease_snp.diabetes
+  '''
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  snps = cursor.fetchall()
+  return http.HttpResponse(simplejson.dumps(snps), mimetype = "application/json")
+
+
+def get_height_snps(request):
+  query = '''
+    SELECT * FROM var_disease_snp.height
+  '''
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  snps = cursor.fetchall()
+  return http.HttpResponse(simplejson.dumps(snps), mimetype = "application/json")
+
 def index(request):
   return shortcuts.render_to_response('application/interpretome.html', {})
 
