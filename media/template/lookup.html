@@ -1,33 +1,105 @@
 <div class='main'>
-	<h2>Enter SNPs to lookup (one per line)</h2>
-	<div>
-	  <textarea id='lookup-snps-textarea' rows='5' cols='30'>7407
-7417
-6684820</textarea>
-	  <br/>
-	
-	  <button id='lookup-snps' type='submit'>
-	    Lookup SNPs
-	  </button>
-		<button id='help-lookup' class='help-button'>About Lookup</button>
+  <div id='lookup-accordion'>
+    <h3><a href='#'>Lookup by direct input</a></h3>
+    <div>
+			<h2>Enter SNPs to lookup (one per line)</h2>
+			<div>
+			  <textarea id='lookup-snps-textarea' rows='5' cols='30'></textarea>
+			  <br/>
+			  <button id='lookup-snps' type='submit' class='small-button'>
+			    Lookup SNPs
+			  </button>
+		  </div>
+		</div>
+		<h3><a href='#'>Lookup from file</a></h3>
+	  <div> 
+	    <input id='lookup-file' type='file' name='file' />
+	    <br />
+	    <br />
+	    <button id='lookup-by-file' type='submit' class='small-button'>
+	      Lookup SNPs in File
+	    </button>
+	  </div>
 	</div>
+  <br/>
+	<h2>Enter SNPs to delete (one per line)</h2>
+    <div>
+      <textarea id='delete-snps-textarea' rows='3' cols='15'></textarea>
+      <br/>
+      <button id='delete-snps' type='submit' class='small-button'>
+        Delete SNPs
+      </button>
+    </div>
 	<br />
-	
-	<table id='lookup-snps-table' class='hidden'>
+	<button id='clear-snps' type='submit' class='small-button'>
+    Clear Table
+  </button>
+	<button id='help-lookup' class='help-button small-button'>About Lookup</button>
+	<table id='lookup-snps-table' class='results-table hidden'>
 	  <tr>
-	    <th>dbSNP ID</th><th>Genotype</th>
+	    <th>dbSNP ID</th><th>Genotype</th><th>Imputed From</th><th>R-Squared</th><th>Comments</th>
 	  </tr>
 	  <script id='lookup-snp-template' type='text/template'>
-		  <tr><td><%= dbsnp %></td><td><%= genotype %></td><td><%= rsquared %></td></tr>
+		  <tr>
+		    <td class='dbsnp'><%= dbsnp %></td>
+        <td class='genotype'><%= genotype %></td>
+        <td><%= imputed_from %></td>
+        <td><%= r_squared %></td>
+        <td><%= comments %></td>
+		  </tr>
 		</script>
 	</table>
-	
+  <br>
+  <div class='submit'>
+    <div id='submit-button'>
+      <button id='submit-snps' type='submit'>
+        Submit my SNPs
+      </button>
+    </div>
+  </div>
+  <div id='confirm-submit-snps' title='Submit your SNPs?' class='hidden'>
+    Are you sure you want to submit these SNPs?
+  </div>
+  <div id='thank-you' title='Thank You' class='hidden'>
+    Your SNPs have been submitted.
+  </div>
+  <div id='nothing' title='Oops' class='hidden'>
+    Nothing was submitted.
+  </div>
 </div>
 
 <div class='help'>
   <div id='help-lookup-help'>
-    <h2>Lookup is...</h2>
+    <h2>Lookup</h2>
+    <br>
+    This utility looks up SNPs in your personal genotype file.
+    <br><br>
+    If the SNP is not found in your file, the utility attempts to impute the SNP using Hapmap data.
+    This requires:
+    <li>
+      The SNP you request to be found in the Hapmap population requested
+    </li>
+    <li>
+      Another SNP (the "linked" SNP) in high LD (r<sup>2</sup> &#x2265 0.7) with the requested SNP.
+    </li>
+    <li>
+      This linked SNP to be found both in Hapmap and your own data
+    </li>
+    <br>
+    <h3>Process</h3>
+    First, we find a SNP that is in high linkage with the requested SNP. This SNP must be found both in Hapmap and your data.
+    <br><br>
+    The Hapmap project has determined the "phase" of these SNPs, which means a correspondence can be determined between alleles.
+    Thus, the presence of one allele at the first SNP indicates the presence of the allele with the same phase of the other SNP.
+    <br><br>
+    <!--Click the "explain" button on an imputed SNP to see an example.-->
+    <br>
+  </div>
+</div>
+<div class='description'>
+  <div id='explain-lookup-help'>
+    Blah.
   </div>
 </div>
 
-<br class='clear'>
+<br class='clear' />

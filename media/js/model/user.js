@@ -3,7 +3,16 @@ function User() {
 	this.dbsnps = [];
 	this.chromosomes = {};
 	this.snps = {};
-	
+  
+  this.age = null;
+  this.height = null;
+  this.weight = null;
+  this.race = null;
+  this.enzyme = null;
+  this.amiodarone = null;
+  
+  this.sex = null;
+  
   this.parseGenome = function(lines) {
     var regex = new RegExp(/^[a-z]+/);
     
@@ -21,6 +30,12 @@ function User() {
         
       this.snps[dbsnp] = {chromosome: chromosome, genotype: tokens[3]};
     }
+  }
+  
+  this.delete_snp = function(dbsnp) {
+    if (dbsnp in this.snps) {
+      delete this.snps[dbsnp];
+    } 
   }
   
   this.lookup = function(dbsnp) {
