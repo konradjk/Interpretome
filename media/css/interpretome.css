@@ -44,6 +44,7 @@ div#global-settings div.stack {
 }
 div#global-settings div.setting-label {
   font-weight: bold;
+  #color: red;
   float: left;
   width: 30%;
 }
@@ -59,11 +60,18 @@ div.help {
   float: left;
   width: 35%;
 }
+div.description {
+  width: 50%;
+}
 div#footer {
   margin: auto;
   background-color: white;
   padding: 2%;
   font-size: 0.8em;
+}
+.dialog {
+  width: 400px;
+  height: 500px;
 }
 .hidden {
   display: none;

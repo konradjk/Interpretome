@@ -31,10 +31,11 @@ window.AppView = Backbone.View.extend({
     $('#genome label, #genome input').hide();
     $('#global-settings #genome button').button({icons: {primary: 'ui-icon-circle-close'}}).show();
     window.App.user.parseGenome(event.target.result.split('\n'));
+    $('#please-load-genome').dialog('close');
   },
   
   clear_genome: function(event) {
-    console.log('clear');
+    //console.log('clear');
     $('#confirm-clear-genome').dialog({
       modal: true, resizable: false, buttons: {
         'Cancel': function() {
@@ -51,15 +52,18 @@ window.AppView = Backbone.View.extend({
   change_population: function(event) {
     $('#population div.setting-label label').hide();
     this.user.population = $('#population label[aria-pressed="true"]').attr('for');
-    console.log('user.population = ' + this.user.population + '.');
+    //console.log('user.population = ' + this.user.population + '.');
+    $('#please-select-population').dialog('close');
   },
   
   check_genome: function() {
-    console.log('check_genome');
+    //console.log('check_genome');
     if (_.isEmpty(this.user.snps)) {
       $('#please-load-genome').dialog({
-        modal: true, resizable: false, buttons: {
-          'Okay': function() {$(this).dialog('close');}
+        modal: true, resizable: false,
+        width: 400,
+        buttons: {
+          'Cancel': function() {$(this).dialog('close');}
         }
       });
       return false;
@@ -68,11 +72,11 @@ window.AppView = Backbone.View.extend({
   },
   
   check_population: function() {
-    console.log('check_population');
+    //console.log('check_population');
     if (this.user.population == null) {
       $('#please-select-population').dialog({
         modal: true, resizable: false, buttons: {
-          'Okay': function() {$(this).dialog('close');}
+          'Cancel': function() {$(this).dialog('close');}
         }
       });
       return false;
@@ -82,7 +86,7 @@ window.AppView = Backbone.View.extend({
   },
   
   check_all: function() {
-    console.log('check_all');
+    //console.log('check_all');
     if (this.check_genome() == false) return false;
     return this.check_population();
   }

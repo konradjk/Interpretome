@@ -4,7 +4,9 @@ window.AppController = Backbone.Controller.extend({
     'lookup': 'lookup',
     'warfarin': 'warfarin',
     'diabetes': 'diabetes',
-    'height': 'height'
+    'height': 'height',
+    'ancestry': 'ancestry',
+    'gwas': 'gwas'
   },
   
   start: function() {
@@ -25,6 +27,14 @@ window.AppController = Backbone.Controller.extend({
   
   height: function() {
     this.render_or_show(window.Height);
+  },
+  
+  ancestry: function() {
+    this.render_or_show(window.Ancestry);
+  },
+  
+  gwas: function() {
+    this.render_or_show(window.Gwas);
   },
   
   render_or_show: function(controller) {

@@ -1,7 +1,7 @@
 $(function() {
 window.StartView = Backbone.View.extend({
   // I think we can use $ instead of jQuery here.
-	el: jQuery('#start'),
+	el: $('#start'),
 	has_loaded: false,
 	
 	initialize: function() {

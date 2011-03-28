@@ -32,6 +32,12 @@ function User() {
     }
   }
   
+  this.delete_snp = function(dbsnp) {
+    if (dbsnp in this.snps) {
+      delete this.snps[dbsnp];
+    } 
+  }
+  
   this.lookup = function(dbsnp) {
     return this.snps[dbsnp];
   }

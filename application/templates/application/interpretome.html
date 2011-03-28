@@ -4,8 +4,7 @@
     <title>Analyze Me</title>
     <meta charset='utf-8'/>
 
-    <link rel='stylesheet' type='text/css'
-    href='/media/css/interpretome.css'>
+    <link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'>
 
     <link rel='stylesheet' type='text/css'
     href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
@@ -26,8 +25,7 @@
     <script type='text/javascript' src='/media/js/model/user.js'>
     </script>
     <!-- Controllers. -->
-    <script type='text/javascript'
-    src='/media/js/controller/app.js'>
+    <script type='text/javascript' src='/media/js/controller/app.js'>
     </script>
     <!-- Views. -->
     <script type='text/javascript' src='/media/js/view/app.js'>
@@ -36,14 +34,30 @@
     </script>
     <script type='text/javascript' src='/media/js/view/lookup.js'>
     </script>
+    <script type='text/javascript' src='/media/js/view/gwas.js'>
+    </script>
     <script type='text/javascript' src='/media/js/view/warfarin.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/diabetes.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/height.js'>
     </script>
+    <script type='text/javascript' src='/media/js/view/ancestry.js'>
+    </script>
     <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
+
+		<script type='text/javascript'>
+		  var _gaq = _gaq || [];
+		  _gaq.push(['_setAccount', 'UA-6331436-4']);
+		  _gaq.push(['_trackPageview']);
+		
+		  (function() {
+		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+		  })();
+	  </script>
   </head>
   <body>
     <div id='wrap'>
@@ -55,6 +69,8 @@
           <div id='genome' class='stack'>
             <div id='please-load-genome' title='Load your genome' class='dialog hidden'>
               Please load your genome first.
+              <br><br>
+              <input id='genome-file' type='file' name='file' />
             </div>
             <div class='setting-label'>
               <label>Load your genome</label>
@@ -74,17 +90,47 @@
               <label>Select your population</label>
             </div>
             <div id='please-select-population' title='Select your population' class='dialog hidden'>
-              Please select your population first. 
+              Please select your population first.
             </div>
             <div id='population' class='setting'>
+              <!--<select name='pop'>
+                <option value="CEU">European</option>
+                <option value="YRI">African</option>
+                <option value="CHB">Chinese</option>
+                <option value="JPT">Japanese</option>
+                <option value=null>--------</option>
+                <option value="ASW">African-American (Southwest)</option>
+                <option value="CHD">Chinese (Denver)</option>
+                <option value="GIH">Guajarti Indian (Houston)</option>
+                <option value="LWK">Lukya (Kenya)</option>
+                <option value="MEX">Mexican (Los Angeles)</option>
+                <option value="MKK">Maasai (Kenya)</option>
+                <option value="TSI">Toscans (Italy)</option>
+              </select>
+              -->
               <input type='radio' id='CEU' name='radio' />
               <label for='CEU' class='small-button'>European</label>
               <input type='radio' id='YRI' name='radio' />
               <label for='YRI' class='small-button'>African</label>
               <input type='radio' id='CHB' name='radio' />
-              <label for='CHB' class='small-button' >Chinese</label>
+              <label for='CHB' class='small-button' >Chinese (Beijing)</label>
               <input type='radio' id='JPT' name='radio' />
               <label for='JPT' class='small-button'>Japanese</label>
+              <br>
+              <!--<input type='radio' id='ASW' name='radio' />
+              <label for='ASW' class='small-button'>African-American (Southwest)</label>
+              <input type='radio' id='CHD' name='radio' />
+              <label for='CHD' class='small-button'>Chinese (Denver)</label>
+              <input type='radio' id='GIH' name='radio' />
+              <label for='GIH' class='small-button'>Guajarti Indian (Houston)</label>
+              <input type='radio' id='LWK' name='radio' />
+              <label for='LWK' class='small-button'>Lukya (Kenya)</label>
+              <input type='radio' id='MEX' name='radio' />
+              <label for='MEX' class='small-button'>Mexican (LA)</label>
+              <input type='radio' id='MKK' name='radio' />
+              <label for='MKK' class='small-button'>Maasai (Kenya)</label>
+              <input type='radio' id='TSI' name='radio' />
+              <label for='TSI' class='small-button'>Toscans (Italy)</label>-->
             </div>
           </div>
         </div>
@@ -99,18 +145,26 @@
             <a href='#lookup'>Lookup</a>
           </li>
           <li>
-            <a href='#warfarin'>Warfarin</a>
+            <a href='#gwas'>GWAS</a>
           </li>
-          <li>
+          <!--<li>
+            <a href='#warfarin'>Warfarin</a>
+          </li>-->
+          <!--<li>
             <a href='#diabetes'>Diabetes</a>
           </li>
           <li>
             <a href='#height'>Height</a>
           </li>
+          <li>
+            <a href='#ancestry'>Ancestry</a>-->
+          </li>
         </ul>
         <div id='start'>
         </div>
         <div id='lookup'>
+        </div>
+        <<div id='gwas'>
         </div>
         <div id='warfarin'>
         </div>
@@ -118,9 +172,11 @@
         </div>
         <div id='height'>
         </div>
+        <div id='ancestry'>
+        </div>
       </div>
       <div id='footer'>
-        &copy; 2011 Karczewski, Tatonetti, <b>Tirrell</b> and Zimmerman
+        &copy; 2011 Karczewski, Tatonetti, Tirrell and Zimmerman
       </div>
     </div>
   </body>

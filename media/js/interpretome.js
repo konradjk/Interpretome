@@ -1,22 +1,26 @@
 // Later, we can load these on-demand if we want.
 $(function() {
-  console.log('Starting.');
+  //console.log('Starting.');
   window.Start = new StartView();
   window.Lookup = new LookupView();
+  window.Gwas = new GwasView();
   window.Warfarin = new WarfarinView();
   window.Diabetes = new DiabetesView();
   window.Height = new HeightView();
+  window.Ancestry = new AncestryView();
+  
   window.App = new AppView();
   window.App.user = new User();
   
   window.App.render();
+  window.Start.render();
   
   window.Controller = new AppController();
   Backbone.history.start();
 });
 
 function filter_identifier(ids) {
-  var replace_letters_regex = /^rs/;
+  var replace_letters_regex = /^\w/;
   if (!_.isArray(ids)) ids = [ids];
   
   var replaced_ids = _.select(
