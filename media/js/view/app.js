@@ -22,6 +22,7 @@ window.AppView = Backbone.View.extend({
   },
   
   change_genome: function(event) {
+    $('#loading-genome').dialog({});
     var reader = new FileReader();
     reader.onloadend = this.load_genome;
     reader.readAsText(event.target.files[0]);
@@ -31,7 +32,10 @@ window.AppView = Backbone.View.extend({
     $('#genome label, #genome input').hide();
     $('#global-settings #genome button').button({icons: {primary: 'ui-icon-circle-close'}}).show();
     window.App.user.parseGenome(event.target.result.split('\n'));
+    
+    // Ought this be here?
     $('#please-load-genome').dialog('close');
+    $('#loading-genome').dialog('close');
   },
   
   clear_genome: function(event) {

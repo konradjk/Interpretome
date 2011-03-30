@@ -129,6 +129,58 @@ def get_height_snps(request):
   snps = cursor.fetchall()
   return http.HttpResponse(simplejson.dumps(snps), mimetype = "application/json")
 
+def get_allele_frequencies(request):
+  dbsnp_request = request.GET.get('snps', None)
+  population = request.GET.get('population', None)
+  dbsnps = dbsnp_request.split(',')
+  frequencies = {}
+  for dbsnp in dbsnps:
+    query = '''
+      SELECT refallele, refallele_freq, otherallele, otherallele_freq FROM var_hapmap.allele_freqs_%s
+      WHERE rsid=%s
+    ''' % (population, dbsnp)
+    cursor = connections['default'].dict_cursor()
+    cursor.execute(query)
+    data = cursor.fetchone()
+    frequencies[dbsnp] = data
+  return http.HttpResponse(simplejson.dumps(frequencies), mimetype = "application/json")
+
+def get_reference_alleles(request):
+  dbsnp_request = request.GET.get('snps', None)
+  references = {}
+  if dbsnp_request in (None, ""):
+    return http.HttpResponseBadRequest()
+  dbsnps = dbsnp_request.split(',')
+  
+  for dbsnp in dbsnps:
+    query = '''
+      SELECT strand, refncbi FROM dbsnp.ucsc_snp130
+      WHERE rsid=%s
+    ''' % (dbsnp)
+    cursor = connections['default'].dict_cursor()
+    cursor.execute(query)
+    data = cursor.fetchone()
+    if data is None:
+      return http.HttpResponseBadRequest()
+    allele = data['refncbi']
+    references[dbsnp] = allele
+  return http.HttpResponse(simplejson.dumps(references), mimetype = "application/json")
+
+def get_chrom_pos(request):
+  dbsnp_request = request.GET.get('snps', None)
+  dbsnps = dbsnp_request.split(',')
+  info = {}
+  for dbsnp in dbsnps:
+    query = '''
+      SELECT chrom, chromstart, chromend FROM dbsnp.ucsc_snp130
+      WHERE rsid=%s
+    ''' % (dbsnp)
+    cursor = connections['default'].dict_cursor()
+    cursor.execute(query)
+    data = cursor.fetchone()
+    info[dbsnp] = data
+  return http.HttpResponse(simplejson.dumps(info), mimetype = "application/json")
+
 def submit_snps(request):
   dbsnp_request = request.GET.get('dbsnps', None)
   genotype_request = request.GET.get('genotypes', None)
@@ -148,29 +200,17 @@ def submit_snps(request):
   return http.HttpResponse(simplejson.dumps(dbsnps), mimetype = "application/json")
   
 def submit_gwas_snps(request):
-  dbsnp_request = request.GET.get('dbsnps', None)
-  genotype_request = request.GET.get('genotypes', None)
-  earwax_request = request.GET.get('earwax', None)
-  eyes_request = request.GET.get('eyes', None)
-  asparagus_request = request.GET.get('asparagus', None)
-  bitter_request = request.GET.get('bitter', None)
-  lactose_request = request.GET.get('lactose', None)
   
-  all_requests = (dbsnp_request, genotype_request, earwax_request, eyes_request, asparagus_request, bitter_request, lactose_request)
-  
-  if None in all_requests or "" in all_requests:
-    return http.HttpResponse(simplejson.dumps(None), mimetype = "application/json")
-  
-  dbsnps = [int(element) for element in dbsnp_request.split(',')]
-  genotypes = genotype_request.split(',')
+  if None in request.GET.itervalues() or "" in request.GET.itervalues():
+    return http.HttpResponse(simplejson.dumps(request.GET), mimetype = "application/json")
   
   cursor = connections['default'].dict_cursor()
-  for index, dbsnp in enumerate(dbsnps):
-    query = '''
-      INSERT INTO exercises.class_gwas (dbsnp, genotype, earwax, eyes, asparagus, bitter, lactose) VALUES (%s, "%s", %s, %s, %s, %s, %s)
-    ''' % (dbsnp, genotypes[index])
-    cursor.execute(query)
-  return http.HttpResponse(simplejson.dumps(dbsnps), mimetype = "application/json")
+  query = '''
+    INSERT INTO exercises.class_gwas (submit_time, `%s`) VALUES (NOW(), '%s')
+  ''' % ('`,`'.join(request.GET.keys()), "','".join(request.GET.values()))
+  
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(query), mimetype = "application/json")
 
 def submit_doses(request):
   dose_request = request.GET.get('doses', None)

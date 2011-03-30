@@ -17,7 +17,12 @@ $(function() {
   
   window.Controller = new AppController();
   Backbone.history.start();
+  
 });
+
+function count_genotype(value, allele) {
+  return _.select(value, function(v) {return v == allele;}).length;
+}
 
 function filter_identifier(ids) {
   var replace_letters_regex = /^\w/;
@@ -40,6 +45,10 @@ function filter_identifier(ids) {
     return null;
   }
   return replaced_ids;
+}
+
+function match_style(el) {
+  $('.secondary-color').css('color', $('.ui-button-text').css('color'));
 }
 
 String.prototype.capitalize = function() {

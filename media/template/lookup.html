@@ -22,27 +22,41 @@
 	  </div>
 	</div>
   <br/>
-	<h2>Enter SNPs to delete (one per line)</h2>
-    <div>
-      <textarea id='delete-snps-textarea' rows='3' cols='15'></textarea>
-      <br/>
-      <button id='delete-snps' type='submit' class='small-button'>
-        Delete SNPs
-      </button>
-    </div>
-	<br />
+  <h2 class='link secondary-color' id='lookup-demo'>Lookup Demo</h2>
+  <div class='hidden'>
+    <h3>Enter SNPs to delete (one per line)</h3>
+      <div>
+        <textarea id='delete-snps-textarea' rows='3' cols='15'></textarea>
+        <br/>
+        <button id='delete-snps' type='submit' class='small-button'>
+          Remove SNPs from Genome
+        </button>
+      </div>
+    <br />
+  </div>
+  <br/>
 	<button id='clear-snps' type='submit' class='small-button'>
     Clear Table
   </button>
 	<button id='help-lookup' class='help-button small-button'>About Lookup</button>
 	<table id='lookup-snps-table' class='results-table hidden'>
 	  <tr>
-	    <th>dbSNP ID</th><th>Genotype</th><th>Imputed From</th><th>R-Squared</th><th>Comments</th>
+	    <th>dbSNP ID</th><th>Genotype</th>
+      <th class='details'>Reference</th><th class='details'>Reference<br/>Frequency</th>
+      <th class='details'>Alternate<br/>Allele</th><th class='details'>Alternate<br/>Frequency</th>
+      <th class='details'>Chromosome</th><th class='details'>Position</th>
+      <th>Imputed From</th><th>R<sup>2</sup></th><th>Comments</th>
 	  </tr>
 	  <script id='lookup-snp-template' type='text/template'>
 		  <tr>
 		    <td class='dbsnp'><%= dbsnp %></td>
         <td class='genotype'><%= genotype %></td>
+        <td class='details'><%= reference %></td>
+        <td class='details'><%= refallele_freq %></td>
+        <td class='details'><%= otherallele %></td>
+        <td class='details'><%= otherallele_freq %></td>
+        <td class='details'><%= chrom %></td>
+        <td class='details'><%= end %></td>
         <td><%= imputed_from %></td>
         <td><%= r_squared %></td>
         <td><%= comments %></td>
@@ -66,6 +80,16 @@
   <div id='nothing' title='Oops' class='hidden'>
     Nothing was submitted.
   </div>
+  <br/>
+  <h2 class='link secondary-color' id='lookup-bed'>Bed Format</h2>
+  <div class='hidden'>
+    Copy this text into the UCSC Genome Browser to visualize your data.
+    <script id='bed-file-template' type='text/template'>chr<%= chrom %> <%= start %> <%= end %> rs<%= dbsnp %> 0 + <%= start %> <%= end %> <%= color %>
+</script>
+    <textarea id='bed-file-text' rows=5 cols=70>track name=myGenome description="Personal Genotype" useScore=1 itemRgb="On"
+</textarea>
+  </div>
+  <br/>
 </div>
 
 <div class='help'>
