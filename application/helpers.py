@@ -1,3 +1,12 @@
+def flip_allele(base):
+  flip = {
+    'A' : 'T',
+    'T' : 'A',
+    'G' : 'C',
+    'C' : 'G'
+  }
+  return flip[base.upper()]
+
 def get_individuals(cursor, rsid, population):
   query = '''
     SELECT *

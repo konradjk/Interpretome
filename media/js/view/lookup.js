@@ -9,6 +9,8 @@ window.LookupView = Backbone.View.extend({
     'click #lookup-by-file': 'click_lookup_file',
     'click #clear-snps': 'click_clear_snps',
     'click .help-button': 'click_help',
+    'click #lookup-demo': 'toggle_demo',
+    'click #lookup-bed': 'toggle_bed',
     'click #submit-snps': 'click_submit',
     'click #confirm-submit-snps': 'click_confirm_submit',
     'click #delete-snps': 'click_delete_snps'
@@ -18,8 +20,10 @@ window.LookupView = Backbone.View.extend({
     _.bindAll(this,  'click_lookup_file',
       'click_lookup_snps', 'click_clear_snps', 'click_help',
       'click_submit', 'click_confirm_submit',
-      'load_dbsnp_file',
-      'loaded', 'got_linked', 'got_phases'
+      'load_dbsnp_file', 'toggle_demo', 'toggle_bed',
+      'get_reference_alleles', 'get_allele_frequencies',
+      'print_snps',
+      'loaded', 'got_linked', 'got_phases', 'blank_print_snp'
     );
   },
   
@@ -35,11 +39,21 @@ window.LookupView = Backbone.View.extend({
       icons: {primary: 'ui-icon-help'}	    
 	  });
 	  this.lookup_snp_template = $('#lookup-snp-template').html();
+	  this.bed_file_template = $('#bed-file-template').html();
 	  this.el.find('.help > div').show();
 	  this.el.find('.description > div').hide();
 	  this.el.find('.submit > div').hide();
+	  this.el.find('.details').hide();
 	  this.el.find('#lookup-accordion').accordion();
 	  this.has_loaded = true;
+  },
+  
+  toggle_demo: function(event) {
+    this.el.find('#lookup-demo').next().toggle('normal');
+  },
+  
+  toggle_bed: function(event) {
+    this.el.find('#lookup-bed').next().toggle('normal');
   },
   
   filter_identifiers: function(ids) {
@@ -112,14 +126,8 @@ window.LookupView = Backbone.View.extend({
   
   click_help: function(event) {
     var id = '#' + event.currentTarget.id + '-help';
-    //console.log(id);
-    if (this.hidden){
-      this.el.find('.help > div').hide().parent().find(id).show('normal');
-      this.hidden = false;
-    }else{
-      this.el.find('.help > div').hide('normal');
-      this.hidden = true;
-    }
+    this.el.find('.help > div').toggle('normal');
+    this.el.find('.details').toggle('normal');
   },
   
   click_delete_snps: function(event) {
@@ -131,17 +139,13 @@ window.LookupView = Backbone.View.extend({
     self = this;
     $.each(dbsnps, function(i, v) {
       if (window.App.user.lookup(v) != undefined){
-        print_snp['dbsnp'] = v;
+        var print_snp = self.blank_print_snp(v);
         print_snp['imputed_from'] = 'DELETED';
         print_snp['genotype'] = 'Was: ' + window.App.user.lookup(v).genotype;
-        print_snp['r_squared'] = '';
-        print_snp['comments'] = '';
-        print_snp['explain'] = '';
         self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, print_snp));
         window.App.user.delete_snp(v);
       }
-    }
-    );
+    });
     self.el.find('#lookup-snps-table').show();
     self.el.find('.submit > div').show();
   },
@@ -212,7 +216,7 @@ window.LookupView = Backbone.View.extend({
     var user_dbsnps = [];
     var request_dbsnps = [];
     var r_squareds = [];
-    //console.log(response)
+    
     $.each(response, function(v, i) {
       var any = false;
       $.each(i, function(k, linked_snp) {
@@ -220,8 +224,7 @@ window.LookupView = Backbone.View.extend({
         if (parseInt(v) != linked_snp.dbSNP1) var linked_dbsnp = linked_snp.dbSNP1; 
         else var linked_dbsnp = linked_snp.dbSNP2;
         
-        var user_snp = window.App.user.lookup(linked_dbsnp);
-        if (user_snp != undefined) {
+        if (window.App.user.lookup(linked_dbsnp) != undefined) {
           request_dbsnps.push(parseInt(v));
           user_dbsnps.push(linked_dbsnp);
           r_squareds.push(linked_snp.R_square);
@@ -233,8 +236,7 @@ window.LookupView = Backbone.View.extend({
         unimputable_dbsnps.push(parseInt(v));
       }
     });
-    //console.log('Requesting:', request_dbsnps);
-    //console.log('Here Unimputable:', unimputable_dbsnps);
+    
     if (request_dbsnps.length == 0) return this.got_phases(all_dbsnps, have_dbsnps, unimputable_dbsnps, comments, {})
     var self = this;
     $.get(
@@ -250,9 +252,7 @@ window.LookupView = Backbone.View.extend({
   
   got_phases: function(all_dbsnps, have_dbsnps, unimputable_dbsnps, comments, response) {
     var self = this;
-    //console.log('Have:', have_dbsnps);
-    //console.log('Unimputable:', unimputable_dbsnps);
-    //console.log('Response:', response);
+    
     imputable_dbsnps = {};
     $.each(response, function(request_snp, info) {
       var user_snp = window.App.user.lookup(info.user_snp);
@@ -261,18 +261,11 @@ window.LookupView = Backbone.View.extend({
       imputable_dbsnps[request_snp]['linked_snp'] = info.user_snp;
       imputable_dbsnps[request_snp]['r_squared'] = info.r_squared;
     });
-    //console.log('All imputable:', imputable_dbsnps);
+    
+    var snps_to_print = {};
     $.each(all_dbsnps, function(i, v){
-      print_snp = {};
-      print_snp['dbsnp'] = v;
-      print_snp['imputed_from'] = '';
-      print_snp['r_squared'] = '';
-      print_snp['comments'] = '';
-      print_snp['explain'] = '';
-      //console.log(v)
-      //console.log(imputable_dbsnps[v])
-      // Careful with in... it's not always going to do what you think. Use _.include to test
-      // whether a collection includes an element.
+      var print_snp = self.blank_print_snp(v);
+      
       if (_.include(have_dbsnps, v)) {
         print_snp['genotype'] = window.App.user.lookup(v).genotype;
       } 
@@ -289,14 +282,101 @@ window.LookupView = Backbone.View.extend({
       if (comments != undefined && v in comments){
         print_snp['comments'] = comments[v];
       }
-      //console.log('Going to print:', print_snp);
-      self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, print_snp));
+      snps_to_print[v] = print_snp;
+    });
+    return self.get_reference_alleles(all_dbsnps, snps_to_print);
+  },
+  
+  print_snps: function(all_dbsnps, snps_to_print){
+    var self = this;
+    $.each(all_dbsnps, function(i, v){
+      console.log(v);
+      var output_snp = snps_to_print[v];
+      console.log(output_snp);
+      self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, output_snp));
+      self.el.find('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
     });
     self.el.find('#lookup-snps-table').show();
+    self.el.find('.details').hide();
     self.el.find('.submit > div').show();
   },
+  
+  get_chrom_pos: function(all_dbsnps, snps_to_print){
+    var self = this;
+    $.get(
+      '/lookup/get_chrom_pos/', {
+        snps: all_dbsnps.join(',')
+      }, function(response){
+        $.each(response, function(i, v){
+          snps_to_print[i]['chrom'] = v['chrom'];
+          snps_to_print[i]['start'] = v['chromstart'];
+          snps_to_print[i]['end'] = v['chromend'];
+        });
+        return self.print_snps(all_dbsnps, snps_to_print);
+      }
+    );
+  },
+  
+  get_allele_frequencies: function(all_dbsnps, snps_to_print) {
+    var self = this;
+    $.get(
+      '/lookup/get_allele_frequencies/', {
+        snps: all_dbsnps.join(','),
+        population: window.App.user.population
+      }, function(response){
+        $.each(response, function(i, v){
+          snps_to_print[i]['refallele_freq'] = v['refallele_freq'];
+          snps_to_print[i]['otherallele'] = v['otherallele'];
+          snps_to_print[i]['otherallele_freq'] = v['otherallele_freq'];
+        });
+        return self.get_chrom_pos(all_dbsnps, snps_to_print);
+      }
+    );
+  },
+  
+  get_reference_alleles: function(all_dbsnps, snps_to_print) {
+    var self = this;
+    console.log(all_dbsnps)
+    $.get(
+      '/lookup/get_reference_alleles/', {
+        snps: all_dbsnps.join(',')
+      }, function(response) {
+        $.each(response, function(i, v){
+          snps_to_print[i]['reference'] = v;
+          var zygosity = count_genotype(snps_to_print[i]['genotype'], v);
+          if (zygosity == 2){
+            snps_to_print[i]['color'] = '1,1,1';
+          }else if (zygosity == 1){
+            snps_to_print[i]['color'] = '0,0,255';
+          }else{
+            snps_to_print[i]['color'] = '255,0,0';
+          }
+        });
+        return self.get_allele_frequencies(all_dbsnps, snps_to_print);
+      }
+    );
+  },
+  
   format_explain_string: function(genotype, linked_snp, r_squared) {
-    return '(' + genotype + ')';
+    return '(' + genotype + ')' + '';
+  },
+  
+  blank_print_snp: function(v) {
+    print_snp = {};
+    print_snp['dbsnp'] = v;
+    print_snp['imputed_from'] = '';
+    print_snp['r_squared'] = '';
+    print_snp['comments'] = '';
+    print_snp['reference'] = '';
+    print_snp['explain'] = '';
+    print_snp['refallele_freq'] = '';
+    print_snp['otherallele'] = '';
+    print_snp['otherallele_freq'] = '';
+    print_snp['chrom'] = '';
+    print_snp['start'] = '';
+    print_snp['end'] = '';
+    print_snp['color'] = '';
+    return print_snp;
   }
   });
 });

@@ -59,6 +59,7 @@ div.main {
 div.help {
   float: left;
   width: 35%;
+  padding-left: 2%;
 }
 div.description {
   width: 50%;
@@ -68,6 +69,10 @@ div#footer {
   background-color: white;
   padding: 2%;
   font-size: 0.8em;
+}
+.link {
+  text-decoration: underline;
+  cursor: pointer;
 }
 .dialog {
   width: 400px;
@@ -83,6 +88,10 @@ div#footer {
 }
 .clear {
   clear: both;
+}
+
+table.details {
+  display: none;
 }
 
 table.results-table th {
