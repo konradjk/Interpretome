@@ -1,0 +1,39 @@
+<div class='main'>
+	<h2>Ancestry Exercise</h2>
+  <h3>Please Choose a Level of Detail</h3>
+  <div id='sex' class='setting'>
+    <input type='radio' id='all' name='detail' checked/>
+    <label for='all'>All</label>
+    <input type='radio' id='european' name='detail'/>
+    <label for='europe'>European</label>
+    <input type='radio' id='east_asian' name='detail'/>
+    <label for='east_asian'>East Asian</label>
+    <input type='radio' id='european_map' name='detail'/>
+    <label for='european_map'>Detailed Europe</label>
+  </div>
+  <br/>
+	<div>
+	  <button id='ancestry' type='submit'>
+	    Show me my Ancestry
+	  </button>
+		<button id='help-ancestry' class='help-button'>About Ancestry</button>
+	</div>
+	<br />
+	<table id='ancestry-graph-table' class='hidden'>
+    <tr>
+	    <th>Ancestry</th>
+    </tr>
+    <script id='ancestry-graph-template' type='text/template'>
+		  <tr align=center><td><%= graph %></td></tr>
+		</script>
+  </table>
+  <br>	
+</div>
+
+<div class='help'>
+  <div id='help-ancestry-help'>
+    <h2>Ancestry is fun.</h2>
+  </div>
+</div>
+
+<br class='clear'>

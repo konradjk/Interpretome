@@ -1,0 +1,114 @@
+<div class='main'>
+  <h2>GWAS Exercise</h2>
+  <br/>
+  <div>
+    <h3>Enter SNPs to lookup (one per line)</h3>
+    <div>
+      <textarea readonly='readonly' id='gwas-snps-textarea' rows='6' cols='30'>7495174
+17822931
+4481887
+713598
+4988235
+</textarea>
+      <br/>
+      <button id='gwas-snps' type='submit' class='small-button'>
+        Lookup SNPs
+      </button>
+    </div>
+  </div>
+  <br/>
+	<button id='clear-snps' type='submit' class='small-button'>
+    Clear Table
+  </button>
+	<button id='help-gwas' class='help-button small-button'>About GWAS</button>
+	<table id='gwas-snps-table' class='results-table hidden'>
+	  <tr>
+	    <th>dbSNP ID</th><th>Genotype</th>
+	  </tr>
+	  <script id='gwas-snp-template' type='text/template'>
+		  <tr>
+		    <td class='dbsnp'><%= dbsnp %></td>
+        <td class='genotype'><%= genotype %></td>
+		  </tr>
+		</script>
+	</table>
+  <br>
+  <div class='submit'>
+    <div>
+      <h3>Earwax?</h3>
+      <div id='earwax'>
+        <input type='radio' id='earwax_wet' name='earwax' />
+        <label for='earwax_wet' class='small-button'>Wet</label>
+        <input type='radio' id='earwax_dry' name='earwax' />
+        <label for='earwax_dry' class='small-button'>Dry</label>
+      </div>
+      <h3>Eye Color?</h3>
+      <div id='eyes'>
+        <input type='radio' id='blue' name='eyes' />
+        <label for='blue' class='small-button'>Blue</label>
+        <input type='radio' id='green' name='eyes' />
+        <label for='green' class='small-button'>Green</label>
+        <input type='radio' id='brown' name='eyes' />
+        <label for='brown' class='small-button'>Brown</label>
+        <input type='radio' id='other' name='eyes' />
+        <label for='other' class='small-button'>Other</label>
+      </div>
+      <h3>Asparagus Smell?</h3>
+      <div id='asparagus'>
+        <input type='radio' id='asparagus_yes' name='asparagus' />
+        <label for='asparagus_yes' class='small-button'>Yes</label>
+        <input type='radio' id='asparagus_no' name='asparagus' />
+        <label for='asparagus_no' class='small-button'>No</label>
+      </div>
+      <h3>Bitter Taste?</h3>
+      <div id='bitter'>
+        <input type='radio' id='bitter_yes' name='bitter' />
+        <label for='bitter_yes' class='small-button'>Yes</label>
+        <input type='radio' id='bitter_no' name='bitter' />
+        <label for='bitter_no' class='small-button'>No</label>
+      </div>
+      <h3>Lactose Intolerant?</h3>
+      <div id='lactose'>
+        <input type='radio' id='lactose_yes' name='lactose' />
+        <label for='lactose_yes' class='small-button'>Yes (Cannot drink milk)</label>
+        <input type='radio' id='lactose_no' name='lactose' />
+        <label for='lactose_no' class='small-button'>No</label>
+      </div>
+    </div>
+    <br/>
+    <div id='submit-button'>
+      <button id='submit-snps' type='submit'>
+        Submit my SNPs
+      </button>
+    </div>
+  </div>
+  <div id='confirm-submit-snps' title='Submit your SNPs?' class='hidden'>
+    Are you sure you want to submit your information?
+  </div>
+  <div id='thank-you' title='Thank You' class='hidden'>
+    Your SNPs have been submitted.
+  </div>
+  <div id='nothing' title='Oops' class='hidden'>
+    Nothing was submitted.
+  </div>
+</div>
+
+<div class='help'>
+  <div id='help-gwas-help'>
+    <h2>GWAS</h2>
+    Genome-wide association studies (GWAS) are commonly used methods to identify genetic factors associated with diseases.
+    In a case/control GWAS, each SNP is stratified by genotype (2 alleles or a dominant/recessive genotype model)
+    and phenotype (e.g. binary, such as "Wet" or "Dry" in the case of earwax, or a continuous variable such as height).
+    The association between genotype and phenotype is then tested by a <a href="http://en.wikipedia.org/wiki/Pearson%27s_chi-square_test">chi-squared test</a>.
+    <br><br>
+    In this exercise, we will attempt to reproduce results from previous GWAS by identifying SNPs associated with
+    earwax type, eye color, asparagus metabolite detection, bitter taste, and lactose intolerance.
+  </div>
+</div>
+<div class='description'>
+  <div id='explain-gwas-help'>
+    Blah.
+  </div>
+</div>
+
+<br class='clear' />

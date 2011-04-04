@@ -79,14 +79,12 @@ def impute(request):
   '''
   dbsnp_request = request.GET.get('dbsnps', None)
   user_dbsnp_request = request.GET.get('user_dbsnps', None)
-  rsquared_request = request.GET.get('r_squareds', None)
   population = request.GET.get('population', None)
   
-  if None in (dbsnp_request, population, user_dbsnp_request, rsquared_request):
+  if None in (dbsnp_request, population, user_dbsnp_request):
     return http.HttpResponseBadRequest()
   dbsnps = [int(element) for element in dbsnp_request.split(',')]
   user_dbsnps = [int(element) for element in user_dbsnp_request.split(',')]
-  rsquareds = [float(element) for element in rsquared_request.split(',')]
   cursor = connections['default'].dict_cursor()
   
   phases = {}
@@ -95,7 +93,6 @@ def impute(request):
     anchor_snp_in_hapmap = helpers.get_individuals(cursor, user_dbsnps[index], population)
     phase = helpers.get_best_phases(query_snp_in_hapmap, anchor_snp_in_hapmap)
     phase['user_snp'] = user_dbsnps[index]
-    phase['r_squared'] = rsquareds[index]
     phases[dbsnp] = phase
   
   return http.HttpResponse(simplejson.dumps(phases), mimetype = "application/json")
@@ -122,12 +119,16 @@ def get_diabetes_snps(request):
 
 def get_height_snps(request):
   query = '''
-    SELECT * FROM exercises.height
+    SELECT rsid, min(p_value), risk_allele, effect_size_cm FROM exercises.height
+    GROUP BY rsid
+    ORDER BY p_value ASC
   '''
   cursor = connections['default'].dict_cursor()
   cursor.execute(query)
-  snps = cursor.fetchall()
-  return http.HttpResponse(simplejson.dumps(snps), mimetype = "application/json")
+  output = {}
+  for entry in cursor.fetchall():
+    output[entry['rsid']] = entry
+  return http.HttpResponse(simplejson.dumps(output), mimetype = "application/json")
 
 def get_allele_frequencies(request):
   dbsnp_request = request.GET.get('snps', None)
@@ -160,10 +161,8 @@ def get_reference_alleles(request):
     cursor = connections['default'].dict_cursor()
     cursor.execute(query)
     data = cursor.fetchone()
-    if data is None:
-      return http.HttpResponseBadRequest()
-    allele = data['refncbi']
-    references[dbsnp] = allele
+    if data is not None:
+      references[dbsnp] = data['refncbi']
   return http.HttpResponse(simplejson.dumps(references), mimetype = "application/json")
 
 def get_chrom_pos(request):
@@ -194,14 +193,14 @@ def submit_snps(request):
   cursor = connections['default'].dict_cursor()
   for index, dbsnp in enumerate(dbsnps):
     query = '''
-      INSERT INTO exercises.class (dbsnp, genotype) VALUES (%s, "%s")
+      INSERT INTO exercises.class (submit_time, dbsnp, genotype) VALUES (NOW(), %s, "%s")
     ''' % (dbsnp, genotypes[index])
     cursor.execute(query)
   return http.HttpResponse(simplejson.dumps(dbsnps), mimetype = "application/json")
   
 def submit_gwas_snps(request):
   
-  if None in request.GET.itervalues() or "" in request.GET.itervalues():
+  if None in request.GET.values() or "" in request.GET.values():
     return http.HttpResponse(simplejson.dumps(request.GET), mimetype = "application/json")
   
   cursor = connections['default'].dict_cursor()
@@ -212,6 +211,19 @@ def submit_gwas_snps(request):
   cursor.execute(query)
   return http.HttpResponse(simplejson.dumps(query), mimetype = "application/json")
 
+def submit(request):
+  request_dict = request.GET.copy()
+  try:
+	  exercise = request_dict.pop('exercise')[0]
+  except KeyError:
+    return http.HttpResponseBadRequest()
+  cursor = connections['default'].dict_cursor()
+  query = '''
+    INSERT INTO exercises.%s (`%s`) VALUES ('%s')
+  ''' % (exercise, '`,`'.join(request_dict.keys()), "','".join(request_dict.values()))
+  cursor.execute(query)
+  return http.HttpResponse()
+  
 def submit_doses(request):
   dose_request = request.GET.get('doses', None)
   

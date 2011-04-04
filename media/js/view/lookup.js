@@ -9,9 +9,11 @@ window.LookupView = Backbone.View.extend({
     'click #lookup-by-file': 'click_lookup_file',
     'click #clear-snps': 'click_clear_snps',
     'click .help-button': 'click_help',
+    'click .explain-snp': 'click_explain',
     'click #lookup-demo': 'toggle_demo',
     'click #lookup-bed': 'toggle_bed',
     'click #submit-snps': 'click_submit',
+    'click #print-snps': 'click_print',
     'click #confirm-submit-snps': 'click_confirm_submit',
     'click #delete-snps': 'click_delete_snps'
   },
@@ -19,11 +21,9 @@ window.LookupView = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this,  'click_lookup_file',
       'click_lookup_snps', 'click_clear_snps', 'click_help',
-      'click_submit', 'click_confirm_submit',
+      'click_submit', 'click_confirm_submit', 'click_explain',
       'load_dbsnp_file', 'toggle_demo', 'toggle_bed',
-      'get_reference_alleles', 'get_allele_frequencies',
-      'print_snps',
-      'loaded', 'got_linked', 'got_phases', 'blank_print_snp'
+      'print_snps', 'loaded', 'click_print'
     );
   },
   
@@ -39,6 +39,8 @@ window.LookupView = Backbone.View.extend({
       icons: {primary: 'ui-icon-help'}	    
 	  });
 	  this.lookup_snp_template = $('#lookup-snp-template').html();
+	  this.explain_snp_top_template = $('#explain-lookup-top-template').html();
+	  this.explain_snp_bottom_template = $('#explain-lookup-bottom-template').html();
 	  this.bed_file_template = $('#bed-file-template').html();
 	  this.el.find('.help > div').show();
 	  this.el.find('.description > div').hide();
@@ -56,13 +58,6 @@ window.LookupView = Backbone.View.extend({
     this.el.find('#lookup-bed').next().toggle('normal');
   },
   
-  filter_identifiers: function(ids) {
-    return _.select(
-      _.map(ids, function(v) {return parseInt(v);}), 
-      function(v) {return !_.isNaN(v)}
-    );
-  },
-  
   click_submit: function(event) {
     var self = this;
     $('#confirm-submit-snps').dialog({
@@ -74,6 +69,11 @@ window.LookupView = Backbone.View.extend({
         'Cancel': function() {$(this).dialog('close');}
       }
     });
+  },
+  
+  click_print: function(event) {
+    console.log($('#lookup-snps-table')[0].outerHTML);
+    print_text($('#lookup-snps-table')[0].outerHTML);
   },
   
   click_confirm_submit: function(event) {
@@ -101,6 +101,27 @@ window.LookupView = Backbone.View.extend({
         }
       }
     );
+  },
+  
+  click_explain: function(event) {
+    output = {};
+    output_2 = {};
+    output['dbsnp'] = event.target.parentElement.parentElement.childNodes[1].innerHTML;
+    var genotypes = event.target.parentElement.parentElement.childNodes[3].innerHTML.split('');
+    output['genotype_0'] = genotypes[0];
+    output_2['genotype_1'] = genotypes[1];
+    var imputed = event.target.parentElement.parentElement.childNodes[17].innerHTML.split(' ');
+    output['imp_dbsnp'] = imputed[0];
+    output['imp_0'] = imputed[1].substr(1,1);
+    output_2['imp_1'] = imputed[1].substr(2,1);
+    //console.log(output);
+    
+    var self = this;
+    self.el.find('#explain-lookup-top').empty();
+    self.el.find('#explain-lookup-bottom').empty();
+    this.el.find('.description > div').hide().show('normal');
+    self.el.find('#explain-lookup-top').append(_.template(self.explain_snp_top_template, output));
+    self.el.find('#explain-lookup-bottom').append(_.template(self.explain_snp_bottom_template, output_2));
   },
   
   nothing_submitted: function(event) {
@@ -139,7 +160,7 @@ window.LookupView = Backbone.View.extend({
     self = this;
     $.each(dbsnps, function(i, v) {
       if (window.App.user.lookup(v) != undefined){
-        var print_snp = self.blank_print_snp(v);
+        var print_snp = window.App.user.blank_extended_snp(v);
         print_snp['imputed_from'] = 'DELETED';
         print_snp['genotype'] = 'Was: ' + window.App.user.lookup(v).genotype;
         self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, print_snp));
@@ -153,6 +174,8 @@ window.LookupView = Backbone.View.extend({
   click_clear_snps: function(event) {
     this.el.find('#lookup-snps-table tr').slice(1).remove();
     this.el.find('#lookup-snps-table').hide();
+    this.el.find('#bed-file-text').empty();
+    this.el.find('#bed-file-text').append('track name=myGenome description="Personal Genotype" visibility=3 itemRgb="On"\n');
     this.el.find('.submit > div').hide();
   },
   
@@ -163,6 +186,7 @@ window.LookupView = Backbone.View.extend({
   },
   
   load_dbsnp_file: function(event) {
+    var self = this;
     var input_dbsnps = [];
     var dbsnp_comments = {};
     $.each(event.target.result.split('\n'), function (i, v){
@@ -172,211 +196,39 @@ window.LookupView = Backbone.View.extend({
       input_dbsnps.push(rsid);
     });
     var dbsnps = filter_identifier(input_dbsnps);
-    //console.log(dbsnps);
-    return this.lookup_snps(dbsnps, dbsnp_comments);
+    return window.App.user.lookup_snps(self.print_snps, {}, dbsnps, dbsnp_comments);
   },
   
   click_lookup_snps: function(event) {
     if (window.App.check_all() == false) return;
-    
-    var dbsnps = this.filter_identifiers(
+    var self = this;
+    var dbsnps = filter_identifier(
       this.el.find('#lookup-snps-textarea').val().split('\n')
     );
-    return this.lookup_snps(dbsnps);
+    return window.App.user.lookup_snps(self.print_snps, {}, dbsnps, {});
   },
   
-  lookup_snps: function(dbsnps, comments) {
-    var have_dbsnps = [];
-    var lookup_dbsnps = [];
-    $.each(dbsnps, function(i, v) {
-      var dbsnp = window.App.user.lookup(v);
-      //console.log(dbsnp);
-      if (dbsnp == undefined) 
-        lookup_dbsnps.push(v);
-      else 
-        have_dbsnps.push(v);
-    });
-    //console.log(lookup_dbsnps.length)
-    
-    if (lookup_dbsnps.length == 0) return this.got_phases(dbsnps, have_dbsnps, [], comments, {});
-    
-    var self = this;
-    $.get(
-      '/lookup/linked/', {
-        population: window.App.user.population, 
-        dbsnps: lookup_dbsnps.join(',')
-      }, function(response) {
-        return self.got_linked(dbsnps, have_dbsnps, comments, response);
-      }
-    );
-  },
-  
-  got_linked: function(all_dbsnps, have_dbsnps, comments, response) {
-    var unimputable_dbsnps = [];
-    var user_dbsnps = [];
-    var request_dbsnps = [];
-    var r_squareds = [];
-    
-    $.each(response, function(v, i) {
-      var any = false;
-      $.each(i, function(k, linked_snp) {
-        if (any) return;
-        if (parseInt(v) != linked_snp.dbSNP1) var linked_dbsnp = linked_snp.dbSNP1; 
-        else var linked_dbsnp = linked_snp.dbSNP2;
-        
-        if (window.App.user.lookup(linked_dbsnp) != undefined) {
-          request_dbsnps.push(parseInt(v));
-          user_dbsnps.push(linked_dbsnp);
-          r_squareds.push(linked_snp.R_square);
-          any = true;
-          return;
-        }
-      });
-      if (!any) {
-        unimputable_dbsnps.push(parseInt(v));
-      }
-    });
-    
-    if (request_dbsnps.length == 0) return this.got_phases(all_dbsnps, have_dbsnps, unimputable_dbsnps, comments, {})
-    var self = this;
-    $.get(
-      '/lookup/impute/', {
-        population: window.App.user.population,
-        dbsnps: request_dbsnps.join(','), user_dbsnps: user_dbsnps.join(','),
-        r_squareds: r_squareds.join(',')
-      }, function(response) {
-        self.got_phases(all_dbsnps, have_dbsnps, unimputable_dbsnps, comments, response);
-      }
-    );
-  },
-  
-  got_phases: function(all_dbsnps, have_dbsnps, unimputable_dbsnps, comments, response) {
-    var self = this;
-    
-    imputable_dbsnps = {};
-    $.each(response, function(request_snp, info) {
-      var user_snp = window.App.user.lookup(info.user_snp);
-      imputable_dbsnps[request_snp] = {};
-      imputable_dbsnps[request_snp]['genotype'] = info[user_snp.genotype[0]] + info[user_snp.genotype[1]];
-      imputable_dbsnps[request_snp]['linked_snp'] = info.user_snp;
-      imputable_dbsnps[request_snp]['r_squared'] = info.r_squared;
-    });
-    
-    var snps_to_print = {};
-    $.each(all_dbsnps, function(i, v){
-      var print_snp = self.blank_print_snp(v);
-      
-      if (_.include(have_dbsnps, v)) {
-        print_snp['genotype'] = window.App.user.lookup(v).genotype;
-      } 
-      else if (_.include(unimputable_dbsnps, v)) {
-        print_snp['genotype'] = 'Cannot Impute';
-      } 
-      else if (v in imputable_dbsnps) {
-        print_snp['genotype'] = imputable_dbsnps[v]['genotype'];
-        print_snp['imputed_from'] = imputable_dbsnps[v]['linked_snp'] + ' ' + self.format_explain_string(window.App.user.lookup(imputable_dbsnps[v]['linked_snp']).genotype, imputable_dbsnps[v]['linked_snp'], imputable_dbsnps[v]['r_squared']);
-        print_snp['r_squared'] = imputable_dbsnps[v]['r_squared'];
-      } else {
-        return; //Because this doesn't make any sense
-      }
-      if (comments != undefined && v in comments){
-        print_snp['comments'] = comments[v];
-      }
-      snps_to_print[v] = print_snp;
-    });
-    return self.get_reference_alleles(all_dbsnps, snps_to_print);
-  },
-  
-  print_snps: function(all_dbsnps, snps_to_print){
+  print_snps: function(args, all_dbsnps, snps_to_print){
     var self = this;
     $.each(all_dbsnps, function(i, v){
-      console.log(v);
       var output_snp = snps_to_print[v];
-      console.log(output_snp);
+      if (output_snp['imputed_from'] != ''){
+        output_snp['explain'] = self.explain_string();
+      }
       self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, output_snp));
-      self.el.find('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
+      if (output_snp['genotype'] != 'NA'){
+        self.el.find('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
+      }
     });
+    //self.el.find('.explain-snp').button();
     self.el.find('#lookup-snps-table').show();
     self.el.find('.details').hide();
     self.el.find('.submit > div').show();
   },
   
-  get_chrom_pos: function(all_dbsnps, snps_to_print){
-    var self = this;
-    $.get(
-      '/lookup/get_chrom_pos/', {
-        snps: all_dbsnps.join(',')
-      }, function(response){
-        $.each(response, function(i, v){
-          snps_to_print[i]['chrom'] = v['chrom'];
-          snps_to_print[i]['start'] = v['chromstart'];
-          snps_to_print[i]['end'] = v['chromend'];
-        });
-        return self.print_snps(all_dbsnps, snps_to_print);
-      }
-    );
+  explain_string: function() {
+    return "<button class='explain-snp' type='submit'>Explain</button>";
   },
   
-  get_allele_frequencies: function(all_dbsnps, snps_to_print) {
-    var self = this;
-    $.get(
-      '/lookup/get_allele_frequencies/', {
-        snps: all_dbsnps.join(','),
-        population: window.App.user.population
-      }, function(response){
-        $.each(response, function(i, v){
-          snps_to_print[i]['refallele_freq'] = v['refallele_freq'];
-          snps_to_print[i]['otherallele'] = v['otherallele'];
-          snps_to_print[i]['otherallele_freq'] = v['otherallele_freq'];
-        });
-        return self.get_chrom_pos(all_dbsnps, snps_to_print);
-      }
-    );
-  },
-  
-  get_reference_alleles: function(all_dbsnps, snps_to_print) {
-    var self = this;
-    console.log(all_dbsnps)
-    $.get(
-      '/lookup/get_reference_alleles/', {
-        snps: all_dbsnps.join(',')
-      }, function(response) {
-        $.each(response, function(i, v){
-          snps_to_print[i]['reference'] = v;
-          var zygosity = count_genotype(snps_to_print[i]['genotype'], v);
-          if (zygosity == 2){
-            snps_to_print[i]['color'] = '1,1,1';
-          }else if (zygosity == 1){
-            snps_to_print[i]['color'] = '0,0,255';
-          }else{
-            snps_to_print[i]['color'] = '255,0,0';
-          }
-        });
-        return self.get_allele_frequencies(all_dbsnps, snps_to_print);
-      }
-    );
-  },
-  
-  format_explain_string: function(genotype, linked_snp, r_squared) {
-    return '(' + genotype + ')' + '';
-  },
-  
-  blank_print_snp: function(v) {
-    print_snp = {};
-    print_snp['dbsnp'] = v;
-    print_snp['imputed_from'] = '';
-    print_snp['r_squared'] = '';
-    print_snp['comments'] = '';
-    print_snp['reference'] = '';
-    print_snp['explain'] = '';
-    print_snp['refallele_freq'] = '';
-    print_snp['otherallele'] = '';
-    print_snp['otherallele_freq'] = '';
-    print_snp['chrom'] = '';
-    print_snp['start'] = '';
-    print_snp['end'] = '';
-    print_snp['color'] = '';
-    return print_snp;
-  }
   });
 });

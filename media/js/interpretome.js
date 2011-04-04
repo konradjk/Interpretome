@@ -20,12 +20,51 @@ $(function() {
   
 });
 
+
+function print_text(text_to_print) {
+  console.log(text_to_print);
+  var win = window.open();
+  self.focus();
+  win.document.open();
+  win.document.write("<html><head><link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'></head><body>");
+  win.document.write("<h2>Analyze Me - Results</h2>");
+  win.document.write(text_to_print);
+  win.document.write('</body></html>');
+  win.document.close();
+  win.print();
+  win.close();
+}
+
 function count_genotype(value, allele) {
   return _.select(value, function(v) {return v == allele;}).length;
 }
 
+function check_float(value) {
+  if (!_.isNaN(parseFloat(value))){
+    return parseFloat(value);
+  }
+  return null;
+}
+
+function check_inches(value) {
+  var split_height = value.split(/\'/g);
+  var feet = '';
+  var inches = '';
+  if (split_height.length > 1){
+    feet = parseFloat(split_height[0]);
+    inches = parseFloat(split_height[1]);
+  }
+  if (!_.isNaN(parseFloat(feet)) && !_.isNaN(parseFloat(inches))){
+    return (feet*12 + inches)*2.54;
+  }
+  if (!_.isNaN(parseFloat(value))){
+    return parseFloat(value)*2.54;
+  }
+  return null;
+}
+
 function filter_identifier(ids) {
-  var replace_letters_regex = /^\w/;
+  var replace_letters_regex = /^rs/;
   if (!_.isArray(ids)) ids = [ids];
   
   var replaced_ids = _.select(
@@ -37,13 +76,6 @@ function filter_identifier(ids) {
       return !_.isNaN(v);
     }
   )
-  
-  if (ids.length == 1) {
-    if (replaced_ids.length == 1) {
-      return replaced_ids[0];
-    }
-    return null;
-  }
   return replaced_ids;
 }
 

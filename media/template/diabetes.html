@@ -1,0 +1,53 @@
+<div class='main'>
+	<h2>Enter information to calculate diabetes risk</h2>
+  <h3>Sex?</h3>
+  <div id='sex' class='setting'>
+    <input type='radio' id='male' name='sex' checked/>
+    <label for='male'>Male</label>
+    <input type='radio' id='female' name='sex'/>
+    <label for='female'>Female</label>
+  <span id='please-select-sex' title='Please Select Your Sex' class='required hidden'>
+    Please select your sex.
+  </span>
+  </div>
+  <br/>
+	<div>
+	  <button id='diabetes' type='submit'>
+	    Calculate my Diabetes Risk
+	  </button>
+		<button id='help-diabetes' class='help-button'>About Diabetes</button>
+	</div>
+	<br />
+	<table id='diabetes-graph-table' class='hidden'>
+    <tr>
+	    <th>Diabetes</th>
+    </tr>
+    <script id='diabetes-graph-template' type='text/template'>
+		  <tr align=center><td><%= graph %></td></tr>
+		</script>
+  </table>
+  <br>
+	<table id='diabetes-table' class='hidden'>
+	  <tr>
+	    <th>RSID</th>
+      <th>Study Size</th>
+      <th>Odds Ratio*</th>
+      <th>OR* Total</th>
+      <th>Likelihood Ratio</th>
+      <th>LR Total</th>
+	  </tr>
+	  <script id='diabetes-template' type='text/template'>
+		  <tr><td><%= rsid %></td><td><%= study_size %></td><td><%= odds_ratio %></td><td><%= odds_ratio_total %></td>
+      <td><%= likelihood_ratio %></td><td><%= likelihood_ratio_total %></td>
+		</script>
+	</table>
+	
+</div>
+
+<div class='help'>
+  <div id='help-diabetes-help'>
+    <h2>Diabetes is a disease, etc.</h2>
+  </div>
+</div>
+
+<br class='clear'>

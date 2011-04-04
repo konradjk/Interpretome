@@ -46,6 +46,12 @@
     </script>
     <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+    
+      // Load the Visualization API and the piechart package.
+      google.load('visualization', '1', {'packages': ['corechart']});
+    </script>
 
 		<script type='text/javascript'>
 		  var _gaq = _gaq || [];
@@ -120,6 +126,8 @@
               <label for='CHB' class='small-button' >Chinese (Beijing)</label>
               <input type='radio' id='JPT' name='radio' />
               <label for='JPT' class='small-button'>Japanese</label>
+              <input type='radio' id='MEX' name='radio' />
+              <label for='MEX' class='small-button'>Mexican</label>
               <br>
               <!--<input type='radio' id='ASW' name='radio' />
               <label for='ASW' class='small-button'>African-American (Southwest)</label>
@@ -151,14 +159,14 @@
           <li>
             <a href='#gwas'>GWAS</a>
           </li>
+          <li>
+            <a href='#height'>Height</a>
+          </li>
           <!--<li>
             <a href='#warfarin'>Warfarin</a>
           </li>-->
           <!--<li>
             <a href='#diabetes'>Diabetes</a>
-          </li>
-          <li>
-            <a href='#height'>Height</a>
           </li>
           <li>
             <a href='#ancestry'>Ancestry</a>-->
