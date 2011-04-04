@@ -1,0 +1,45 @@
+<div class='main'>
+	<h2>Enter information to calculate disease risk</h2>
+	<div>
+	  <button id='disease' type='submit'>
+	    Calculate my Disease Risk
+	  </button>
+		<button id='help-disease' class='help-button'>About Disease</button>
+	</div>
+	<br />
+	<table id='disease-graph-table' class='hidden'>
+    <tr>
+	    <th>Clinical</th>
+      <th>Pharmacogenomic</th>
+      <th>Extended</th>
+    </tr>
+    <script id='disease-graph-template' type='text/template'>
+		  <tr align=center><td><%= clinical %></td><td><%= genetic %></td><td><%= extended %></td></tr>
+		</script>
+  </table>
+  <br>
+	<table id='disease-table' class='hidden'>
+	  <tr>
+	    <th>Feature</th>
+      <th>Multiplier</th>
+      <th>Personal Factor</th>
+      <th>Running Total</th>
+      <th>Multiplier</th>
+      <th>Personal Factor</th>
+      <th>Running Total</th>
+	  </tr>
+	  <script id='disease-template' type='text/template'>
+		  <tr><td><%= feature %></td><td><%= clinical_multiplier %></td><td><%= value %></td><td><%=  clinical_total %></td>
+      <td><%= genetic_multiplier %></td><td><%= value %></td><td><%=  genetic_total %></td></tr>
+		</script>
+	</table>
+	
+</div>
+
+<div class='help'>
+  <div id='help-warfarin-help'>
+    <h2>Warfarin is an anticoagulant, etc.</h2>
+  </div>
+</div>
+
+<br class='clear'>

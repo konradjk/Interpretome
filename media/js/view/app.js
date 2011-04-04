@@ -80,7 +80,7 @@ window.AppView = Backbone.View.extend({
     if (this.user.population == null) {
       $('#please-select-population').dialog({
         modal: true, resizable: false, buttons: {
-          'Cancel': function() {$(this).dialog('close');}
+          'Okay': function() {$(this).dialog('close');}
         }
       });
       return false;

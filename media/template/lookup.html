@@ -41,34 +41,41 @@
 	<button id='help-lookup' class='help-button small-button'>About Lookup</button>
 	<table id='lookup-snps-table' class='results-table hidden'>
 	  <tr>
-	    <th>dbSNP ID</th><th>Genotype</th>
-      <th class='details'>Reference</th><th class='details'>Reference<br/>Frequency</th>
-      <th class='details'>Alternate<br/>Allele</th><th class='details'>Alternate<br/>Frequency</th>
-      <th class='details'>Chromosome</th><th class='details'>Position</th>
-      <th>Imputed From</th><th>R<sup>2</sup></th><th>Comments</th>
+	    <th class='dbsnp'>dbSNP ID</th><th class='genotype'>Genotype</th>
+      <th class='reference details'>Reference</th><th class='refallele_freq details'>Reference<br/>Frequency</th>
+      <th class='other details'>Alternate<br/>Allele</th><th class='otherallele_freq details'>Alternate<br/>Frequency</th>
+      <th class='chrom details'>Chromosome</th><th class='position details'>Position</th>
+      <th class='imputed'>Imputed From</th><th class='rsq'>R<sup>2</sup></th><th class='comments'>Comments</th>
 	  </tr>
 	  <script id='lookup-snp-template' type='text/template'>
 		  <tr>
 		    <td class='dbsnp'><%= dbsnp %></td>
         <td class='genotype'><%= genotype %></td>
-        <td class='details'><%= reference %></td>
-        <td class='details'><%= refallele_freq %></td>
-        <td class='details'><%= otherallele %></td>
-        <td class='details'><%= otherallele_freq %></td>
-        <td class='details'><%= chrom %></td>
-        <td class='details'><%= end %></td>
-        <td><%= imputed_from %></td>
-        <td><%= r_squared %></td>
-        <td><%= comments %></td>
+        <td class='reference details'><%= reference %></td>
+        <td class='refallele_freq details'><%= refallele_freq %></td>
+        <td class='other details'><%= otherallele %></td>
+        <td class='other_freq details'><%= otherallele_freq %></td>
+        <td class='chrom details'><%= chrom %></td>
+        <td class='position details'><%= end %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+        <td class='comments'><%= comments %></td>
 		  </tr>
 		</script>
 	</table>
   <br>
   <div class='submit'>
-    <div id='submit-button'>
-      <button id='submit-snps' type='submit'>
-        Submit my SNPs
-      </button>
+    <div>
+      <span id='submit-button'>
+        <button id='submit-snps' type='submit'>
+          Submit my SNPs
+        </button>
+      </span>
+      <span id='print-button'>
+        <button id='print-snps' type='print'>
+          Print my SNPs
+        </button>
+      </span>
     </div>
   </div>
   <div id='confirm-submit-snps' title='Submit your SNPs?' class='hidden'>
@@ -83,10 +90,10 @@
   <br/>
   <h2 class='link secondary-color' id='lookup-bed'>Bed Format</h2>
   <div class='hidden'>
-    Copy this text into the UCSC Genome Browser to visualize your data.
-    <script id='bed-file-template' type='text/template'>chr<%= chrom %> <%= start %> <%= end %> rs<%= dbsnp %> 0 + <%= start %> <%= end %> <%= color %>
+    Copy this text into the <a href="http://genome.ucsc.edu">UCSC Genome Browser</a> to visualize your data.
+    <script id='bed-file-template' type='text/template'>chr<%= chrom %> <%= start %> <%= end %> rs<%= dbsnp %>(<%= genotype %>) 0 + <%= start %> <%= end %> <%= color %>
 </script>
-    <textarea id='bed-file-text' rows=5 cols=70>track name=myGenome description="Personal Genotype" useScore=1 itemRgb="On"
+    <textarea id='bed-file-text' rows=5 cols=70>track name=myGenome description="Personal Genotype" visibility=3 itemRgb="On"
 </textarea>
   </div>
   <br/>
@@ -112,18 +119,47 @@
     <br>
     <h3>Process</h3>
     First, we find a SNP that is in high linkage with the requested SNP. This SNP must be found both in Hapmap and your data.
-    <br><br>
+    <br/><br/>
     The Hapmap project has determined the "phase" of these SNPs, which means a correspondence can be determined between alleles.
     Thus, the presence of one allele at the first SNP indicates the presence of the allele with the same phase of the other SNP.
-    <br><br>
-    <!--Click the "explain" button on an imputed SNP to see an example.-->
-    <br>
+    <br/><br/>
+    Click the "explain" button on an imputed SNP to see an example.
+    If "NA" is displayed, the SNP could not be imputed with the data given and population selected.
+    <br/>
+    <br/>
+  </div>
+  <div class='description'>
+    <div>
+      <div id='explain-lookup-top'>
+        <script id='explain-lookup-top-template' type='text/template'>
+          &nbsp;&nbsp;&nbsp;
+          <%= dbsnp %>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <%= imp_dbsnp %>
+          <br/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <%= genotype_0 %>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <%= imp_0 %>
+        </script>
+      </div>
+        ------|-------------------------|-------
+        <br/>
+        ------|-------------------------|-------
+      <div id='explain-lookup-bottom'>
+        <script id='explain-lookup-bottom-template' type='text/template'>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <%= genotype_1 %>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          &nbsp;&nbsp;&nbsp;&nbsp;
+          <%= imp_1 %>
+        </script>
+      </div>
+    </div>
   </div>
 </div>
-<div class='description'>
-  <div id='explain-lookup-help'>
-    Blah.
-  </div>
-</div>
-
 <br class='clear' />

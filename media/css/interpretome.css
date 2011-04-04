@@ -62,7 +62,7 @@ div.help {
   padding-left: 2%;
 }
 div.description {
-  width: 50%;
+  font-size: 1.5em;
 }
 div#footer {
   margin: auto;
