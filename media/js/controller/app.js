@@ -6,7 +6,10 @@ window.AppController = Backbone.Controller.extend({
     'diabetes': 'diabetes',
     'height': 'height',
     'ancestry': 'ancestry',
-    'gwas': 'gwas'
+    'gwas': 'gwas',
+    'similarity': 'similarity',
+    'longevity': 'longevity',
+    'pca': 'pca'
   },
   
   start: function() {
@@ -37,6 +40,18 @@ window.AppController = Backbone.Controller.extend({
     this.render_or_show(window.Gwas);
   },
   
+  similarity: function() {
+    this.render_or_show(window.Similarity);
+  },
+  
+  longevity: function() {
+    this.render_or_show(window.Longevity);
+  },
+  
+  pca: function() {
+    this.render_or_show(window.PCA);
+  },
+
   render_or_show: function(controller) {
     if (controller.has_loaded) {
       $('#tabs').tabs('select', '#' + controller.el.attr('id'));

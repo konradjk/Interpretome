@@ -61,31 +61,6 @@ window.HeightView = Backbone.View.extend({
   },
   
   
-  // jQuery can do query string formatting for you.
-  generate_bar_graph: function(genetic_height, family_predicted_height, background_height, actual_height){
-    var url = 'http://chart.apis.google.com/chart?';
-    var options = {
-      "cht": "bvg",
-      "chtt" : "Predicted Heights",
-      "chs":  "400x300",
-      "chma": "15,5,5,5",
-      "chxt": "x,y,y",
-      "chxl": "0:|Genetic|Family|Population|Actual|2:|Height (in cm)",
-      "chxp": "0,15,39,62,85|2,50",
-      "chxtc": "0,5",
-      "chco": "FF0000,FF7400,009999,00CC00",
-      "chxr" : "1,120,250",
-      "chds" : "120,250",
-      "chbh": "a",
-      "chm": "N,000000,0,-1,14|N,000000,1,-1,14|N,000000,2,-1,14|N,000000,3,-1,14"
-    };
-    options["chd"] = "t:" + [genetic_height, family_predicted_height, background_height, actual_height].join('|');
-    $.each(options, function(k, v){
-      url += k + '=' + v + '&';
-    });
-    return '<img src="' + url + '">';
-  },
-  
   click_height: function(event) {
     this.el.find('#height-table tr').slice(1).remove();
     this.el.find('#height-table').hide();
@@ -100,7 +75,10 @@ window.HeightView = Backbone.View.extend({
     
     var raw_height = this.el.find('#mom-height-textarea').val();
     
-    if ($('#mom_height_units label[aria-pressed="true"]').attr('for') == 'mom_height_units_in'){
+    if (
+      $('#mom_height_units label[aria-pressed="true"]').attr('for') == 
+      'mom_height_units_in'
+    ) {
       window.App.user.mom_height = check_inches(raw_height);
     } else {
       window.App.user.mom_height = check_float(raw_height);
@@ -132,16 +110,23 @@ window.HeightView = Backbone.View.extend({
       '/height/get_height_snps/', {
         population: window.App.user.population
       }, function(response) {
-        return window.App.user.lookup_snps(self.calculate_height, {prior: prior, family: family, actual: window.App.user.height, height_info: response}, Object.keys(response), {});
+        return window.App.user.lookup_snps(
+          self.calculate_height, {
+            prior: prior, family: family, 
+            actual: window.App.user.height, height_info: response
+          }, _.keys(response), {}
+        );
       }
     );
   },
   
   get_family_height: function(){
-    //return ((window.App.user.dad_height + window.App.user.mom_height)/2);
-    var family_prior = this.priors[window.App.user.population][window.App.user.sex];
-    var father_adjust = window.App.user.dad_height - this.priors[window.App.user.population]['male'];
-    var mother_adjust = window.App.user.mom_height - this.priors[window.App.user.population]['female'];
+    var family_prior = 
+      this.priors[window.App.user.population][window.App.user.sex];
+    var father_adjust = window.App.user.dad_height - 
+                        this.priors[window.App.user.population]['male'];
+    var mother_adjust = window.App.user.mom_height - 
+                        this.priors[window.App.user.population]['female'];
     return (family_prior + father_adjust + mother_adjust);
   },
   
@@ -236,7 +221,7 @@ window.HeightView = Backbone.View.extend({
   },
   
   check_submit_height: function() {
-    console.log('Submitting');
+    //console.log('Submitting');
     var self = this;
     $('#check-submit-height').dialog({
       autoOpen: false, modal: true, resizable: false, buttons: {

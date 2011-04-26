@@ -1,44 +1,181 @@
 <div class='main'>
   <div id='lookup-accordion'>
-    <h3><a href='#'>Lookup by direct input</a></h3>
-    <div>
-			<h2>Enter SNPs to lookup (one per line)</h2>
-			<div>
-			  <textarea id='lookup-snps-textarea' rows='5' cols='30'></textarea>
+	  <h3><a href='#'>Lookup for an exercise</a></h3>
+	  <div> 
+	    This section contains lookup shortcuts for some of the studies
+	    we discuss in class.
+	    <br />
+	    <br />
+	    <div id='exercises'>
+			  <input type='radio' id='cad' name='radio' />
+			  <label for='cad' class='small-button'>CAD SNPs (4/6, Euan Ashley)</label>
 			  <br/>
+			  <input type='radio' id='ancestry' name='radio' />
+			  <label for='ancestry' class='small-button'>Ancestry SNPs (4/13, Hua Tang)</label>
+			  <br/>
+			  <input type='radio' id='pgx' name='radio'/>
+			  <label for='pgx' class='small-button'>Pharmacogenomic SNPs (4/20, Russ Altman)</label>
+			  <!--<br/>-->
+			  <!--
+			  <br/>
+			  <input type='radio' id='longevity' name='radio'/>
+			  <label for='longevity' class='small-button'>Longevity SNPs</label>
+			  -->
+			  <!--<input type='radio' id='Cardio' name='radio' />-->
+			  <!--<label for='Cardio' class='small-button'>Cardiovascular SNPs (5/11, Tim Assimes)</label>-->
+			  <!--<br/>-->
+			  <!--<input type='radio' id='Narcolepsy' name='radio' />-->
+			  <!--<label for='Narcolepsy' class='small-button'>Narcolepsy SNPs (5/25, Emmanuel Mignot)</label>-->
+			  <!--<br/>-->
+			  <!--<input type='radio' id='Aging' name='radio' />-->
+			  <!--<label for='Aging' class='small-button'>Aging SNPs (6/1, Stuart Kimg</label>-->
+			  <!--<br/>-->
+			  <!--<input type='radio' id='Class' name='radio' />-->
+			  <!--<label for='Class' class='small-button'>Class SNPs (6/1)</label>-->
+			</div>
+	    <br />
+	    <button id='lookup-exercise' type='submit' class='small-button'>
+	      Lookup SNPs for exercise
+	    </button>
+	  </div> <!-- Exercise. -->
+	  <h3><a href='#'>Lookup by input or upload</a></h3>
+    <div>
+			<div class='left'>
+				<h4>Enter SNPs to lookup (one per line)</h4>
+			  <textarea id='lookup-snps-textarea' rows='5' cols='30'></textarea>
+		  </div>
+		  
+		  <div class='right'>
+		    <h4>Upload SNP file</h4>
+		    <br />
+		    <input id='lookup-file' type='file' name='file' />
+		  </div>
+		  
+		  <div class='left clear-left'>
 			  <button id='lookup-snps' type='submit' class='small-button'>
 			    Lookup SNPs
 			  </button>
 		  </div>
-		</div>
-		<h3><a href='#'>Lookup from file</a></h3>
-	  <div> 
-	    <input id='lookup-file' type='file' name='file' />
-	    <br />
-	    <br />
-	    <button id='lookup-by-file' type='submit' class='small-button'>
-	      Lookup SNPs in File
-	    </button>
-	  </div>
-	</div>
-  <br/>
-  <h2 class='link secondary-color' id='lookup-demo'>Lookup Demo</h2>
-  <div class='hidden'>
-    <h3>Enter SNPs to delete (one per line)</h3>
-      <div>
-        <textarea id='delete-snps-textarea' rows='3' cols='15'></textarea>
-        <br/>
-        <button id='delete-snps' type='submit' class='small-button'>
-          Remove SNPs from Genome
-        </button>
-      </div>
-    <br />
-  </div>
-  <br/>
+		  <div class='right clear-right'>
+		    <button id='lookup-by-file' type='submit' class='small-button'>
+		      Lookup SNPs in File
+		    </button>
+		  </div>
+		</div> <!-- Input or upload. -->
+
+	</div> <!-- Accordion. -->
+	
+  <br />
+  
 	<button id='clear-snps' type='submit' class='small-button'>
     Clear Table
   </button>
-	<button id='help-lookup' class='help-button small-button'>About Lookup</button>
+	<button id='help-lookup' class='help-button small-button'>
+	  About Lookup
+	</button>
+	
+	<br />
+	<br />
+	
+	<!-- Exercise tables and templates. -->
+	<table id='cad-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th class='risk_allele'>Risk</th>
+	    <th class='risk_frequency'>Risk frequency</th>
+	    <th class='genes'>Genes</th>
+	    <th class='pvalue'>P-value</th>
+	    <th class='odds_ratio'>OR</th>
+      <th class='imputed'>Imputed From</th>
+      <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='cad-snp-template' type='text/template'>
+		  <tr>
+		    <td class='key'><%= dbsnp %></td>
+		    <td class='value'><%= genotype %></td>
+		    <td><%= comments.risk_allele %></td>
+		    <td><%= comments.risk_frequency %></td>
+		    <td><%= comments.genes %></td>
+		    <td><%= comments.combined_p %></td>
+		    <td><%= comments.combined_or %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	
+	<table id='pgx-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th class='dbsnp'>Gene</th>
+            <th class='imputed'>Imputed From</th>
+	     <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='pgx-snp-template' type='text/template'>
+		  <tr>
+		    <td class='key'><%= dbsnp %></td>
+		    <td class='value'><%= genotype %></td>
+		    <td class='gene'><%= comments.gene %></td>
+		    <td class='imputed'><%= imputed_from %> <%= explain %></td>
+		    <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	
+	<table id='ancestry-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th class='euro_allele'>European allele</th>
+	    <th class='azn_allele'>East Asian allele</th>
+      <th class='imputed'>Imputed From</th>
+      <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='ancestry-snp-template' type='text/template'>
+		  <tr>
+		    <td class='key'><%= dbsnp %></td>
+		    <td class='value'><%= genotype %></td>
+		    <td><%= comments.euro_allele %></td>
+		    <td><%= comments.azn_allele %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	
+	<table id='longevity-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th>Genes</th>
+	    <th>EL/normal</th>
+	    <th>Bayes factor</th>
+      <th class='imputed'>Imputed from</th>
+      <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='longevity-snp-template' type='text/template'>
+		  <tr>
+		    <td class='key'><%= dbsnp %></td>
+		    <td class='value'><%= genotype %></td>
+		    <td><%= comments.genes %></td>
+		    <td><%= comments.alleles %></td>
+		    <td><%= comments.log10_bf %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	
+	<div id='submit-exercise-area' class='hidden'>
+		<button id='submit-exercise' class='small-button'>Submit my information</button>
+		<dialog id='confirm-submit-exercise' title='Confirm submission' class='dialog hidden'>
+		  Are you sure you want to submit your information?
+		</dialog>
+  </div>
+	
+	<!-- General lookup template. -->
 	<table id='lookup-snps-table' class='results-table hidden'>
 	  <tr>
 	    <th class='dbsnp'>dbSNP ID</th><th class='genotype'>Genotype</th>
@@ -59,11 +196,13 @@
         <td class='position details'><%= end %></td>
         <td class='imputed'><%= imputed_from %> <%= explain %></td>
         <td class='rsq'><%= r_squared %></td>
-        <td class='comments'><%= comments %></td>
+        <%= comments %>
 		  </tr>
 		</script>
 	</table>
-  <br>
+	
+  <br/ >
+  
   <div class='submit'>
     <div>
       <span id='submit-button'>
@@ -78,6 +217,8 @@
       </span>
     </div>
   </div>
+  
+  <!-- Submission buttons. -->
   <div id='confirm-submit-snps' title='Submit your SNPs?' class='hidden'>
     Are you sure you want to submit these SNPs?
   </div>
@@ -87,8 +228,27 @@
   <div id='nothing' title='Oops' class='hidden'>
     Nothing was submitted.
   </div>
+  
   <br/>
-  <h2 class='link secondary-color' id='lookup-bed'>Bed Format</h2>
+  
+  <!-- Lookup demo. -->
+  <h2 class='link secondary-color' id='lookup-demo'>Lookup Demo</h2>
+  <div class='hidden'>
+    <h3>Enter SNPs to delete (one per line)</h3>
+      <div>
+        <textarea id='delete-snps-textarea' rows='3' cols='15'></textarea>
+        <br/>
+        <button id='delete-snps' type='submit' class='small-button'>
+          Remove SNPs from Genome
+        </button>
+      </div>
+    <br />
+  </div>
+  
+  <br/>
+  
+  <!-- BED file. -->
+  <h2 class='link secondary-color' id='lookup-bed'>Output in Bed Format</h2>
   <div class='hidden'>
     Copy this text into the <a href="http://genome.ucsc.edu">UCSC Genome Browser</a> to visualize your data.
     <script id='bed-file-template' type='text/template'>chr<%= chrom %> <%= start %> <%= end %> rs<%= dbsnp %>(<%= genotype %>) 0 + <%= start %> <%= end %> <%= color %>

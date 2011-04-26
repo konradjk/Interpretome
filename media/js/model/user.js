@@ -13,31 +13,89 @@ function User() {
   
   this.sex = null;
   
-  this.parseGenome = function(lines) {
+  this.full_genome = false;
+  
+  initialize = function() {
+    _.bindAll(this,
+      'add_genotype_snps', 'add_vcf_snps',
+      'parse_genome'
+    );
+  }
+  
+  this.set_counter = function(percent){
+    $('#parsing-bar').progressbar('option', 'value', percent);
+    $('#parsing-bar > div').css('opacity', percent/100);
+  }
+  
+  this.add_genotype_snps = function(lines, user, percent) {
+    user.set_counter(percent);
     var regex = new RegExp(/^rs/);
-    var cgi = false;
-    if (!cgi) {
-      for (i in lines) {
-        line = $.trim(lines[i]);
-        if (line.indexOf('#') == 0 || line == '') continue;
-        
-        var tokens = _.map(line.split('\t'), $.trim);
-        var dbsnp = parseInt(tokens[0].replace(regex, ''));
-        
-        this.dbsnps.push(dbsnp);
-        this.snps[dbsnp] = {genotype: tokens[3]};
-      }
-    } else {
-      for (i in lines) {
-        line = $.trim(lines[i]);
-        if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
-        
-        var tokens = _.map(line.split('\t'), $.trim);
-        if (tokens[11].indexOf('no-call') > -1) continue;
-        var dbsnp = parseInt(tokens[1].replace(regex, ''));
-        
-        this.dbsnps.push(dbsnp);
-        this.snps[dbsnp] = {genotype: tokens[12] + tokens[18]};
+    for (i in lines){
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split('\t'), $.trim);
+      var dbsnp = parseInt(tokens[0].replace(regex, ''));
+      
+      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: tokens[3]};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.add_cgi_snps = function(lines, user, percent) {
+    user.set_counter(percent);
+    console.log(percent);
+    var regex = new RegExp(/^rs/);
+    for (i in lines) {
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split('\t'), $.trim);
+      if (tokens[11].indexOf('no-call') > -1) continue;
+      var dbsnp = parseInt(tokens[1].replace(regex, ''));
+      
+      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: tokens[12] + tokens[18]};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.add_vcf_snps = function(lines, user, percent) {
+    user.set_counter(percent);
+    var regex = new RegExp(/^rs/);
+    for (i in lines) {
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split('\t'), $.trim);
+      var dbsnp = parseInt(tokens[2].replace(regex, ''));
+      
+      options = {'0': tokens[3], '1' : tokens[4]};
+      raw_genotypes = tokens[9].split(':')[0].split(/[\|\\\/]/);
+      genotype = options[raw_genotypes[0]] + options[raw_genotypes[1]];
+      
+      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: genotype};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.parse_genome = function(lines) {
+    var chunks = 100;
+    var chunk_size = lines.length/chunks;
+    for (var j=0; j<=chunks; j++) {
+      output = lines.slice(chunk_size*(j), chunk_size*(j+1))
+      if (!this.full_genome) {
+        setTimeout(this.add_genotype_snps, 0, output, this, j);
+      } else {
+        setTimeout(this.add_vcf_snps, 0, output, this, j);
       }
     }
   }
@@ -61,9 +119,11 @@ function User() {
       self.set_comments(extended_snps[v], comments[v]);
       
       if (window.App.user.lookup(v) == undefined) {
-        lookup_dbsnps.push(v);
-        self.set_genotype(extended_snps[v], 'NA');
-      }else{
+        self.set_no_genotype(extended_snps[v]);
+        if (!self.full_genome){
+          lookup_dbsnps.push(v);
+        }
+      } else {
         self.set_genotype(extended_snps[v], window.App.user.lookup(v).genotype);
       }
     });
@@ -98,12 +158,12 @@ function User() {
           request_dbsnps.push(parseInt(v));
           user_dbsnps.push(linked_dbsnp);
           any = true;
-          return;
         }
       });
     });
     
-    if (request_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
+    if (request_dbsnps.length == 0) 
+      return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
     var self = this;
     $.get(
       '/lookup/impute/', {
@@ -138,6 +198,9 @@ function User() {
           if (v != null) {
             self.set_reference(extended_snps[i], v);
             self.set_color(extended_snps[i]);
+            if (self.full_genome && self.no_genotype(extended_snps[i])){
+              self.set_genotype(extended_snps[i], v + v);
+            }
           }
         });
         return self.get_allele_frequencies(callback, args, all_dbsnps, extended_snps);
@@ -201,12 +264,18 @@ function User() {
     }
   },
   
-  this.set_genotype = function(extended_snp, genotype){
-    extended_snp['genotype'] = genotype
+  this.set_genotype = function(extended_snp, genotype) {
+    extended_snp['genotype'] = genotype;
   },
+  this.set_no_genotype = function(extended_snp) {
+    extended_snp['genotype'] = 'NA';
+  },
+  this.no_genotype = function(extended_snp){
+    return (extended_snp['genotype'] == 'NA');
+  }
   
-  this.set_comments = function(extended_snp, comments){
-    extended_snp['comments'] = comments
+  this.set_comments = function(extended_snp, comments) {
+    extended_snp['comments'] = comments;
   },
   
   this.set_imputed_snp = function(extended_snp, imputed, r_squared){
@@ -231,5 +300,11 @@ function User() {
     extended_snp['end'] = '';
     extended_snp['color'] = '';
     return extended_snp;
+  },
+  
+  this.serialize = function() {
+    var serialized = {population: this.population};
+    if (this.sex != undefined) serialized.sex = this.sex;
+    return serialized;
   }
 }

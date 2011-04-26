@@ -5,10 +5,15 @@ from django import http
 from django.db import connections
 from django.utils import simplejson
 from django import shortcuts
+import random
 
 import MySQLdb.cursors
 import helpers
 from django.db.backends.mysql import base
+def printlog(s):
+  logfile = open('/Users/gene210-admin/interpretome/log.txt', 'a')
+  logfile.write(str(s) + '\n')
+  logfile.close()
 
 def dict_cursor(self):
   cursor = self._cursor()
@@ -97,16 +102,69 @@ def impute(request):
   
   return http.HttpResponse(simplejson.dumps(phases), mimetype = "application/json")
   
-def get_pca_loadings(request):
-  population_request = request.GET.get('population', None)
-  platform_request = request.GET.get('platform', None)
+def get_random_color():
+  return 'rgba(%s,%s,%s,.5)' % (random.randint(1,254), random.randint(1,254), random.randint(1,254))
+
+def get_pca_parameters(request):
+  printlog('Enter')
+  numsnps_request = request.GET.get('numsnps', None)
+  source_request = request.GET.get('source', None)
+  if None in (numsnps_request, source_request):
+    return http.HttpResponseBadRequest()
+  numsnps = numsnps_request
+  source = source_request
+  source = 'hgdp'
   query = '''
-    SELECT dbsnp, 0, 1 FROM pca.all_loadings
-  '''
+    SELECT rsid, pc1, pc2 FROM pca.%s_components limit %s
+  ''' % (source, numsnps)
   cursor = connections['default'].dict_cursor()
   cursor.execute(query)
-  snps = cursor.fetchall()
-  return http.HttpResponse(simplejson.dumps(snps), mimetype = "application/json")
+  loadings = cursor.fetchall()
+  query = '''
+    SELECT sample_id, pcp1, pcp2, Level1_label AS population  FROM pca.%{source}s_projections, pca.%{source}s_poplabels 
+     WHERE pca.%{source}s_projections.sample_id= pca.%{source}s_poplabels.id
+  ''' % {source: source}
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  projections = cursor.fetchall()
+  query = '''
+    SELECT pca.%{source}s_components.rsid, dbsnp.ucsc_snp130.refncbi AS ref_allele FROM dbsnp.ucsc_snp130, pca.%{source}s_components
+    WHERE pca.%{source}s_components.rsid=dbsnp.ucsc_snp130.rsid limit %{numsnps}s
+  ''' % {source: source, numsnps: numsnps}
+  
+  cursor.execute(query)
+  refs = cursor.fetchall()
+  query = '''
+    SELECT DISTINCT Level1_label FROM pca.%{source}s_poplabels
+  ''' % {source: source}
+  
+  cursor.execute(query)
+  populations = [x.values()[0] for x in cursor.fetchall()]
+  params = {}
+  params['snp_ids'] = [0]*len(loadings)
+  params['reference_alleles'] = []
+  params['sample_ids'] = []
+  pop_dict = {}
+  pc1 = [0]*len(loadings)
+  pc2 = [0]*len(loadings)
+  for i, entry in enumerate(loadings):
+    params['snp_ids'][i] = entry['rsid']
+    pc1[i] = entry['pc1']
+    pc2[i] = entry['pc2']
+  params['loadings'] = [pc1, pc2]
+  for entry in refs:
+    params['reference_alleles'].append(entry['ref_allele'])
+  for population in populations:
+    pop_dict[population] = {}
+    pop_dict[population]['name'] = population
+    pop_dict[population]['color'] = get_random_color()
+    pop_dict[population]['data'] = []
+  for entry in projections:
+    params['sample_ids'].append(entry['sample_id'])
+    pop_dict[entry['population']]['data'].append([entry['pcp1'],entry['pcp2']])
+  params['series'] = pop_dict.values()
+  printlog('Done')
+  return http.HttpResponse(simplejson.dumps(params), mimetype = "application/json")
 
 def get_diabetes_snps(request):
   query = '''
@@ -219,7 +277,7 @@ def submit(request):
     return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   query = '''
-    INSERT INTO exercises.%s (`%s`) VALUES ('%s')
+    INSERT INTO exercises.%s (submit_time, `%s`) VALUES (NOW(), '%s')
   ''' % (exercise, '`,`'.join(request_dict.keys()), "','".join(request_dict.values()))
   cursor.execute(query)
   return http.HttpResponse()
@@ -232,12 +290,83 @@ def submit_doses(request):
   
   cursor = connections['default'].dict_cursor()
   query = '''
-    INSERT INTO exercises.class_warfarin (clinical, genetic, extended) VALUES (%s)
+    INSERT INTO exercises.class_warfarin (submit_time, clinical, genetic, extended) VALUES (NOW(), %s)
   ''' % (dose_request)
   cursor.execute(query)
   
   return http.HttpResponse(simplejson.dumps(dose_request), mimetype = "application/json")
 
+def exercise(request):
+  '''Get SNP data for an exercise.'''
+  
+  exercises = ('cad', 'ancestry', 'longevity', 'diabetes', 'pgx')
+  exercise = request.GET.get('exercise', None)
+  if exercise is None or exercise not in exercises:
+    return http.HttpResponseBadRequest()
+  
+  cursor = connections['default'].dict_cursor()
+  
+  if exercise == 'cad':
+	  query = '''
+	    SELECT dbsnp, genes, risk_allele, risk_frequency, combined_or, combined_p 
+	    FROM exercises.cad;'''
+  elif exercise == 'ancestry':
+    query = 'SELECT dbsnp, euro_allele, azn_allele FROM exercises.ancestry'
+  elif exercise == 'longevity':
+    query = 'SELECT * FROM exercises.longevity ORDER BY log10_bf DESC;'
+  elif exercise == 'pgx':
+    query = 'SELECT dbsnp, gene, risk_allele, risk_info FROM exercises.pgx;'
+  
+  cursor.execute(query)
+  snps = helpers.create_snp_dict(cursor.fetchall())
+  return http.HttpResponse(
+    simplejson.dumps(snps), mimetype = 'application/json'
+	)
+  
+def diabetes(request):
+  population = request.GET.get('population', None)
+  if population is None:
+    return http.HttpResponseBadRequest()
+  
+  cursor = connections['default'].dict_cursor()
+  query = '''
+    SELECT dbsnp, genotype, LR FROM exercises.diabetes_with_sizes
+    WHERE pop_hapmap3 = '%s'
+    GROUP BY dbsnp ORDER BY SUBSTRING_INDEX(cases, ' ', 1) + 0 DESC;''' % population
+  cursor.execute(query)
+  all_snps = cursor.fetchall()
+  snps = helpers.create_multi_snp_dict(all_snps)
+  order_snps = []
+  for snp in all_snps:
+    order_snps.append(snp['dbsnp'])
+  output = {'snps': snps, 'dbsnps': order_snps}
+  return http.HttpResponse(
+    simplejson.dumps(output), mimetype = 'application/json'
+  )
+
+def longevity(request):
+  cursor = connections['default'].dict_cursor()
+  query = 'SELECT * FROM exercises.longevity ORDER BY log10_bf DESC;'
+  cursor.execute(query)
+  result = cursor.fetchall()
+  snps = {'snps': helpers.create_snp_dict(result)}
+  snps['sorted_dbsnps'] = [e['dbsnp'] for e in result]
+  
+  return http.HttpResponse(
+    simplejson.dumps(snps), mimetype = 'application/json'
+  )
+  
+def get_individuals(request):
+  numsnps = request.GET.get('numsnps', None)
+  if numsnps is None:
+    return http.HttpResponseBadRequest()
+  cursor = connections['default'].dict_cursor()
+  query = '''
+    SELECT * FROM public_genomes.similarity_rsids LIMIT %s;
+  ''' % (numsnps)
+  cursor.execute(query)
+  output = cursor.fetchall()
+  return http.HttpResponse(simplejson.dumps(output), mimetype = 'application/json')
+  
 def index(request):
   return shortcuts.render_to_response('application/interpretome.html', {})
-

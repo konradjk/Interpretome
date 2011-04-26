@@ -16,7 +16,7 @@ window.GwasView = Backbone.View.extend({
     _.bindAll(this,
       'click_gwas_snps', 'click_help',
       'click_submit', 'click_confirm_submit',
-      'loaded'
+      'loaded', 'show_table'
     );
   },
   
@@ -27,11 +27,12 @@ window.GwasView = Backbone.View.extend({
   loaded: function(response) {
     $('#tabs').tabs('select', '#gwas');
 	  this.el.append(response);
+	  
+	  // Widget initialization.
 	  this.el.find('button').button();
 	  this.el.find('.help-button').button({
       icons: {primary: 'ui-icon-help'}	    
 	  });
-	  this.gwas_snp_template = $('#gwas-snp-template').html();
     this.el.find('#earwax').buttonset();
     this.el.find('#eyes').buttonset();
     this.el.find('#asparagus').buttonset();
@@ -40,14 +41,11 @@ window.GwasView = Backbone.View.extend({
 	  this.el.find('.help > div').show();
 	  this.el.find('.description > div').hide();
 	  this.el.find('.submit > div').hide();
+	  
+	  // Template initialization.
+	  this.gwas_snp_template = $('#gwas-snp-template').html();
+	  
 	  this.has_loaded = true;
-  },
-  
-  filter_identifiers: function(ids) {
-    return _.select(
-      _.map(ids, function(v) {return parseInt(v);}), 
-      function(v) {return !_.isNaN(v)}
-    );
   },
   
   click_submit: function(event) {
@@ -132,17 +130,16 @@ window.GwasView = Backbone.View.extend({
   click_gwas_snps: function(event) {
     if (window.App.check_all() == false) return;
     
-    var dbsnps = this.filter_identifiers(
+    var dbsnps = filter_identifiers(
       this.el.find('#gwas-snps-textarea').val().split('\n')
     );
-    self = this;  
+    return window.App.user.lookup_snps(this.show_table, {}, dbsnps, {});
+  },
+  
+  show_table: function(args, dbsnps, info){
+    var self = this;
     $.each(dbsnps, function(i, v) {
-      if (window.App.user.lookup(v) != undefined){
-        print_snp = {};
-        print_snp['dbsnp'] = v;
-        print_snp['genotype'] = window.App.user.lookup(v).genotype;
-        self.el.find('#gwas-snps-table').append(_.template(self.gwas_snp_template, print_snp));
-      }
+      self.el.find('#gwas-snps-table').append(_.template(self.gwas_snp_template, info[v]));
     });
     self.el.find('#gwas-snps-table').show();
     self.el.find('.submit > div').show();

@@ -55,3 +55,15 @@ def get_best_phases(query_snp_hash, anchor_snp_hash):
     phase_output[anchor_snp_option_2] = query_snp_option_1
     phase_output['best'] = phase_2
   return phase_output
+
+def create_multi_snp_dict(snps):
+  result = {}
+  for snp in snps:
+    if snp['dbsnp'] in result:
+      result[snp['dbsnp']].append(snp)
+    else:
+      result[snp['dbsnp']] = [snp]
+  return result
+
+def create_snp_dict(snps):
+	return dict((str(snp['dbsnp']).replace('rs', ''), snp) for snp in snps)

@@ -44,7 +44,17 @@
     </script>
     <script type='text/javascript' src='/media/js/view/ancestry.js'>
     </script>
+    <script type='text/javascript' src='/media/js/view/similarity.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/view/longevity.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/view/pca.js'>
+    </script>
     <script type='text/javascript' src='/media/js/interpretome.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/sylvester.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/highcharts.js'>
     </script>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -74,7 +84,9 @@
         <div id='global-settings'>
           <div id='genome' class='stack'>
             <div id='loading-genome' title='Loading' class='dialog hidden'>
-              Please be patient. This may take a few moments.
+              Please be patient. This may take a few moments. <br/> <br/>
+              <strong>Loading</strong>: <div id='loading-bar' class='progress-bar'></div>
+              <strong>Parsing</strong>: <div id='parsing-bar' class='progress-bar'></div>
             </div>
             
             <div id='please-load-genome' title='Load your genome' class='dialog hidden'>
@@ -82,33 +94,27 @@
               <br><br>
               <input id='genome-file' type='file' name='file' />
             </div>
-            <div class='setting-label'>
-              <label>Load your genome</label>
-            </div>
             <div class='setting'>
+              <label for='file' class='setting-label'>Load your genome</label>  
               <input id='genome-file' type='file' name='file' />
             </div>
 	          <button id='clear-genome' class='hidden'>
-	            Clear my genome
+	            Clear my information
 	          </button>
 	          <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
-	            Are you sure you want to clear your genome? 
+	            Are you sure you want to end your session?
 	          </div>
           </div>
           <div id='population' class='stack'>
-            <div class='setting-label'>
-              <label>Select your population</label>
-            </div>
             <div id='please-select-population' title='Select your population' class='dialog hidden'>
               Please select your population first.
-            </div>
-            <div id='population' class='setting'>
-              <!--<select name='pop'>
+              <select id='check-population' name='population'>
+                <option id='dummy' value="null">Select a population</option>
                 <option value="CEU">European</option>
                 <option value="YRI">African</option>
                 <option value="CHB">Chinese</option>
                 <option value="JPT">Japanese</option>
-                <option value=null>--------</option>
+                <option value="null">--------</option>
                 <option value="ASW">African-American (Southwest)</option>
                 <option value="CHD">Chinese (Denver)</option>
                 <option value="GIH">Guajarti Indian (Houston)</option>
@@ -117,37 +123,36 @@
                 <option value="MKK">Maasai (Kenya)</option>
                 <option value="TSI">Toscans (Italy)</option>
               </select>
-              -->
-              <input type='radio' id='CEU' name='radio' />
-              <label for='CEU' class='small-button'>European</label>
-              <input type='radio' id='YRI' name='radio' />
-              <label for='YRI' class='small-button'>African</label>
-              <input type='radio' id='CHB' name='radio' />
-              <label for='CHB' class='small-button' >Chinese (Beijing)</label>
-              <input type='radio' id='JPT' name='radio' />
-              <label for='JPT' class='small-button'>Japanese</label>
-              <input type='radio' id='MEX' name='radio' />
-              <label for='MEX' class='small-button'>Mexican</label>
-              <br>
-              <!--<input type='radio' id='ASW' name='radio' />
-              <label for='ASW' class='small-button'>African-American (Southwest)</label>
-              <input type='radio' id='CHD' name='radio' />
-              <label for='CHD' class='small-button'>Chinese (Denver)</label>
-              <input type='radio' id='GIH' name='radio' />
-              <label for='GIH' class='small-button'>Guajarti Indian (Houston)</label>
-              <input type='radio' id='LWK' name='radio' />
-              <label for='LWK' class='small-button'>Lukya (Kenya)</label>
-              <input type='radio' id='MEX' name='radio' />
-              <label for='MEX' class='small-button'>Mexican (LA)</label>
-              <input type='radio' id='MKK' name='radio' />
-              <label for='MKK' class='small-button'>Maasai (Kenya)</label>
-              <input type='radio' id='TSI' name='radio' />
-              <label for='TSI' class='small-button'>Toscans (Italy)</label>-->
             </div>
-          </div>
+	          <form>
+		          <label for='population' class='setting-label'>Select your population</label>
+              <select id='toolbar-population' name='population'>
+                <!-- 
+                  I don't like having to copy and paste, 
+                  but these should always be the same as above.
+                -->
+                  
+                <option id='dummy' value="null">Select a population</option>
+                <option value="CEU">European</option>
+                <option value="YRI">African</option>
+                <option value="CHB">Chinese</option>
+                <option value="JPT">Japanese</option>
+                <option value="null">--------</option>
+                <option value="ASW">African-American (Southwest)</option>
+                <option value="CHD">Chinese (Denver)</option>
+                <option value="GIH">Guajarti Indian (Houston)</option>
+                <option value="LWK">Lukya (Kenya)</option>
+                <option value="MEX">Mexican (Los Angeles)</option>
+                <option value="MKK">Maasai (Kenya)</option>
+                <option value="TSI">Toscans (Italy)</option>
+              </select>
+	          </form>
+	        </div>
         </div>
       </div>
+      
       <br class='clear' />
+      
       <div id='tabs'>
         <ul>
           <li>
@@ -162,29 +167,40 @@
           <li>
             <a href='#height'>Height</a>
           </li>
-          <!--<li>
-            <a href='#warfarin'>Warfarin</a>
-          </li>-->
-          <!--<li>
+          <li>
+            <a href='#similarity'>Similarity</a>
+          </li>
+          <li>
             <a href='#diabetes'>Diabetes</a>
           </li>
           <li>
-            <a href='#ancestry'>Ancestry</a>-->
+            <a href='#warfarin'>Warfarin</a>
+          </li>
+          <li>
+            <a href='#longevity'>Longevity</a>
+          </li>
+          <li>
+            <a href='#pca'>PCA</a>
           </li>
         </ul>
+        
         <div id='start'>
         </div>
         <div id='lookup'>
         </div>
         <div id='gwas'>
         </div>
-        <div id='warfarin'>
+        <div id='height'>
+        </div>
+        <div id='similarity'>
         </div>
         <div id='diabetes'>
         </div>
-        <div id='height'>
+        <div id='warfarin'>
         </div>
-        <div id='ancestry'>
+        <div id='longevity'>
+        </div>
+        <div id='pca'>
         </div>
       </div>
       <div id='footer'>

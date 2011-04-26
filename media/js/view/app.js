@@ -1,45 +1,73 @@
 $(function() {
 window.AppView = Backbone.View.extend({
   el: $('body'),
-
+  
   events: {
     'change #genome-file': 'change_genome',
     'click #clear-genome': 'clear_genome',
-    'click #population label': 'change_population'
+    'change #toolbar-population': 'change_population_from_toolbar',
+    'change #check-population': 'change_population_from_check'
   },
 
   initialize: function() {
-    _.bindAll(this, 'change_genome', 'clear_genome', 'change_population');
+    _.bindAll(this, 
+      'change_genome', 'clear_genome', 
+	    'change_population', 'change_population_from_toolbar',
+	    'change_population_from_check'
+	  );
   },
   
   render: function() {
-    $('#tabs').tabs({
+    this.el.find('#tabs').tabs({
       select: function(event, ui) {
         window.location.hash = ui.tab.hash;
       }
     });
-    $('#population').buttonset();
   },
   
   change_genome: function(event) {
-    $('#loading-genome').dialog({});
+    //var load_progress = document.querySelector('#percent');
+    //load_progress.style.width = '0%';
+    //load_progress.textContent = '0%';
+    
+    //var parse_progress = document.querySelector('#percent_parsed');
+    //parse_progress.style.width = '0%';
+    //parse_progress.textContent = '0%';
+    
+    this.el.find('#loading-genome').dialog({modal: true, resizable: false});
+    this.el.find('.progress-bar').progressbar({value: 0});
+    this.el.find('.progress-bar > div').css('background', get_secondary_color());
+    
     var reader = new FileReader();
-    reader.onloadend = this.load_genome;
+    
+    // I think this would refer to reader. Not actually sure, though.
+    var self = this;
+    reader.onprogress = function(event) {
+      if (event.lengthComputable) {
+        var percent = Math.round((event.loaded / event.total) * 100);
+        if (percent < 100) {
+          //load_progress.style.width = percentLoaded + '%';
+          //load_progress.textContent = percentLoaded + '%';
+          self.el.find('#loading-bar').progressbar('option', 'value', percent);
+        }
+      }
+    };
+    
+    reader.onloadend = function(event) {
+      $('#loading-bar').progressbar('option', 'value', 100);
+      $('#genome label, #genome input').hide();
+      $('#global-settings #genome button').button({
+        icons: {primary: 'ui-icon-circle-close'}
+      }).show();
+      window.App.user.parse_genome(event.target.result.split('\n'));
+      
+      // Should this be here?
+      $('#please-load-genome').dialog('close');
+    };
     reader.readAsText(event.target.files[0]);
   },
   
-  load_genome: function(event) {
-    $('#genome label, #genome input').hide();
-    $('#global-settings #genome button').button({icons: {primary: 'ui-icon-circle-close'}}).show();
-    window.App.user.parseGenome(event.target.result.split('\n'));
-    
-    // Ought this be here?
-    $('#please-load-genome').dialog('close');
-    $('#loading-genome').dialog('close');
-  },
-  
   clear_genome: function(event) {
-    //console.log('clear');
     $('#confirm-clear-genome').dialog({
       modal: true, resizable: false, buttons: {
         'Cancel': function() {
@@ -53,20 +81,33 @@ window.AppView = Backbone.View.extend({
     });
   },
   
-  change_population: function(event) {
-    $('#population div.setting-label label').hide();
-    this.user.population = $('#population label[aria-pressed="true"]').attr('for');
-    //console.log('user.population = ' + this.user.population + '.');
-    $('#please-select-population').dialog('close');
+  change_population_from_toolbar: function(event) {
+    var population = this.el.find('#toolbar-population option:selected').val();
+    this.change_population(population);
+  },
+  
+  change_population_from_check: function(event) {
+    var population = this.el.find('#check-population option:selected').val();
+    this.change_population(population);
+  },
+  
+  change_population: function(population) {
+    this.user.population = population;
+    this.el.find('#please-select-population').dialog('close');
+    this.el.find('#toolbar-population option[id="dummy"]').remove();
+    this.el.find('#check-population option[id="dummy"]').remove();
+    this.el.find(
+      '#toolbar-population option[value="' + population + '"]'
+    ).attr('selected', true);
+    this.el.find(
+      '#check-population option[value="' + population + '"]'
+    ).attr('selected', true);
   },
   
   check_genome: function() {
-    //console.log('check_genome');
     if (_.isEmpty(this.user.snps)) {
-      $('#please-load-genome').dialog({
-        modal: true, resizable: false,
-        width: 400,
-        buttons: {
+      this.el.find('#please-load-genome').dialog({
+        modal: true, resizable: false, width: 400, buttons: {
           'Cancel': function() {$(this).dialog('close');}
         }
       });
@@ -76,21 +117,18 @@ window.AppView = Backbone.View.extend({
   },
   
   check_population: function() {
-    //console.log('check_population');
     if (this.user.population == null) {
-      $('#please-select-population').dialog({
+      this.el.find('#please-select-population').dialog({
         modal: true, resizable: false, buttons: {
           'Okay': function() {$(this).dialog('close');}
         }
       });
       return false;
     }
-    
     return true;
   },
   
   check_all: function() {
-    //console.log('check_all');
     if (this.check_genome() == false) return false;
     return this.check_population();
   }

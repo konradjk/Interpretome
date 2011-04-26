@@ -17,12 +17,18 @@ window.NeandertalView = Backbone.View.extend({
     
   loaded: function(response) {
 	  this.el.append(response);
+	  
+	  // Initialize widgets.
 	  this.el.find('button').button();
 	  this.el.find('.help-button').button({
       icons: {primary: 'ui-icon-help'}	    
 	  });
-	  this.neandertal_template = $('#neandertal-template').html();
 	  this.el.find('.help > div').hide();
+	  
+	  // Initialize templates.
+	  this.neandertal_template = $('#neandertal-template').html();
+	  
+	  this.has_loaded = true;
   },
   
   filter_identifiers: function(ids) {
@@ -52,8 +58,6 @@ window.NeandertalView = Backbone.View.extend({
     this.el.find('#neandertal-table tr').slice(1).remove();
     this.el.find('#neandertal-table').hide();
     if (this.check_neandertal() == false) return;
-    
-    
   },
   
   // I assume this is a stub - otherwise just use check_genome().

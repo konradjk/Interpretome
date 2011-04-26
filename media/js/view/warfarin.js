@@ -70,7 +70,7 @@ window.WarfarinView = Backbone.View.extend({
       '/submit/submit_doses/', {
         doses: output_doses.join(',')
       }, function(response) {
-        console.log(response);
+        //console.log(response);
         if (response != null){
           return self.thanks_for_submitting();
         }else{
@@ -103,7 +103,7 @@ window.WarfarinView = Backbone.View.extend({
   
   clickHelp: function(event) {
     var id = '#' + event.currentTarget.id + '-help';
-    console.log(id);
+    //console.log(id);
     if (this.hidden){
         this.el.find('.help > div').show('normal');//.parent().find(id).show('normal');
         this.el.find('.description > div').show('normal');
@@ -147,7 +147,7 @@ window.WarfarinView = Backbone.View.extend({
   },
   
   calculateAndPrintFactor: function(feature, results, clincial_multiplier, genetic_multiplier, value) {
-    console.log('Results: ', results);
+    //console.log('Results: ', results);
     results['clinical_total'] += clincial_multiplier*value;
     results['genetic_total'] += genetic_multiplier*value;
     this.printFactor(feature, clincial_multiplier, results['clinical_total'], genetic_multiplier, results['genetic_total'], value)
@@ -259,11 +259,11 @@ window.WarfarinView = Backbone.View.extend({
     var asian = 0;
     var black = 0;
     var other = 0;
-    if (window.App.user.race == 'asian'){
+    if (window.App.user.race == 'race_asian'){
       asian = 1;
-    }else if (window.App.user.race == 'black'){
+    }else if (window.App.user.race == 'race_black'){
       black = 1;
-    }else if (window.App.user.race == 'other'){
+    }else if (window.App.user.race == 'race_other'){
       other = 1;
     }
     
@@ -352,8 +352,8 @@ window.WarfarinView = Backbone.View.extend({
     //Final Dose Manipulation (i.e. squaring it)
     this.final_clinical_dose = results['clinical_total']*results['clinical_total'];
     this.final_genetic_dose = results['genetic_total']*results['genetic_total'];
-    console.log('Clin dose: ', this.final_clinical_dose);
-    console.log('PGx dose: ', this.final_genetic_dose);
+    //console.log('Clin dose: ', this.final_clinical_dose);
+    //console.log('PGx dose: ', this.final_genetic_dose);
     this.printFactor('<b>Clinical Dose (mg/week):</b>', '', this.final_clinical_dose, '<b>PGx Dose<br>(mg/week):</b>', this.final_genetic_dose, '');
     
     // Add CYP4F2 genotype into dosing equation
