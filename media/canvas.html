@@ -1,45 +1,193 @@
 <html lang='en'>
   <head>
     <script type='text/javascript'
-    src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
+	    src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
+    </script>
+    <script type='text/javascript'
+	    src='http://documentcloud.github.com/underscore/underscore.js'>
     </script>
     
     <script type='text/javascript'>
-      $(document).ready( function() {
+      // Draw a chromosome. It has height given by the parameter size. 
+      // The width of the divots are that size, and the radius of the caps are half that size.
+      
+      // x0, base[1]: coordinates of the top-left position of the chromosome.
+      // size: height of each chromosome.
+      // arms: 2-tuple, the lengths of the left and right arms.
+      // paint: a hash of identifier (e.g. population) to an array of 
+      //   [begin, end] coordinate pairs.
+      
+      var alpha = 0.7;
+	    var fill_colors = _.map([
+	      'E41A1C', '377EB8', '4DAF4A', '984EA3', 'FF7F00', 
+	      'FFFF33', 'A65628', 'F781BF', '999999'
+	    ], function(v) {
+	      return 'rgba(' + _.map(_.range(0, 6, 2), function(i) {
+	       return parseInt('0x' + v.slice(i, i + 2));
+	      }).join(', ') + ', ' + alpha + ')';
+	    });
+	    
+
+      function paint_chromosome(base, size, arms, paint_coordinates) {
         var canvas = document.getElementById('canvas');
         var context = canvas.getContext('2d');
         
-        // Cap and right upper segment.
-        context.arc(100, 100, 25, Math.PI, 0, false);
-        context.lineTo(125, 150);
+        context.fillStyle = 'rgba(0, 0, 0, 0.2)';
+        context.strokeStyle = 'black';
+        context.lineWidth = 1;
+        
+        // The x0 and base[1] coordinates give the top-left pixel of the chromosome, so
+        // the origin of the telomere cap is shifted right and down by a single radius' length.
+        var cap_radius = size / 2;
+        
+        var begin_x = base[0] + cap_radius;
+        var begin_y = base[1] + cap_radius;
+        
+        var divot_width = size / 2;
+        var divot_height = size / 5;
+        
+        var left_cap_center = [begin_x, begin_y];
+        var left_cap_angles = [Math.PI / 2, 3 * Math.PI / 2];
+        
+        var right_cap_center = [begin_x + arms[0] + divot_width + arms[1], begin_y];
+        var right_cap_angles = [3 * Math.PI / 2, Math.PI / 2];
+        
+        var top_divot = [
+          [begin_x + arms[0], base[1]],
+          [begin_x + arms[0] + divot_width / 2, base[1] + divot_height],
+          [begin_x + arms[0] + divot_width, base[1]]
+        ];
+        
+        var bottom_divot = [
+          [begin_x + arms[0], base[1] + size],
+          [begin_x + arms[0] + divot_width / 2, base[1] + 4 * divot_height],
+          [begin_x + arms[0] + divot_width, base[1] + size]
+        ];
+        
+        function follow_divot(divot, func) {
+          $.each(divot, function(i, v) {
+            context[func].apply(context, v);
+          });
+        }
+        
+        function follow_cap(cap_center, cap_angles) {
+          context.arc.apply(context, cap_center.concat(cap_radius, cap_angles, false));
+        }
+        
+        function fill_cap(cap_center, cap_angles) {
+	        context.moveTo.apply(context, cap_center);
+	        context.beginPath();
+	        follow_cap(cap_center, cap_angles);
+	        context.closePath();
+	        context.fill();
+        }
+        
+        // Stroke everything.
+        context.beginPath();
+        follow_cap(left_cap_center, left_cap_angles);
+        follow_divot(top_divot, 'lineTo');
+        follow_cap(right_cap_center, right_cap_angles);
+        follow_divot(bottom_divot.reverse(), 'lineTo');
+        context.closePath();
         context.stroke();
         
-        // Left upper segment.
-        context.moveTo(75, 100);
-        context.lineTo(75, 150);
+        // Fill caps.
+        fill_cap(left_cap_center, left_cap_angles);
+        fill_cap(right_cap_center, right_cap_angles);
         
-        // Left join.
-        context.quadraticCurveTo(75, 160, 85, 170);
-        context.quadraticCurveTo(75, 180, 75, 190);
-        context.stroke();
+        // Fill divot.
+        context.moveTo.apply(context, top_divot[0]);
+        context.beginPath();
+        $.each(top_divot.concat(bottom_divot), function(i, v) {
+          context.lineTo.apply(context, v);
+        });
+        context.closePath();
+        context.fill();
         
-        // Right join and right lower segment.
-        context.moveTo(125, 150);
-        context.quadraticCurveTo(125, 160, 115, 170);
-        context.quadraticCurveTo(125, 180, 125, 190);
-        context.lineTo(125, 240);
-        context.stroke();
         
-        // Left lower segment and cap.
-        context.moveTo(75, 190);
-        context.lineTo(75, 240);
-        context.arc(100, 240, 25, Math.PI, 0, true);
-        context.stroke()
+        //
+        // Now, get to painting.
+        //
+        var y_top = base[1];
+        var y_bottom = base[1] + size;
+        var y_middle = (y_top + y_bottom) / 2;
+        
+        var all_populations = _.uniq(_.flatten(_.map(_.values(paint_coordinates), function(k) {
+          return _.keys(k);
+        })));
+        
+        $.each(_.keys(paint_coordinates), function(i, position) {
+          $.each(_.keys(paint_coordinates[position]), function(j, population) {
+	          $.each(paint_coordinates[position][population], function(k, coordinates) {
+	            console.log('Raw coordinates: ' + coordinates);
+	            
+	            var adjusted = coordinates;
+	            // Coordinates all on right arm, adjust.
+	            if (adjusted[0] >= arms[0]) {
+	              adjusted = _.map(adjusted, function(v) {return v + divot_width;});
+	              console.log('All coordinates on right arm, adjusted to: ' + adjusted);
+	            }
+	            
+	            // Coordinates should never cross centromere.
+	            // else if (adjusted[0] <= arms[0] && adjusted[1] >= arms[0]) {
+	            // 	// Coordinates cross the centromere.
+	            //   adjusted[1] = adjusted[1] + arms[0] + divot_width;
+	            //   console.log('Coordinates cross centromere, adjusted to: ' + adjusted);
+	            //   return;
+	            // }  
+	            
+	            adjusted = _.map(adjusted, function(v) {return v + begin_x;});
+	            console.log('Adjusted coordinates: ' + adjusted);
+	            
+	            var stroke_begin_y = position == 'top' ? y_top : y_middle;
+	            var stroke_end_y = position == 'top' ? y_middle : y_bottom;
+	            
+	            var stroke_coordinates = [
+	              [adjusted[1], stroke_begin_y],
+	              [adjusted[1], stroke_end_y],
+	              [adjusted[0], stroke_end_y],
+	              [adjusted[0], stroke_begin_y]
+	            ];
+	            context.moveTo.apply(context, stroke_coordinates[3]);
+	            context.beginPath();
+	            $.each(stroke_coordinates, function(i, v) {
+	              context.lineTo.apply(context, v);
+	            });
+	            context.closePath();
+	            context.fillStyle = fill_colors[_.indexOf(all_populations, population)];
+	            context.fill();
+	          });
+	        });
+        });
+        
+      }
+      $(document).ready(function() {
+        paint_chromosome([1, 1], 50, [200, 120], {
+          'top': {
+            'mex': [[0, 175], [200, 300]], 'yri': [[300, 320]], 'chb': [[175, 200]]
+          }, 
+          'bottom': {
+            'mex': [[0, 110]], 'yri': [[110, 130]], 'jpt': [[130, 200], [200, 320]]
+          }
+        });
+        paint_chromosome([1, 60], 40, [200, 120], {});
+        paint_chromosome([1, 110], 30, [200, 120], {});
+        paint_chromosome([1, 150], 15, [200, 120], {});
+        var i = 0;
+        var divs = $('div');
+        $.each($('div'), function(k, v) {
+          divs[i].innerHTML = i;
+          i++;
+	      });
       });
     </script>
   </head>
   <body>
     <canvas id='canvas' width='500' height='500'>
     </canvas>
+    <div></div>
+    <div></div>
+    <div></div>
+    <div></div>
   </body>
 </html>

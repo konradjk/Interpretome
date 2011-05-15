@@ -9,13 +9,12 @@ window.WarfarinView = Backbone.View.extend({
 
   events: {
     'click #warfarin-dose': 'clickWarfarinDose',
-    'click .help-button': 'clickHelp',
     'click #submit-doses': 'click_submit',
     'click #confirm-submit-doses': 'click_confirm_submit'
   },
 
   initialize: function() {
-    _.bindAll(this, 'clickWarfarinDose', 'clickHelp',
+    _.bindAll(this, 'clickWarfarinDose',
       'click_submit', 'click_confirm_submit', 'loaded');
   },
   
@@ -39,7 +38,6 @@ window.WarfarinView = Backbone.View.extend({
     this.el.find('#amiodarone').buttonset();
     this.el.find('#weight_units').buttonset();
     this.el.find('#height_units').buttonset();
-    //this.clickWarfarinDose();
     this.has_loaded = true;
   },
   
@@ -66,88 +64,10 @@ window.WarfarinView = Backbone.View.extend({
   click_confirm_submit: function(event) {
     var output_doses = [this.final_clinical_dose, this.final_genetic_dose, this.extended_dose];
     var self = this;
-    $.get(
-      '/submit/submit_doses/', {
-        doses: output_doses.join(',')
-      }, function(response) {
-        console.log(response);
-        if (response != null){
-          return self.thanks_for_submitting();
-        }else{
-          return self.nothing_submitted();
-        }
-      }
-    );
-  },
-  
-  nothing_submitted: function(event) {
-    $('#nothing').dialog({
-      modal: true, resizable: false,
-      buttons: {
-        'OK' : function() {
-          $(this).dialog('close');
-        }
-      }
-    })
-  },
-  
-  thanks_for_submitting: function(event) {
-    $('#thank-you').dialog({
-      modal: true, resizable: false, buttons: {
-        'Woohoo!' : function() {
-          $(this).dialog('close');
-        }
-      }
-    });
-  },
-  
-  clickHelp: function(event) {
-    var id = '#' + event.currentTarget.id + '-help';
-    console.log(id);
-    if (this.hidden){
-        this.el.find('.help > div').show('normal');//.parent().find(id).show('normal');
-        this.el.find('.description > div').show('normal');
-//        this.el.find('.help > div').hide().parent().find(id).show('normal');
-//        this.el.find('.description > div').hide().parent().find(id).show('normal');
-        this.hidden = false;
-    }else{
-        this.el.find('.help > div').hide('normal').parent().find(id).hide('normal');
-        this.el.find('.description > div').hide('normal').parent().find(id).hide('normal');
-        this.hidden = true;
-    }
-  },
-  
-  checkFloat: function(value) {
-    if (!_.isNaN(parseFloat(value))){
-      return value;
-    }else{
-      return null;
-    }
-  },
-  
-  checkInches: function(value) {
-    var split_height = value.split(/\'/g);
-    var feet = '';
-    var inches = '';
-    if (split_height.length > 1){
-      feet = parseFloat(split_height[0]);
-      inches = parseFloat(split_height[1]);
-    }
-    if (!_.isNaN(parseFloat(feet)) && !_.isNaN(parseFloat(inches))){
-      return (feet*12 + inches)*2.54;
-    }
-    if (!_.isNaN(parseFloat(value))){
-      return parseFloat(value)*2.54;
-    }
-    return null;
-  },
-  
-  countGenotype: function(value, allele) {
-    result = _.select(value, function(v) {return v == allele;}).length;
+    $.get( '/submit/submit_doses/', { doses: output_doses.join(',') }, check_submission);
   },
   
   calculateAndPrintFactor: function(feature, results, clincial_multiplier, genetic_multiplier, value) {
-    console.log('Results: ', results);
     results['clinical_total'] += clincial_multiplier*value;
     results['genetic_total'] += genetic_multiplier*value;
     this.printFactor(feature, clincial_multiplier, results['clinical_total'], genetic_multiplier, results['genetic_total'], value)
@@ -156,12 +76,12 @@ window.WarfarinView = Backbone.View.extend({
   
   printFactor: function(feature, clincial_multiplier, clinical_total, genetic_multiplier, genetic_total, value){
     var output = {};
-    if (this.checkFloat(clinical_total) != null){
+    if (check_float(clinical_total) != null){
       output['clinical_total'] = clinical_total.toFixed(4);
     }else{
       output['clinical_total'] = clinical_total
     }
-    if (this.checkFloat(genetic_total) != null){
+    if (check_float(genetic_total) != null){
       output['genetic_total'] = genetic_total.toFixed(4);
     }else{
       output['genetic_total'] = genetic_total
@@ -229,15 +149,15 @@ window.WarfarinView = Backbone.View.extend({
     var raw_enzyme = $('#enzyme label[aria-pressed="true"]').attr('for');
     var raw_amiodarone = $('#amiodarone label[aria-pressed="true"]').attr('for');
     
-    window.App.user.age = this.checkFloat(raw_age);
+    window.App.user.age = check_float(raw_age);
       
     if ($('#height_units label[aria-pressed="true"]').attr('for') == 'in'){
-      window.App.user.height = this.checkInches(raw_height);
+      window.App.user.height = check_inches(raw_height);
     } else {
-      window.App.user.height = this.checkFloat(raw_height);
+      window.App.user.height = check_float(raw_height);
     }
     
-    window.App.user.weight = this.checkFloat(raw_weight);
+    window.App.user.weight = check_float(raw_weight);
     
     if (raw_race != undefined){
       window.App.user.race = raw_race;
@@ -259,11 +179,11 @@ window.WarfarinView = Backbone.View.extend({
     var asian = 0;
     var black = 0;
     var other = 0;
-    if (window.App.user.race == 'asian'){
+    if (window.App.user.race == 'race_asian'){
       asian = 1;
-    }else if (window.App.user.race == 'black'){
+    }else if (window.App.user.race == 'race_black'){
       black = 1;
-    }else if (window.App.user.race == 'other'){
+    }else if (window.App.user.race == 'race_other'){
       other = 1;
     }
     
@@ -281,10 +201,6 @@ window.WarfarinView = Backbone.View.extend({
     var cyp2c9_2 = window.App.user.lookup('1799853');
     var cyp2c9_3 = window.App.user.lookup('1057910');
     var cyp4f2 = window.App.user.lookup('2108622');
-    //var vkorc1 = {genotype: 'TT'};
-    //var cyp2c9_2 = {genotype: 'TT'};
-    //var cyp2c9_3 = {genotype: 'TT'};
-    //var cyp4f2 = {genotype: 'TT'};
     
     results['clinical_total'] = 4.0376;
     results['genetic_total'] = 5.6044;
@@ -326,19 +242,20 @@ window.WarfarinView = Backbone.View.extend({
         cyp2c9_unknown = 1;
     }else{
       cyp2c9_genotype_2 = cyp2c9_2.genotype;
-      if (this.countGenotype(cyp2c9_genotype_2, 'T') == 0){
-          if (this.countGenotype(cyp2c9_genotype_3, 'C') == 1){
+      cyp2c9_genotype_3 = cyp2c9_3.genotype;
+      if (count_genotype(cyp2c9_genotype_2, 'T') == 0){
+          if (count_genotype(cyp2c9_genotype_3, 'C') == 1){
               cyp13 = 1;
-          }if (this.countGenotype(cyp2c9_genotype_3, 'C') == 2){
+          }if (count_genotype(cyp2c9_genotype_3, 'C') == 2){
               cyp33 = 1;
           }
-      }else if (this.countGenotype(cyp2c9_genotype_2, 'T') == 1){
-          if (this.countGenotype(cyp2c9_genotype_3, 'C') == 1){
+      }else if (count_genotype(cyp2c9_genotype_2, 'T') == 1){
+          if (count_genotype(cyp2c9_genotype_3, 'C') == 1){
               cyp23 = 1;
           }else{
               cyp12 = 1;
           }
-      }else if (this.countGenotype(cyp2c9_genotype_2, 'T') == 2){
+      }else if (count_genotype(cyp2c9_genotype_2, 'T') == 2){
           cyp22 = 1;
       }
     }
@@ -352,15 +269,14 @@ window.WarfarinView = Backbone.View.extend({
     //Final Dose Manipulation (i.e. squaring it)
     this.final_clinical_dose = results['clinical_total']*results['clinical_total'];
     this.final_genetic_dose = results['genetic_total']*results['genetic_total'];
-    console.log('Clin dose: ', this.final_clinical_dose);
-    console.log('PGx dose: ', this.final_genetic_dose);
+    
     this.printFactor('<b>Clinical Dose (mg/week):</b>', '', this.final_clinical_dose, '<b>PGx Dose<br>(mg/week):</b>', this.final_genetic_dose, '');
     
     // Add CYP4F2 genotype into dosing equation
     var cyp4f2_var = 0;
     this.extended_dose = -1.2948 + (1.0409 * this.final_genetic_dose)
     this.printFactor('Extended Dosing', '', '', 'Initial:', this.extended_dose, '')
-    if (cyp4f2 != undefined && this.countGenotype(cyp4f2.genotype, 'T') > 0){
+    if (cyp4f2 != undefined && count_genotype(cyp4f2.genotype, 'T') > 0){
         extended_dose += 7.5016
         cyp4f2_var = 1
     }

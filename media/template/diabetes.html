@@ -1,53 +1,65 @@
 <div class='main'>
-	<h2>Enter information to calculate diabetes risk</h2>
-  <h3>Sex?</h3>
-  <div id='sex' class='setting'>
-    <input type='radio' id='male' name='sex' checked/>
-    <label for='male'>Male</label>
-    <input type='radio' id='female' name='sex'/>
-    <label for='female'>Female</label>
-  <span id='please-select-sex' title='Please Select Your Sex' class='required hidden'>
-    Please select your sex.
-  </span>
-  </div>
+  <h2>Diabetes risk</h2>
   <br/>
-	<div>
-	  <button id='diabetes' type='submit'>
-	    Calculate my Diabetes Risk
-	  </button>
-		<button id='help-diabetes' class='help-button'>About Diabetes</button>
-	</div>
-	<br />
-	<table id='diabetes-graph-table' class='hidden'>
+  <div>
+    <button id='compute-diabetes' type='submit'>
+      Compute my Type 2 Diabetes Risk
+    </button>
+  </div>
+  
+  <br />
+  <br />
+  
+  <div id='diabetes-chart'></div>
+  
+  <br />
+  
+  <table id='diabetes-table' class='results-table hidden'>
     <tr>
-	    <th>Diabetes</th>
+      <th>dbSNP</th>
+      <th>Genotype</th>
+      <th>Study size</th>
+      <th>Imputed from</th>
+      <th>R squared</th>
+      <th>LR</th>
+      <th>Running LR</th>
+      <th>Probability</th>
     </tr>
-    <script id='diabetes-graph-template' type='text/template'>
-		  <tr align=center><td><%= graph %></td></tr>
-		</script>
+    <script id='diabetes-snp-template' type='text/template'>
+      <tr>
+        <td class='key'><%= dbsnp %></td>
+        <td class='value'><%= genotype %></td>
+        <td><%= study_size %></td>
+        <td><%= imputed_from %></td>
+        <td><%= r_squared %></td>
+      </tr>
+    </script>
   </table>
-  <br>
-	<table id='diabetes-table' class='hidden'>
-	  <tr>
-	    <th>RSID</th>
-      <th>Study Size</th>
-      <th>Odds Ratio*</th>
-      <th>OR* Total</th>
-      <th>Likelihood Ratio</th>
-      <th>LR Total</th>
-	  </tr>
-	  <script id='diabetes-template' type='text/template'>
-		  <tr><td><%= rsid %></td><td><%= study_size %></td><td><%= odds_ratio %></td><td><%= odds_ratio_total %></td>
-      <td><%= likelihood_ratio %></td><td><%= likelihood_ratio_total %></td>
-		</script>
-	</table>
-	
+  
+  <div class='hidden'>
+    <br />
+    <button id='submit-diabetes'>
+      Submit my information
+    </button>
+  </div>
+  
+  <dialog id='confirm-submit-diabetes' title='Submit my information' class='dialog hidden'>
+    Submit your information?
+  </dialog>
+  
+  <dialog id='submitted-diabetes' title='Thanks' class='dialog hidden'>
+    <strong>Submitted!</strong>
+  </dialog>
+  
 </div>
 
 <div class='help'>
   <div id='help-diabetes-help'>
-    <h2>Diabetes is a disease, etc.</h2>
+    <h2>Clinical Assessment</h2>
+    Type 2 diabetes mellitus is a complex polygenic trait and is the most common form of diabetes.
+    Heritability is estimated at about 20%, and discoveries of disease-associated variants only
+    account for a few percentage points of that heritability.
   </div>
 </div>
 
-<br class='clear'>
+<br class='clear' />

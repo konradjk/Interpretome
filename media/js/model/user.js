@@ -13,31 +13,93 @@ function User() {
   
   this.sex = null;
   
-  this.parseGenome = function(lines) {
+  this.full_genome = false;
+  
+  this.no_genotype_string = '??';
+  
+  this.ld_cutoff = 0.7;
+  
+  initialize = function() {
+    _.bindAll(this,
+      'add_genotype_snps', 'add_vcf_snps',
+      'parse_genome'
+    );
+  }
+  
+  this.set_counter = function(percent, snps){
+    $('#parsing-bar').progressbar('option', 'value', percent);
+    $('#parsing-bar > div').css('opacity', percent/100);
+    document.getElementById('snps-loaded').innerHTML = snps;
+  }
+  
+  this.add_genotype_snps = function(lines, user, percent, snps) {
+    user.set_counter(percent, snps);
     var regex = new RegExp(/^rs/);
-    var cgi = false;
-    if (!cgi) {
-      for (i in lines) {
-        line = $.trim(lines[i]);
-        if (line.indexOf('#') == 0 || line == '') continue;
-        
-        var tokens = _.map(line.split('\t'), $.trim);
-        var dbsnp = parseInt(tokens[0].replace(regex, ''));
-        
-        this.dbsnps.push(dbsnp);
-        this.snps[dbsnp] = {genotype: tokens[3]};
-      }
-    } else {
-      for (i in lines) {
-        line = $.trim(lines[i]);
-        if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
-        
-        var tokens = _.map(line.split('\t'), $.trim);
-        if (tokens[11].indexOf('no-call') > -1) continue;
-        var dbsnp = parseInt(tokens[1].replace(regex, ''));
-        
-        this.dbsnps.push(dbsnp);
-        this.snps[dbsnp] = {genotype: tokens[12] + tokens[18]};
+    for (i in lines){
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split('\t'), $.trim);
+      var dbsnp = parseInt(tokens[0].replace(regex, ''));
+      
+      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: tokens[3]};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.add_cgi_snps = function(lines, user, percent, snps) {
+    user.set_counter(percent, snps);
+    var regex = new RegExp(/^rs/);
+    for (i in lines) {
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split('\t'), $.trim);
+      var dbsnp = parseInt(tokens[0].replace(regex, ''));
+      
+      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: tokens[1] + tokens[2]};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.add_vcf_snps = function(lines, user, percent, snps) {
+    user.set_counter(percent);
+    var regex = new RegExp(/^rs/);
+    for (i in lines) {
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split('\t'), $.trim);
+      var dbsnp = parseInt(tokens[2].replace(regex, ''));
+      
+      options = {'0': tokens[3], '1' : tokens[4]};
+      raw_genotypes = tokens[9].split(':')[0].split(/[\|\\\/]/);
+      genotype = options[raw_genotypes[0]] + options[raw_genotypes[1]];
+      
+      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: genotype};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.parse_genome = function(lines) {
+    var chunks = 100;
+    var chunk_size = lines.length/chunks;
+    for (var j=0; j<=chunks; j++) {
+      snps = add_commas(parseInt(j*chunk_size));
+      output = lines.slice(chunk_size*(j), chunk_size*(j+1))
+      if (!this.full_genome) {
+        setTimeout(this.add_genotype_snps, 0, output, this, j, snps);
+      } else {
+        setTimeout(this.add_vcf_snps, 0, output, this, j, snps);
       }
     }
   }
@@ -53,6 +115,9 @@ function User() {
   }
   
   this.lookup_snps = function(callback, args, all_dbsnps, comments) {
+    window.App.user.ld_cutoff = check_float($("#ld-slider").slider("value"));
+    
+    $('#looking-up').dialog('open');
     var lookup_dbsnps = [];
     var extended_snps = {};
     var self = this;
@@ -61,20 +126,24 @@ function User() {
       self.set_comments(extended_snps[v], comments[v]);
       
       if (window.App.user.lookup(v) == undefined) {
-        lookup_dbsnps.push(v);
-        self.set_genotype(extended_snps[v], 'NA');
-      }else{
+        self.set_no_genotype(extended_snps[v]);
+        if (!self.full_genome){
+          lookup_dbsnps.push(v);
+        }
+      } else {
         self.set_genotype(extended_snps[v], window.App.user.lookup(v).genotype);
       }
     });
     
     if (lookup_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
+    //$('#imputing-lots').dialog('open');
     
     var self = this;
-    $.get(
+    $.post(
       '/lookup/linked/', {
         population: window.App.user.population, 
-        dbsnps: lookup_dbsnps.join(',')
+        dbsnps: lookup_dbsnps.join(','),
+        ld_cutoff: window.App.user.ld_cutoff
       }, function(response) {
         return self.got_linked(callback, args, all_dbsnps, extended_snps, response);
       }
@@ -98,14 +167,14 @@ function User() {
           request_dbsnps.push(parseInt(v));
           user_dbsnps.push(linked_dbsnp);
           any = true;
-          return;
         }
       });
     });
     
-    if (request_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
+    if (request_dbsnps.length == 0) 
+      return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
     var self = this;
-    $.get(
+    $.post(
       '/lookup/impute/', {
         population: window.App.user.population,
         dbsnps: request_dbsnps.join(','), user_dbsnps: user_dbsnps.join(',')
@@ -122,10 +191,20 @@ function User() {
     if (response != undefined){
       $.each(response, function(request_snp, info) {
         var user_snp = window.App.user.lookup(info.user_snp);
-        self.set_genotype(extended_snps[request_snp], info[user_snp.genotype[0]] + info[user_snp.genotype[1]]);
+        gt1 = info[user_snp.genotype[0]];
+        gt2 = info[user_snp.genotype[1]];
+        if (gt1 == undefined){
+          gt1 = '?';  
+        }if (gt2 == undefined){
+          gt2 = '?';  
+        }
+        self.set_genotype(extended_snps[request_snp], gt1 + gt2);
       });
     }
-    return self.get_reference_alleles(callback, args, all_dbsnps, extended_snps);
+    //$('#imputing-lots').dialog('close');
+    $('#looking-up').dialog('close');
+    return callback(args, all_dbsnps, extended_snps);
+    //return self.get_reference_alleles(callback, args, all_dbsnps, extended_snps);
   },
   
   this.get_reference_alleles = function(callback, args, all_dbsnps, extended_snps) {
@@ -138,6 +217,9 @@ function User() {
           if (v != null) {
             self.set_reference(extended_snps[i], v);
             self.set_color(extended_snps[i]);
+            if (self.full_genome && self.no_genotype(extended_snps[i])){
+              self.set_genotype(extended_snps[i], v + v);
+            }
           }
         });
         return self.get_allele_frequencies(callback, args, all_dbsnps, extended_snps);
@@ -201,12 +283,18 @@ function User() {
     }
   },
   
-  this.set_genotype = function(extended_snp, genotype){
-    extended_snp['genotype'] = genotype
+  this.set_genotype = function(extended_snp, genotype) {
+    extended_snp['genotype'] = genotype;
   },
+  this.set_no_genotype = function(extended_snp) {
+    extended_snp['genotype'] = this.no_genotype_string;
+  },
+  this.no_genotype = function(extended_snp){
+    return (extended_snp['genotype'] == this.no_genotype_string);
+  }
   
-  this.set_comments = function(extended_snp, comments){
-    extended_snp['comments'] = comments
+  this.set_comments = function(extended_snp, comments) {
+    extended_snp['comments'] = comments;
   },
   
   this.set_imputed_snp = function(extended_snp, imputed, r_squared){
@@ -231,5 +319,11 @@ function User() {
     extended_snp['end'] = '';
     extended_snp['color'] = '';
     return extended_snp;
+  },
+  
+  this.serialize = function() {
+    var serialized = {population: this.population};
+    if (this.sex != undefined) serialized.sex = this.sex;
+    return serialized;
   }
 }
