@@ -1,0 +1,75 @@
+<div class='main'>
+  <h2>Similarity (Identity By State)</h2>
+  <br/>
+  <div>
+    <h3>Resolution</h3>
+    <div class='description'>
+      <div id='help-similarity-help'>
+        Number of SNPs to be used in the comparison. A higher number takes longer, but could be more accurate.
+      </div>
+    </div>
+    <textarea id='numsnps-textarea' rows='1' cols='8'>1000</textarea>
+    <br/>
+    <div>
+      <br/>
+      <button id='similarity-snps' type='submit' class='small-button'>
+        Compare!
+      </button>
+    </div>
+  </div>
+  <div id='looking-up' title='Loading' class='dialog hidden'>
+    Please be patient. This may take a few moments. <br/> <br/>
+  </div>
+  <br/>
+	<button id='clear-snps' type='submit' class='small-button'>
+    Clear Table
+  </button>
+  <br/>
+	<table id='similarity-snps-table' class='results-table hidden'>
+	  <tr>
+	    <th>Individual</th><th>Similarity</th>
+	  </tr>
+	  <script id='similarity-snp-template' type='text/template'>
+		  <tr>
+		    <td><%= indiv %></td>
+		    <td><%= sim %></td>
+		  </tr>
+		</script>
+	</table>
+  <br>
+  <div class='submit'>
+    <div>
+      
+    </div>
+    <br/>
+    <div id='submit-button'>
+      <button id='submit-snps' type='submit'>
+        Submit my Similarities
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class='help'>
+  <div id='help-similarity-help'>
+    <h2>Similarity</h2>
+    <p>
+      Individuals vary at the genetic level by about 1 in 1300 bases, so any 2 individuals share about 99.97%.
+      However, if we zoom into regions that are known to be polymorphic among populations, we can get a more fine-grained mapping of similarity.
+      Here, we will assess your similarity to a number of other individuals, using identity by state (IBS).
+      In this approach, we simply measure the average percent similarity at a number of loci.
+      If 2 individuals have the same genotype, they are 100% similar at that locus; if they share 0 or 1 alleles, they are 0% or 50% similar.
+      IBS then calculates the average similarity across the loci that we've chosen.
+    </p>
+    <br/>
+    <p>
+      If we looked at all sites across the genome, these similarities would be close to 99.97%.
+      However, since this calculation is restricted to sites which are known to vary across individuals, the similarities are somewhat lower.
+      Thus, these percent similarities are biased based on which loci are chosen for this analysis.
+      For this analysis, we are comparing your genotype with a panel of individuals who have had a 23andme profile (Illumina HumanHap550-Quad+ or Illumina OmniExpress+) at up to 100,000 loci.
+      Choosing a different set of loci may provide different results for IBS analysis.
+    </p>
+    </div>
+  </div>
+</div>
+<br class='clear' />

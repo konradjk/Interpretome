@@ -1,0 +1,59 @@
+<div class='main'>
+  <h2>Neandertal Alleles</h2>
+  <br/>
+  Use at your own risk.
+  <div>
+    <button id='compute-neandertal' type='submit'>
+      Compute my Neandertal Index
+    </button>
+  </div>
+  
+  <br />
+  <br />
+
+  <div id='neandertal-chart'>
+    You have <strong><span id='neandertal-count'></span></strong> out of <span id='neandertal-total'></span> Neandertal alleles.
+  </div>
+  <br/>
+  <br/>
+  <table id='neandertal-table' class='results-table hidden'>
+    <tr>
+      <th>dbSNP</th>
+      <th>Derived Allele</th>
+      <th>Ancestral Allele</th>
+      <th>Out of Africa Allele</th>
+      <th>Genotype</th>
+      <th>Count</th>
+    </tr>
+    <script id='neandertal-template' type='text/template'>
+      <tr>
+        <td><%= rsid %></td>
+        <td><%= derived_allele %></td>
+        <td><%= ancestral_allele %></td>
+        <td><%= out_of_africa_allele %></td>
+        <td><%= genotype %></td>
+        <td><%= count %></td>
+      </tr>
+    </script>
+  </table>
+  
+  <div class='hidden'>
+    <br />
+    <button id='submit-neandertal'>
+      Submit my information
+    </button>
+  </div>
+  
+  <dialog id='confirm-submit-neandertal' title='Submit my information' class='dialog hidden'>
+    Submit your information?
+  </dialog>
+  
+  
+</div>
+
+<div class='help'>
+  <h2>Neandertal</h2>
+  Are you a neandertal?
+</div>
+
+<br class='clear' />

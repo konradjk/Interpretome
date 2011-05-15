@@ -1,0 +1,3 @@
+- Cleanup exercise and submission code.
+- Merge lookup by direct input and lookup by file into one accordion. 
+  Then we can just check which of those has nonempty values.
