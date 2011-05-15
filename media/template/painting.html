@@ -1,0 +1,51 @@
+<div class='main'>
+  <h2>Ancestry Painting</h2>
+  <br/>
+  Source:
+  <div id='painting_options'>
+    <input type="radio" id="hapmap2" name='painting' checked/><label for="hapmap2">Hapmap 2</label>
+    <input type="radio" id="hapmap3" name='painting'/><label for="hapmap3">Hapmap 3</label>
+  </div>
+  <br/>
+  <div>
+    <h3>Parameters</h3>
+    Larger blocks are more accurate. Smaller will be more fine-grained.
+    <br/>
+    <br/>
+    <div>
+      Block Size: <strong><span id='block-size'></span></strong> SNPs (mean: <strong><span id='block-size-bp'></span></strong> kb)
+      <span id='block-size-slider' style='width: 400px; float: right'></span>
+    </div>
+    <br/>
+    <div>
+      Smoothing Constant: <strong><span id='smoothing-constant'></span></strong> <span id='smoothing-slider' style='width: 400px; float: right'></span>
+    </div>
+    <br/>
+    <div>
+      Bootstrap Samples: <strong><span id='bootstrap-iterations'></span></strong> <span id='bootstrap-slider' style='width: 400px; float: right'></span>
+    </div>
+  </div>
+  <br/>
+  <div>
+    <button id='compute-painting' type='submit'>
+      Compute my Chromosome Painting
+    </button>
+  </div>
+  
+  <br />
+  <br />
+  
+  <div id='painting-chart'></div>
+  <canvas id='canvas' width='500' height='500'>
+  </canvas>
+  
+  </div>
+
+<div class='help'>
+  <div id='help-painting-help'>
+    <h2>Chromosome Painting</h2>
+    
+  </div>
+</div>
+
+<br class='clear' />

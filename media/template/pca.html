@@ -1,0 +1,140 @@
+<div class='main'>
+	<h2>Ancestry by PCA</h2>
+  <br/>
+  <div>
+  <h3>Data source</h3>
+  Choose a reference panel.
+  <div id='source' class='setting'>
+    <input type='radio' id='hgdp_all' name='source' checked/>
+    <label for='hgdp_all'>HGDP: World</label>
+    <input type='radio' id='hgdp_asian' name='source' />
+    <label for='hgdp_asian'>HGDP: Asian</label>
+    <input type='radio' id='hgdp_african' name='source' />
+    <label for='hgdp_african'>HGDP: African</label>
+    <input type='radio' id='hgdp_european' name='source' />
+    <label for='hgdp_european'>HGDP: European</label>
+    <input type='radio' id='hapmap_all' name='source' />
+    <label for='hapmap_all'>Hapmap: World</label>
+    <input type='radio' id='popres_all' name='source' />
+    <label for='popres_all'>POPRES: European</label>
+    <input type='radio' id='khoisan_all' name='source' />
+    <label for='khoisan_all'>African</label>
+  </div>
+  <div id='level' class='setting'>
+    Select which labels to display:
+    <input type='radio' id='2' name='level' checked/>
+    <label for='2'>Regional</label>
+    <input type='radio' id='3' name='level' />
+    <label for='3'>Detailed Regional</label>
+  </div>
+  <div id='popres_level' class='setting'>
+    Select which labels to display:
+    <input type='radio' id='popres_1' name='popres_level' checked/>
+    <label for='popres_1'>Full</label>
+    <input type='radio' id='popres_2' name='popres_level' />
+    <label for='popres_2'>Abbreviations</label>
+  </div>
+  <br/>
+  <h3>Resolution</h3>
+  Number of SNPs to be used in the projection. A larger the number will capture more variance, but the analysis will take longer.
+  <div id='khoisan_resolution' class='setting'>
+    <input type='radio' id='55000' name='khoisan_resolution' checked/>
+    <label for='55000'>55,000 (v2 and v3)</label>
+  </div>
+  <div id='popres_resolution' class='setting'>
+    <input type='radio' id='43000' name='popres_resolution' checked/>
+    <label for='43000'>43,000 (v2 and v3)</label>
+    <input type='radio' id='74000' name='popres_resolution' />
+    <label for='74000'>74,000 (v3)</label>
+    <!--<input type='radio' id='full' name='popres_resolution' />-->
+    <!--<label for='full'>Full (Imputed)</label>-->
+  </div>
+  <div id='resolution' class='setting'>
+    <input type='radio' id='1000' name='resolution' checked/>
+    <label for='1000'>1,000</label>
+    <input type='radio' id='10000' name='resolution' />
+    <label for='10000'>10,000</label>
+    <input type='radio' id='100000' name='resolution' />
+    <label for='100000'>100,000</label>
+  </div>
+  <br/>
+  <h3>Principal Components to Plot</h3>
+  PC1 and PC2 explain the most variance, but we may want to observe variation along other axes.
+  <br/>
+  X Axis: <span id='select-plot-x-axis' class='setting'>
+    <select id='pcx-axis' name='pcx-axis'>
+      <option value="1" selected>PC1</option>
+      <option value="2">PC2</option>
+      <option value="3">PC3</option>
+      <option value="4">PC4</option>
+      <option value="5">PC5</option>
+      <option value="6">PC6</option>
+      <option value="7">PC7</option>
+      <option value="8">PC8</option>
+      <option value="9">PC9</option>
+      <option value="10">PC10</option>
+    </select>
+  </span>
+  <br/>
+  Y Axis: <span id='select-plot-y-axis' class='setting'>
+    <select id='pcy-axis' name='pcy-axis'>
+      <option value="1">PC1</option>
+      <option value="2" selected>PC2</option>
+      <option value="3">PC3</option>
+      <option value="4">PC4</option>
+      <option value="5">PC5</option>
+      <option value="6">PC6</option>
+      <option value="7">PC7</option>
+      <option value="8">PC8</option>
+      <option value="9">PC9</option>
+      <option value="10">PC10</option>
+    </select>
+  </span>
+  <br/>
+  <br/>
+  <div>
+    <div id='confirm-submit-coordinates' title='Submit your Coordinates?' class='hidden'>
+      Are you sure you want to submit your PCA coordinates?
+    </div>
+    <button id='compute-pca' type='submit'>
+      Visualize!
+    </button>
+  </div>
+  <p id='info'></p>
+   <div id='pca-plot' style="width: 100%; height: 800px">
+   </div>
+   <div class='submit'>
+    <div id='submit-button'>
+      <button id='submit-coordinates' type='submit'>
+        Submit my Coordinates
+      </button>
+    </div>
+  </div>
+  </div>
+</div>
+
+<div class='help'>
+  <div id='help-pca-help'>
+    <h2>Principal Component Analysis (PCA)</h2>
+    While each individual's genome is unique in itself, signatures of ancestry are encoded within the genome.
+    We can use these patterns to infer genetic ancestry using a dimensionality reduction method known as PCA.
+    <br/><br/>
+    We will leverage data from various genetic diversity panels, such as <a href='http://en.wikipedia.org/wiki/Human_Genome_Diversity_Project'>HGDP</a>, <a href='http://hapmap.ncbi.nlm.nih.gov/'>Hapmap</a>, and
+    <a href='http://www.ncbi.nlm.nih.gov/pubmed/18760391'>POPRES</a>, which have generated genotype data from individuals around the world.
+    <br/><br/>
+    Here, we have pre-computed the principal components for these panels and we will "project" ourselves onto these datasets.
+    <br/><br/>
+    Before running PCA, we assign each a value for each locus of an individual, which is defined as the number of reference alleles at that locus, giving us a value between 0 and 2.
+    The output of PCA generates "loadings" for each SNP, which are essentially a multiplier factor for that SNP for that principal component (that SNP's contribution to that PC).
+    In this way, the principal components are a linear combination of each of the SNPs, and each of the PCs are orthogonal to each other.
+    <br/><br/>
+    We can use these loadings to compute our own position on this map by simply multiplying our value at that genotype (on the same scale, again between 0 and 2) by the loading for that SNP and summing over all SNPs.
+    <br/><br/>
+    To get started, choose a reference panel onto which to project yourself and the number of SNPs to use for the projection.
+    First, start with "HGDP: World" or "Hapmap: World" to explore your ancestry on a global population scale.
+    For more detail in a specific region, choose the reference panel from the relevant population.
+    If applicable, choose a level of detail for the results to be plotted.
+  </div>
+</div>
+
+<br class='clear'>
