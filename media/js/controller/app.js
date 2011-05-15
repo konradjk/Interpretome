@@ -1,15 +1,21 @@
 window.AppController = Backbone.Controller.extend({
+  
   routes: {
     'start': 'start',
     'lookup': 'lookup',
+    
     'warfarin': 'warfarin',
     'diabetes': 'diabetes',
+    'disease': 'disease',
+    
     'height': 'height',
-    'ancestry': 'ancestry',
     'gwas': 'gwas',
-    'similarity': 'similarity',
     'longevity': 'longevity',
-    'pca': 'pca'
+    'neandertal': 'neandertal',
+    
+    'similarity': 'similarity',
+    'pca': 'pca',
+    'painting': 'painting'
   },
   
   start: function() {
@@ -32,10 +38,6 @@ window.AppController = Backbone.Controller.extend({
     this.render_or_show(window.Height);
   },
   
-  ancestry: function() {
-    this.render_or_show(window.Ancestry);
-  },
-  
   gwas: function() {
     this.render_or_show(window.Gwas);
   },
@@ -48,8 +50,20 @@ window.AppController = Backbone.Controller.extend({
     this.render_or_show(window.Longevity);
   },
   
+  neandertal: function() {
+    this.render_or_show(window.Neandertal);
+  },
+  
+  disease: function() {
+    this.render_or_show(window.Disease);
+  },
+  
   pca: function() {
     this.render_or_show(window.PCA);
+  },
+  
+  painting: function() {
+    this.render_or_show(window.Painting);
   },
 
   render_or_show: function(controller) {

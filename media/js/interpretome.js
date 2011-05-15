@@ -1,16 +1,20 @@
 // Later, we can load these on-demand if we want.
 $(function() {
-  //console.log('Starting.');
   window.Start = new StartView();
   window.Lookup = new LookupView();
-  window.Gwas = new GwasView();
+  
   window.Warfarin = new WarfarinView();
   window.Diabetes = new DiabetesView();
+  window.Disease = new DiseaseView();
+  
+  window.Gwas = new GwasView();
   window.Height = new HeightView();
-  window.Ancestry = new AncestryView();
-  window.Similarity = new SimilarityView();
   window.Longevity = new LongevityView();
+  window.Neandertal = new NeandertalView();
+  
+  window.Similarity = new SimilarityView();
   window.PCA = new PCAView();
+  window.Painting = new PaintingView();
   
   window.App = new AppView();
   window.App.user = new User();
@@ -20,6 +24,34 @@ $(function() {
   
   window.Controller = new AppController();
   Backbone.history.start();
+  
+  $('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});
+  $('#imputing-lots').dialog({modal: true, resizable: false, autoOpen: false});
+  $('#confirm-submit-snps').dialog({modal: true, resizable: false, autoOpen: false});
+  $('#thank-you').dialog(
+    {modal: true, resizable: false, autoOpen: false,
+    buttons: { 'Woohoo!' : function() { $(this).dialog('close'); } }
+  });
+  $('#nothing').dialog(
+    {modal: true, resizable: false, autoOpen: false,
+    buttons: { 'Okay' : function() { $(this).dialog('close'); } }
+  });
+  
+  $('#settings').dialog(
+    {modal: true, resizable: false, autoOpen: false,
+    minWidth: '600', minHeight: '600',
+    buttons: { 'Okay' : function() { $(this).dialog('close'); } }
+  });
+  $("#ld-slider").slider({ 
+    min: 0.3, max: 1.0, step: 0.05, value: 0.7,
+    slide: function(event, ui) { 
+      document.getElementById('amount').innerText = ui.value; 
+    }
+  });
+  $('#advanced-settings').button();
+  document.getElementById('amount').innerText = $("#ld-slider").slider("value");
+  
+  $('#ThemeRoller').themeswitcher();
   
   var isCtrl = false;
   $(document).keyup(function (e) {
@@ -42,12 +74,21 @@ $(function() {
       return false;
      }
   });
-  
+  var isCtrl = false;
+  $(document).keyup(function (e) {
+    if(e.which == 17) isCtrl=false;
+    }).keydown(function (e) {
+      if(e.which == 17) isCtrl=true;
+      if(e.which == 69 && isCtrl == true) {
+        //window.Controller.PCA();
+      return false;
+     }
+  });
 });
 
 
 function print_text(text_to_print) {
-  console.log(text_to_print);
+  //console.log(text_to_print);
   var win = window.open();
   self.focus();
   win.document.open();
@@ -61,6 +102,7 @@ function print_text(text_to_print) {
 }
 
 function count_genotype(value, allele) {
+  if (_.isString(value)) value = value.split('');
   return _.select(value, function(v) {return v == allele;}).length;
 }
 
@@ -77,6 +119,17 @@ function compute_odds(probability) {
 function compute_probability(odds) {
   return odds / (1 + odds);
 }
+function add_commas(nStr) {
+	nStr += '';
+	x = nStr.split('.');
+	x1 = x[0];
+	x2 = x.length > 1 ? '.' + x[1] : '';
+	var rgx = /(\d+)(\d{3})/;
+	while (rgx.test(x1)) {
+		x1 = x1.replace(rgx, '$1' + ',' + '$2');
+	}
+	return x1 + x2;
+}
 
 function check_inches(value) {
   var split_height = value.split(/\'/g);
@@ -84,7 +137,11 @@ function check_inches(value) {
   var inches = '';
   if (split_height.length > 1){
     feet = parseFloat(split_height[0]);
-    inches = parseFloat(split_height[1]);
+    if (split_height[1] == ''){
+      inches = 0;
+    }else{
+      inches = parseFloat(split_height[1]);
+    }
   }
   if (!_.isNaN(parseFloat(feet)) && !_.isNaN(parseFloat(inches))){
     return (feet*12 + inches)*2.54;
@@ -114,6 +171,14 @@ var filter_identifier = filter_identifiers;
 
 function get_secondary_color() {
   return $('#clear-snps .ui-button-text').css('color');
+}
+
+function check_submission(response){
+  if (response != null){
+    $('#thank-you').dialog('open');
+  }else{
+    $('#nothing').dialog('open');
+  }
 }
 
 function match_style(el) {

@@ -2,19 +2,17 @@ $(function() {
 window.GwasView = Backbone.View.extend({
   el: $('#gwas'),
   has_loaded: false,
-  hidden: false,
 
   events: {
     'click #gwas-snps': 'click_gwas_snps',
     'click #clear-snps': 'click_clear_snps',
-    'click .help-button': 'click_help',
     'click #submit-snps': 'click_submit',
     'click #confirm-submit-snps': 'click_confirm_submit'
   },
 
   initialize: function() {
     _.bindAll(this,
-      'click_gwas_snps', 'click_help',
+      'click_gwas_snps',
       'click_submit', 'click_confirm_submit',
       'loaded', 'show_table'
     );
@@ -76,49 +74,7 @@ window.GwasView = Backbone.View.extend({
     output['asparagus'] = $('#asparagus label[aria-pressed="true"]').attr('for')
     output['bitter'] = $('#bitter label[aria-pressed="true"]').attr('for')
     output['lactose'] = $('#lactose label[aria-pressed="true"]').attr('for')
-    $.get(
-      '/submit/submit_gwas_snps/',
-      output,
-      function(response) {
-        if (response != null){
-          return self.thanks_for_submitting();
-        }else{
-          return self.nothing_submitted();
-        }
-      }
-    );
-  },
-  
-  nothing_submitted: function(event) {
-    $('#nothing').dialog({
-      modal: true, resizable: false,
-      buttons: {
-        'OK' : function() {
-          $(this).dialog('close');
-        }
-      }
-    })
-  },
-  
-  thanks_for_submitting: function(event) {
-    $('#thank-you').dialog({
-      modal: true, resizable: false, buttons: {
-        'Woohoo!' : function() {
-          $(this).dialog('close');
-        }
-      }
-    });
-  },
-  
-  click_help: function(event) {
-    var id = '#' + event.currentTarget.id + '-help';
-    if (this.hidden){
-      this.el.find('.help > div').hide().parent().find(id).show('normal');
-      this.hidden = false;
-    }else{
-      this.el.find('.help > div').hide('normal');
-      this.hidden = true;
-    }
+    $.get( '/submit/submit_gwas_snps/', output, check_submission);
   },
   
   click_clear_snps: function(event) {

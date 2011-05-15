@@ -33,19 +33,24 @@ div#title {
   padding-left: 1%;
   line-height: 100px;
 }
+
 div#global-settings {
   float: right;
   text-align: right;
   width: 60%;
+  padding: 1%;
 }
+
 div#global-settings div.stack {
   line-height: 50px;
   height: 50px;
 }
+
 .setting-label {
   font-weight: bold;
   padding-right: 10px;
 }
+
 div#global-settings div.setting {
   float: right;
   width: 70%;
@@ -55,14 +60,33 @@ div.main {
   width: 60%;
 }
 
-.main .left {
+.left {
   float: left;
   width: 50%;
 }
 
-.main .right {
+.right {
   float: right;
   width: 50%;
+}
+
+.advanced-setting {
+  margin-top: 2.5%;
+}
+
+#settings .left {
+  width: 30%;
+  float: left;
+  font-weight: bold;
+}
+
+#settings .right {
+  float: right
+  width: 70%;
+}
+
+#settings .right #ld-slider {
+  margin-top: 3px;
 }
 
 div.help {
@@ -127,7 +151,7 @@ table.results-table th {
   text-align: left;
 }
 
-table.results-table{
+table.results-table {
   border-collapse:collapse;
 }
 
@@ -179,3 +203,28 @@ table.results-table td {
   height: auto;
   width: 0;
 }
+
+.large {
+  font-size: 1.75em;
+  line-height: 1.75em;
+}
+
+.bold {
+  font-weight: bold;
+}
+
+#ld-slider {
+  width: 400px;
+  float: right;
+}
+
+#tabs ul li {
+  display: none;
+}
+
+#module-arrow {
+  font-weight: bold;
+  font-size: 1em;
+  line-height: 1.2em;
+}
+

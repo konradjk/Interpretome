@@ -1,4 +1,6 @@
 <div class='main'>
+  <h2>Lookup</h2>
+  <br/>
   <div id='lookup-accordion'>
 	  <h3><a href='#'>Lookup for an exercise</a></h3>
 	  <div> 
@@ -9,12 +11,22 @@
 	    <div id='exercises'>
 			  <input type='radio' id='cad' name='radio' />
 			  <label for='cad' class='small-button'>CAD SNPs (4/6, Euan Ashley)</label>
-			  <br/>
+			  <br />
 			  <input type='radio' id='ancestry' name='radio' />
 			  <label for='ancestry' class='small-button'>Ancestry SNPs (4/13, Hua Tang)</label>
 			  <br/>
 			  <input type='radio' id='pgx' name='radio'/>
 			  <label for='pgx' class='small-button'>Pharmacogenomic SNPs (4/20, Russ Altman)</label>
+			  <br />
+			  <input type='radio' id='selection' name='radio'/>
+			  <label for='selection' class='small-button'>Selection SNPs (5/2)</label>
+			  <br />
+			  <input type='radio' id='diabetes' name='radio'/>
+			  <label for='diabetes' class='small-button'>Diabetes SNPs (5/4, Atul Butte)</label>
+			  <br />
+			  <input type='radio' id='assimes' name='radio'/>
+			  <label for='assimes' class='small-button'>MI and CAD SNPs (5/11, Themistocles Assimes)</label>
+			  
 			  <!--<br/>-->
 			  <!--
 			  <br/>
@@ -66,9 +78,11 @@
 	</div> <!-- Accordion. -->
 	
   <br />
-  
 	<button id='clear-snps' type='submit' class='small-button'>
     Clear Table
+  </button>
+  <button id='toggle-unknown-genotypes' type='submit' class='small-button'>
+    Hide unknown genotypes
   </button>
 	<button id='help-lookup' class='help-button small-button'>
 	  About Lookup
@@ -99,6 +113,30 @@
 		    <td><%= comments.genes %></td>
 		    <td><%= comments.combined_p %></td>
 		    <td><%= comments.combined_or %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	<table id='assimes-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th class='risk_allele'>Risk</th>
+	    <th class='risk_freq'>Risk frequency</th>
+	    <th class='genes'>Genes</th>
+	    <th class='odds_ratio'>OR</th>
+      <th class='imputed'>Imputed From</th>
+      <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='assimes-snp-template' type='text/template'>
+		  <tr>
+		    <td class='key'><%= dbsnp %></td>
+		    <td class='value'><%= genotype %></td>
+		    <td><%= comments.risk_allele %></td>
+		    <td><%= comments.risk_freq %></td>
+		    <td><%= comments.genes %></td>
+		    <td><%= comments.or %></td>
         <td class='imputed'><%= imputed_from %> <%= explain %></td>
         <td class='rsq'><%= r_squared %></td>
 		  </tr>
@@ -149,6 +187,7 @@
 	  <tr>
 	    <th class='dbsnp'>dbSNP</th>
 	    <th class='dbsnp'>Genotype</th>
+	    <th class='dbsnp'>Reference</th>
 	    <th>Genes</th>
 	    <th>EL/normal</th>
 	    <th>Bayes factor</th>
@@ -162,6 +201,54 @@
 		    <td><%= comments.genes %></td>
 		    <td><%= comments.alleles %></td>
 		    <td><%= comments.log10_bf %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	
+	<table id='diabetes-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th>Genes</th>
+	    <th>Risk allele</th>
+	    <th>Odds ratio</th>
+	    <th>Source</th>
+      <th class='imputed'>Imputed from</th>
+      <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='diabetes-snp-template' type='text/template'>
+		  <tr>
+		    <td class='key'><%= dbsnp %></td>
+		    <td class='value'><%= genotype %></td>
+		    <td><%= comments.genes %></td>
+		    <td><%= comments.risk %></td>
+		    <td><%= comments.or %></td>
+		    <td><%= comments.source %></td>
+        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='rsq'><%= r_squared %></td>
+		  </tr>
+		</script>
+	</table>
+	
+	<table id='selection-table' class='results-table hidden'>
+	  <tr>
+	    <th class='dbsnp'>dbSNP</th>
+	    <th class='dbsnp'>Genotype</th>
+	    <th>Ancestral allele</th>
+	    <th>Selected allele</th>
+	    <th>Genes</th>
+      <th class='imputed'>Imputed from</th>
+      <th class='rsq'>R<sup>2</sup></th>
+	  </tr>
+		<script id='selection-snp-template' type='text/template'>
+		  <tr>
+		    <td><%= dbsnp %></td>
+		    <td><%= genotype %></td>
+		    <td><%= comments.ancestral %></td>
+		    <td><%= comments.selected %></td>
+		    <td><%= comments.genes %></td>
         <td class='imputed'><%= imputed_from %> <%= explain %></td>
         <td class='rsq'><%= r_squared %></td>
 		  </tr>
@@ -186,17 +273,17 @@
 	  </tr>
 	  <script id='lookup-snp-template' type='text/template'>
 		  <tr>
-		    <td class='dbsnp'><%= dbsnp %></td>
-        <td class='genotype'><%= genotype %></td>
+		    <td class='dbsnp key'><%= dbsnp %></td>
+        <td class='genotype value'><%= genotype %></td>
         <td class='reference details'><%= reference %></td>
         <td class='refallele_freq details'><%= refallele_freq %></td>
         <td class='other details'><%= otherallele %></td>
         <td class='other_freq details'><%= otherallele_freq %></td>
         <td class='chrom details'><%= chrom %></td>
         <td class='position details'><%= end %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
+        <td class='imputed'><%= imputed_from %> </td>
         <td class='rsq'><%= r_squared %></td>
-        <%= comments %>
+        <td><%= comments %></td>
 		  </tr>
 		</script>
 	</table>
@@ -204,29 +291,14 @@
   <br/ >
   
   <div class='submit'>
-    <div>
-      <span id='submit-button'>
-        <button id='submit-snps' type='submit'>
-          Submit my SNPs
-        </button>
-      </span>
-      <span id='print-button'>
-        <button id='print-snps' type='print'>
-          Print my SNPs
-        </button>
-      </span>
-    </div>
+    <button id='submit-snps' type='submit'>
+      Submit my SNPs
+    </button>
   </div>
   
   <!-- Submission buttons. -->
-  <div id='confirm-submit-snps' title='Submit your SNPs?' class='hidden'>
-    Are you sure you want to submit these SNPs?
-  </div>
-  <div id='thank-you' title='Thank You' class='hidden'>
-    Your SNPs have been submitted.
-  </div>
-  <div id='nothing' title='Oops' class='hidden'>
-    Nothing was submitted.
+  <div id='too-many-snps' title='Too Many' class='dialog hidden'>
+    You have entered too many SNPs. Your browser will not be able to display this many SNPs.
   </div>
   
   <br/>
@@ -271,7 +343,7 @@
       The SNP you request to be found in the Hapmap population requested
     </li>
     <li>
-      Another SNP (the "linked" SNP) in high LD (r<sup>2</sup> &#x2265 0.7) with the requested SNP.
+      Another SNP (the "linked" SNP) in high LD (r<sup>2</sup> &#x2265 cutoff) with the requested SNP.
     </li>
     <li>
       This linked SNP to be found both in Hapmap and your own data
@@ -284,7 +356,7 @@
     Thus, the presence of one allele at the first SNP indicates the presence of the allele with the same phase of the other SNP.
     <br/><br/>
     Click the "explain" button on an imputed SNP to see an example.
-    If "NA" is displayed, the SNP could not be imputed with the data given and population selected.
+    If "??" is displayed, the SNP could not be imputed with the data given and population selected.
     <br/>
     <br/>
   </div>

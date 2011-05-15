@@ -1,67 +1,64 @@
 <div class='main'>
-	<h2>Enter information to calculate diabetes risk</h2>
-  <div id='sex' class='setting'>
-    <input type='radio' id='male' name='sex' checked='checked' />
-    <label for='male'>Male</label>
-    <input type='radio' id='female' name='sex'/>
-    <label for='female'>Female</label>
-  </div>
+  <h2>Diabetes risk</h2>
   <br/>
-	<div>
-	  <button id='compute-diabetes' type='submit'>
-	    Compute my Type 2 Diabetes Risk
-	  </button>
-		<button id='help-diabetes' class='help-button'>About diabetes</button>
-	</div>
-	
-	<br />
+  <div>
+    <button id='compute-diabetes' type='submit'>
+      Compute my Type 2 Diabetes Risk
+    </button>
+  </div>
+  
+  <br />
   <br />
   
-	<table id='diabetes-table' class='results-table hidden'>
-	  <tr>
-	    <th>dbSNP</th>
-	    <th>Genotype</th>
-	    <th>Imputed from</th>
-	    <th>R squared</th>
-      <th>Likelihood Ratio</th>
-      <th>Running Total LR</th>
-      <th>Running Total Probability</th>
-	  </tr>
-	  <script id='diabetes-snp-template' type='text/template'>
-		  <tr>
-		    <td><%= dbsnp %></td>
-		    <td><%= genotype %></td>
+  <div id='diabetes-chart'></div>
+  
+  <br />
+  
+  <table id='diabetes-table' class='results-table hidden'>
+    <tr>
+      <th>dbSNP</th>
+      <th>Genotype</th>
+      <th>Study size</th>
+      <th>Imputed from</th>
+      <th>R squared</th>
+      <th>LR</th>
+      <th>Running LR</th>
+      <th>Probability</th>
+    </tr>
+    <script id='diabetes-snp-template' type='text/template'>
+      <tr>
+        <td class='key'><%= dbsnp %></td>
+        <td class='value'><%= genotype %></td>
+        <td><%= study_size %></td>
         <td><%= imputed_from %></td>
         <td><%= r_squared %></td>
       </tr>
-		</script>
-	</table>
-	
-	<div class='hidden'>
-	  <br />
-		<button id='submit-diabetes'>
-		  Submit my information
-		</button>
+    </script>
+  </table>
+  
+  <div class='hidden'>
+    <br />
+    <button id='submit-diabetes'>
+      Submit my information
+    </button>
   </div>
-	
-	<dialog id='confirm-submit-diabetes' title='Submit my information' class='dialog hidden'>
-	  Submit your information?
-	</dialog>
-	
-	<dialog id='submitted-diabetes' title='Thanks' class='dialog hidden'>
-	  <strong>Submitted!</strong>
-	</dialog>
-	
-	<div id='diabetes-chart'>
-	</div>
-	
-	
+  
+  <dialog id='confirm-submit-diabetes' title='Submit my information' class='dialog hidden'>
+    Submit your information?
+  </dialog>
+  
+  <dialog id='submitted-diabetes' title='Thanks' class='dialog hidden'>
+    <strong>Submitted!</strong>
+  </dialog>
+  
 </div>
 
 <div class='help'>
   <div id='help-diabetes-help'>
-    <h2>Type 2 diabetes mellitus is a complex polygenic trait.</h2>
-    Heritability is estimated at about 20%.
+    <h2>Clinical Assessment</h2>
+    Type 2 diabetes mellitus is a complex polygenic trait and is the most common form of diabetes.
+    Heritability is estimated at about 20%, and discoveries of disease-associated variants only
+    account for a few percentage points of that heritability.
   </div>
 </div>
 

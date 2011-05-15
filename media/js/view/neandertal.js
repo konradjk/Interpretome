@@ -1,14 +1,16 @@
 $(function() {
 window.NeandertalView = Backbone.View.extend({
+  has_loaded: false,
   el: $('#neandertal'),
 
   events: {
-    'click #neandertal': 'click_neandertal',
-    'click .help-button': 'click_help'
+    'click #compute-neandertal': 'click_neandertal',
+    'click #submit-neandertal': 'click_submit_neandertal'
   },
 
   initialize: function() {
-    _.bindAll(this, 'click_neandertal', 'click_help', 'loaded');
+    _.bindAll(this, 'click_neandertal', 'loaded', 'calculate_neandertal',
+      'click_submit_neandertal');
   },
   
   render: function() {
@@ -23,7 +25,8 @@ window.NeandertalView = Backbone.View.extend({
 	  this.el.find('.help-button').button({
       icons: {primary: 'ui-icon-help'}	    
 	  });
-	  this.el.find('.help > div').hide();
+	  this.el.find('.help > div').show();
+    this.el.find('#neandertal-chart').hide();
 	  
 	  // Initialize templates.
 	  this.neandertal_template = $('#neandertal-template').html();
@@ -31,41 +34,49 @@ window.NeandertalView = Backbone.View.extend({
 	  this.has_loaded = true;
   },
   
-  filter_identifiers: function(ids) {
-    return _.select(
-      _.map(ids, function(v) {return parseInt(v);}), 
-      function(v) {return !_.isNaN(v)}
-    );
-  },
-  
-  click_help: function(event) {
-    var id = '#' + event.currentTarget.id + '-help';
-    console.log(id);
-    this.el.find('.help > div').hide().parent().find(id).show('normal');
-  },
-  
-  count_genotype: function(value, allele) {
-    result = _.select(value, function(v) {return v == allele;}).length;
-  },
-  
-  display_factor: function(feature, clincial_multiplier, clinical_total, genetic_multiplier, genetic_total, value){
-    var output = {};
-    
-    this.el.find('#neandertal-table').append(_.template(this.warfarin_dose_tempplate, output));
+  calculate_neandertal: function(response){
+    var self = this;
+    var total_index = 0;
+    var total = 0;
+    $.each(response, function(i, v) {
+      var snp = window.App.user.lookup(v['rsid']);
+      if (snp != undefined){
+        var count = count_genotype(snp.genotype, v['out_of_africa_allele']);
+        total_index += count;
+        v['count'] = count;
+        v['genotype'] = snp.genotype;
+        self.el.find('#neandertal-table').append(_.template(self.neandertal_template, v));
+        total += 2;
+      }
+    });
+    self.el.find('#neandertal-table').show();
+    self.el.find('#neandertal-chart').show();
+    document.getElementById('neandertal-count').innerText = total_index;
+    document.getElementById('neandertal-total').innerText = total;
+    this.el.find('#submit-neandertal').parent().show();
   },
   
   click_neandertal: function(event) {
+    this.el.find('#neandertal-chart').hide();
     this.el.find('#neandertal-table tr').slice(1).remove();
     this.el.find('#neandertal-table').hide();
-    if (this.check_neandertal() == false) return;
+    if (window.App.check_genome() == false) return;
+    $.get('/lookup/neandertal/', {}, this.calculate_neandertal);
   },
   
-  // I assume this is a stub - otherwise just use check_genome().
-  check_neandertal: function(){
-    if (window.App.check_genome() == false) return false;
-    
-    return true;
+  click_submit_neandertal: function(event) {
+	  this.el.find('#confirm-submit-neandertal').dialog({modal: true, resizable: false, buttons: {
+	    'Okay': function() {
+	      $(this).dialog('close');
+	      var data = window.App.user.serialize();
+	      data['count'] = $('#neandertal-count').text();
+	      data['exercise'] = 'class_neandertal';
+	      $.get('/submit/', data, check_submission);
+	    },
+	    'Cancel': function() {
+	      $(this).dialog('close');
+	    }
+	  }});
   }
-  
   });
 });

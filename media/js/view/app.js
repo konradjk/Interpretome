@@ -6,23 +6,80 @@ window.AppView = Backbone.View.extend({
     'change #genome-file': 'change_genome',
     'click #clear-genome': 'clear_genome',
     'change #toolbar-population': 'change_population_from_toolbar',
-    'change #check-population': 'change_population_from_check'
+    'change #check-population': 'change_population_from_check',
+    'change #module_selection': 'select_module',
+    'click #advanced-settings': 'click_settings'
   },
 
   initialize: function() {
     _.bindAll(this, 
-      'change_genome', 'clear_genome', 
+      'change_genome', 'clear_genome',
 	    'change_population', 'change_population_from_toolbar',
-	    'change_population_from_check'
+	    'change_population_from_check',
+      'select_module', 'change_module',
+      'click_settings'
 	  );
   },
   
+  reverse_routes: {
+    'start' : 'start',
+    'lookup' : 'lookup',
+    'diabetes': 'clinical',
+    'warfarin': 'clinical',
+    'disease': 'clinical',
+    
+    'gwas': 'traits',
+    'height': 'traits',
+    'longevity': 'traits',
+    'neandertal': 'traits',
+    
+    'similarity': 'ancestry',
+    'pca': 'ancestry',
+    'painting': 'ancestry'
+  },
+  
   render: function() {
+    this.el.find('#advanced-settings').hide();
+    this.el.find('#module_selection').buttonset();
     this.el.find('#tabs').tabs({
       select: function(event, ui) {
         window.location.hash = ui.tab.hash;
       }
     });
+    loc = window.location.hash.replace('#','');
+    
+    route = this.reverse_routes[loc];
+    
+    $("#module_selection label[for='module_" + route + "']").click();
+    this.change_module(route);
+  },
+  
+  click_settings: function() {
+    $('#settings').dialog('open');
+  },
+  
+  select_module: function() {
+    var module = $('#module_selection label[aria-pressed="true"]').attr('for').replace('module_', '');
+    this.change_module(module);
+    $('.' + module).css('top', '2px').css('font-size', '0.9em').attr('line-height', '1.1em');
+  },
+  
+  change_module: function(module) {
+    var speed = 'fast';
+    
+    $.each($('#module_selection label'), function(i, v) {
+      $('.' + $(v).attr('for').replace('module_', '')).hide(speed);
+    });
+    
+    if (module == 'start' || module == 'lookup' || module == undefined) {
+      $('#module-arrow').hide(speed);
+      if (module != undefined) {
+        window.location.hash = '#' + module;
+      }
+    } else {
+      $('.' + module).show(speed);
+      $('#module-arrow').show(speed);
+    }
   },
   
   change_genome: function(event) {
@@ -56,9 +113,10 @@ window.AppView = Backbone.View.extend({
     reader.onloadend = function(event) {
       $('#loading-bar').progressbar('option', 'value', 100);
       $('#genome label, #genome input').hide();
-      $('#global-settings #genome button').button({
+      $('#clear-genome').button({
         icons: {primary: 'ui-icon-circle-close'}
       }).show();
+      $('#advanced-settings').button().show();
       window.App.user.parse_genome(event.target.result.split('\n'));
       
       // Should this be here?

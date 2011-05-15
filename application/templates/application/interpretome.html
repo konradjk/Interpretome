@@ -19,6 +19,8 @@
     </script>
     <script type='text/javascript' src='http://documentcloud.github.com/backbone/backbone.js'>
     </script>
+    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/">
+    </script>
     <script type='text/javascript' src='/media/js/tmpl.js'>
     </script>
     <!-- Models. -->
@@ -38,17 +40,21 @@
     </script>
     <script type='text/javascript' src='/media/js/view/warfarin.js'>
     </script>
+    <script type='text/javascript' src='/media/js/view/disease.js'>
+    </script>
     <script type='text/javascript' src='/media/js/view/diabetes.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/height.js'>
-    </script>
-    <script type='text/javascript' src='/media/js/view/ancestry.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/similarity.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/longevity.js'>
     </script>
+    <script type='text/javascript' src='/media/js/view/neandertal.js'>
+    </script>
     <script type='text/javascript' src='/media/js/view/pca.js'>
+    </script>
+    <script type='text/javascript' src='/media/js/view/painting.js'>
     </script>
     <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
@@ -56,54 +62,72 @@
     </script>
     <script type='text/javascript' src='/media/js/highcharts.js'>
     </script>
-    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript" src="https://www.google.com/jsapi">
+    </script>
     <script type="text/javascript">
-    
+
       // Load the Visualization API and the piechart package.
       google.load('visualization', '1', {'packages': ['corechart']});
     </script>
+    <script type='text/javascript'>
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', 'UA-6331436-4']);
+      _gaq.push(['_trackPageview']);
 
-		<script type='text/javascript'>
-		  var _gaq = _gaq || [];
-		  _gaq.push(['_setAccount', 'UA-6331436-4']);
-		  _gaq.push(['_trackPageview']);
-		
-		  (function() {
-		    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-		    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-		    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-		  })();
-	  </script>
+      (function() {
+        var ga = document.createElement('script');
+        ga.type = 'text/javascript';
+        ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0];
+        s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </head>
   <body>
     <div id='wrap'>
       <div id='header'>
         <div id='title'>
-          Analyze Me
+          Interpretome
         </div>
         <div id='global-settings'>
+
+          <!-- This is a mislabelled id, really, it's genome, population, and r ^ 2. -->
           <div id='genome' class='stack'>
+
             <div id='loading-genome' title='Loading' class='dialog hidden'>
-              Please be patient. This may take a few moments. <br/> <br/>
-              <strong>Loading</strong>: <div id='loading-bar' class='progress-bar'></div>
-              <strong>Parsing</strong>: <div id='parsing-bar' class='progress-bar'></div>
+              Please be patient. This may take a few moments.
+              <br/>
+              <br/>
+              <strong>Loading</strong>:
+              <div id='loading-bar' class='progress-bar'>
+              </div>
+              <br/>
+              <strong>Parsing</strong>: <span id='snps-loaded'>0</span> SNPs
+              <div id='parsing-bar' class='progress-bar'>
+              </div>
             </div>
-            
             <div id='please-load-genome' title='Load your genome' class='dialog hidden'>
               Please load your genome first.
-              <br><br>
+              <br>
+              <br>
               <input id='genome-file' type='file' name='file' />
             </div>
             <div class='setting'>
-              <label for='file' class='setting-label'>Load your genome</label>  
+              <label for='genome-file' class='setting-label'>
+                Load your genome
+              </label>
               <input id='genome-file' type='file' name='file' />
+	            <button id='advanced-settings' type='submit' class='small-button hidden'>
+	              Advanced Settings
+	            </button>
+	            <button id='clear-genome' class='small-button hidden'>
+	              Clear my information
+	            </button>
             </div>
-	          <button id='clear-genome' class='hidden'>
-	            Clear my information
-	          </button>
-	          <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
-	            Are you sure you want to end your session?
-	          </div>
+            <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
+              Are you sure you want to end your session?
+            </div>
           </div>
           <div id='population' class='stack'>
             <div id='please-select-population' title='Select your population' class='dialog hidden'>
@@ -124,15 +148,17 @@
                 <option value="TSI">Toscans (Italy)</option>
               </select>
             </div>
-	          <form>
-		          <label for='population' class='setting-label'>Select your population</label>
+            <form>
+              <label for='toolbar-population' class='setting-label'>
+                Select your population
+              </label>
               <select id='toolbar-population' name='population'>
-                <!-- 
-                  I don't like having to copy and paste, 
-                  but these should always be the same as above.
+                <!--
+                I don't like having to copy and paste,
+                but these should always be the same as above.
                 -->
-                  
-                <option id='dummy' value="null">Select a population</option>
+
+                <option id='dummy-2' value="null">Select a population</option>
                 <option value="CEU">European</option>
                 <option value="YRI">African</option>
                 <option value="CHB">Chinese</option>
@@ -146,44 +172,76 @@
                 <option value="MKK">Maasai (Kenya)</option>
                 <option value="TSI">Toscans (Italy)</option>
               </select>
-	          </form>
-	        </div>
+            </form>
+          </div>
         </div>
+        
       </div>
-      
       <br class='clear' />
-      
+
       <div id='tabs'>
         <ul>
-          <li>
+          <span style='float:left' id='module_selection' class='setting'>
+            <input type='radio' id='module_start' name='module_selection'/>
+            <label for='module_start'>
+              Start
+            </label>&nbsp;
+            <input type='radio' id='module_lookup' name='module_selection'/>
+            <label for='module_lookup'>
+              Lookup
+            </label>&nbsp;
+            <input type='radio' id='module_clinical' name='module_selection'/>
+            <label for='module_clinical'>
+              Clinical
+            </label>&nbsp;
+            <input type='radio' id='module_traits' name='module_selection'/>
+            <label for='module_traits'>
+              Traits
+            </label>&nbsp;
+            <input type='radio' id='module_ancestry' name='module_selection'/>
+            <label for='module_ancestry'>
+              Ancestry
+            </label>&nbsp;
+            <span id='module-arrow' style='display: none'>&#x2192;</span>
+          </span>
+          <li class='start'>
             <a href='#start'>Start</a>
           </li>
-          <li>
+          <li class='lookup'>
             <a href='#lookup'>Lookup</a>
           </li>
-          <li>
+          <li class='traits'>
             <a href='#gwas'>GWAS</a>
           </li>
-          <li>
+          <li class='traits'>
             <a href='#height'>Height</a>
           </li>
-          <li>
+          <li class='ancestry'>
             <a href='#similarity'>Similarity</a>
           </li>
-          <li>
+          
+          <li class='clinical'>
             <a href='#diabetes'>Diabetes</a>
           </li>
-          <li>
+          <li class='clinical'>
+            <a href='#disease'>Disease</a>
+          </li>
+	        <li class='clinical'>
             <a href='#warfarin'>Warfarin</a>
           </li>
-          <li>
+          <li class='traits'>
             <a href='#longevity'>Longevity</a>
           </li>
-          <li>
+          <li class='traits'>
+            <a href='#neandertal'>Neandertal</a>
+          </li>
+          <li class='ancestry'>
             <a href='#pca'>PCA</a>
           </li>
+          <li class='ancestry'>
+            <a href='#painting'>Painting</a>
+          </li>
         </ul>
-        
         <div id='start'>
         </div>
         <div id='lookup'>
@@ -194,14 +252,65 @@
         </div>
         <div id='similarity'>
         </div>
+        <div id='disease'>
+        </div>
         <div id='diabetes'>
         </div>
         <div id='warfarin'>
         </div>
         <div id='longevity'>
         </div>
+        <div id='neandertal'>
+        </div>
         <div id='pca'>
         </div>
+        <div id='painting'>
+        </div>
+      </div>
+      <div id='settings' title='Advanced Settings' class='dialog hidden'>
+        
+        <div class='advanced-setting'>
+	        <div class='label left'>
+	          LD cutoff: r<sup>2</sup> &#x2265 <span id='amount'></span>
+            <br/>
+            <br/>
+            Select a theme:
+	        </div>
+	        
+	        <div class='right'>
+		        <div id='ld-slider'></div>
+            <br/>
+            <br/>
+            <div id="ThemeRoller"></div>
+		      </div>
+          
+			    <br class='clear' />
+		    </div>
+      </div>
+      
+      
+      <div id='looking-up' title='Loading' class='dialog hidden'>
+        Please be patient. This may take a few moments.
+        <br/>
+        <br/>
+      </div>
+      <div id='imputing-lots' title='Imputing' class='dialog hidden'>
+        Imputing <span id='imputing-number'></span> SNPs. Please be patient.
+        This will take a while.
+        <br/>
+        <br/>
+        <strong>Done</strong>: <span id='snps-imputed'>0</span> SNPs
+        <div id='imputing-bar' class='progress-bar'>
+        </div>
+      </div>
+      <div id='confirm-submit-snps' title='Submit your SNPs?' class='hidden'>
+        Are you sure you want to submit these SNPs?
+      </div>
+      <div id='thank-you' title='Thank You' class='dialog hidden'>
+        Your information has been submitted.
+      </div>
+      <div id='nothing' title='Oops' class='dialog hidden'>
+        Nothing was submitted.
       </div>
       <div id='footer'>
         &copy; 2011 Karczewski, Tatonetti, Tirrell and Zimmerman

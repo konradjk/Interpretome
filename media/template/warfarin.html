@@ -1,139 +1,126 @@
 <div class='main'>
-    <h2>Enter information to calculate warfarin dose</h2>
-    <div>
-        <h3>Age</h3>
-        <div class='description'>
-            <div id='help-warfarin-help'>
-                Vitamin K absorption decreases as you age. Older individuals will require less warfarin.
-            </div>
-        </div>
-        <textarea id='age-textarea' rows='1' cols='6'></textarea>
-        <span id='please-enter-age' title='Please Enter Your Age' class='required hidden'>
-            Please enter your age.
-        </span>
-
-        <h3>Height</h3>
-        <div class='description'>
-            <div id='help-warfarin-help'>
-                Height and weight are common clinical factors. Individuals with more body mass will require more warfarin.
-            </div>
-        </div>
-        <textarea id='height-textarea' rows='1' cols='6'></textarea>
-        <span id='height_units' class='setting'>
-            <input type='radio' id='cm' name='height_units' checked/>
-            <label for='cm'>cm</label>
-            <input type='radio' id='in' name='height_units' />
-            <label for='in'>in</label>
-        </span>
-        <span id='please-enter-height' title='Please Enter Your Height' class='required hidden'>
-            Please enter your height.
-        </span>
-        
-        <h3>Weight</h3>
-            <textarea id='weight-textarea' rows='1' cols='6'></textarea>
-        <span id='weight_units' class='setting'>
-            <input type='radio' id='kg' name='weight_units' checked/>
-            <label for='kg'>kg</label>
-            <input type='radio' id='lbs' name='weight_units' />
-            <label for='lbs'>lbs</label>
-        </span>
-        <span id='please-enter-weight' title='Please Enter Your Weight' class='required hidden'>
-            Please enter your weight.
-        </span>
-        <br/>
-
-        <h3>Race</h3>
-        <div class='description'>
-            <div id='help-warfarin-help'>
-                Not all genetic factors for warfarin dosing are known.
-                Race can still encapsulate these residual genetic factors.
-            </div>
-        </div>
-        <div id='race' class='setting'>
-            <input type='radio' id='race_asian' name='race' />
-            <label for='race_asian'>Asian</label>
-            <input type='radio' id='race_black' name='race' />
-            <label for='race_black'>Black</label>
-            <input type='radio' id='race_white' name='race' />
-            <label for='race_white'>White</label>
-            <input type='radio' id='race_other' name='race' />
-            <label for='race_other'>Mixed/Other</label>
-            <span id='please-select-race' title='Please Select Your Race' class='required hidden'>
-                Please select your race.
-            </span>
-        </div>
+  <h2>Pharmacogenomics of Warfarin Dosing</h2>
+  <br/>
+  <div>
+    <h3>Age</h3>
+    <div class='description'>
+      Vitamin K absorption decreases as you age. Older individuals will require less warfarin.
+    </div>
+    <textarea id='age-textarea' rows='1' cols='6'></textarea>
+    <span id='please-enter-age' title='Please Enter Your Age' class='required hidden'>
+      Please enter your age.
+    </span>
     
-        <h3>Are you taking any of these enzyme inducers
-        <br/>(carbamazepine, phenytoin, rifampin, or rifampicin)?</h3>
-        <div class='description'>
-            <div id='help-warfarin-help'>
-                These drugs induce Cytochrome P450 enzymes, which metabolize warfarin.
-                Inducing these drugs will require additional warfarin.
-            </div>
-        </div>
-        <div id='enzyme' class='setting'>
-            <input type='radio' id='enzyme_yes' name='enzyme' />
-            <label for='enzyme_yes'>Yes</label>
-            <input type='radio' id='enzyme_no' name='enzyme' />
-            <label for='enzyme_no'>No</label>
-            <span id='please-select-enzyme' title='Please Select Your Enzyme Inducer Status' class='required hidden'>
-                Please select whether you are taking any enzyme inducers.
-            </span>
-        </div>
-        
-        <h3>Are you taking amiodarone?</h3>
-        <div class='description'>
-            <div id='help-warfarin-help'>
-                Amiodarone is an important interacting drug with warfarin.
-                Individuals taking amiodarone should take less warfarin.
-            </div>
-        </div>
-        <div id='amiodarone' class='setting'>
-            <input type='radio' id='amiodarone_yes' name='amiodarone' />
-            <label for='amiodarone_yes'>Yes</label>
-            <input type='radio' id='amiodarone_no' name='amiodarone' />
-            <label for='amiodarone_no'>No</label>
-            <span id='please-select-amiodarone' title='Please Select Your Amiodarone Status' class='required hidden'>
-               Please select whether you are taking any amiodarone.
-            </span>
-        </div>
-        <br />
-        
-        <button id='warfarin-dose' type='submit'>
-            Calculate my Warfarin Dose
-        </button>
-        <button id='help-warfarin' class='help-button'>
-            About Warfarin
-        </button>
+    <h3>Height</h3>
+    <div class='description'>
+      Height and weight are common clinical factors. Individuals with more body mass will require more warfarin.
+    </div>
+    <textarea id='height-textarea' rows='1' cols='6'></textarea>
+    <span id='height_units' class='setting'>
+      <input type='radio' id='cm' name='height_units' checked/>
+      <label for='cm'>cm</label>
+      <input type='radio' id='in' name='height_units' />
+      <label for='in'>in</label>
+    </span>
+    <span id='please-enter-height' title='Please Enter Your Height' class='required hidden'>
+      Please enter your height.
+    </span>
+    
+    <h3>Weight</h3>
+    <textarea id='weight-textarea' rows='1' cols='6'></textarea>
+    <span id='weight_units' class='setting'>
+      <input type='radio' id='kg' name='weight_units' checked/>
+      <label for='kg'>kg</label>
+      <input type='radio' id='lbs' name='weight_units' />
+      <label for='lbs'>lbs</label>
+    </span>
+      <span id='please-enter-weight' title='Please Enter Your Weight' class='required hidden'>
+        Please enter your weight.
+      </span>
+      <br/>
+      
+      <h3>Race</h3>
+      <div class='description'>
+        Not all genetic factors for warfarin dosing are known.
+        Race can still encapsulate these residual genetic factors.
+      </div>
+      <div id='race' class='setting'>
+        <input type='radio' id='race_asian' name='race' />
+        <label for='race_asian'>Asian</label>
+        <input type='radio' id='race_black' name='race' />
+        <label for='race_black'>Black</label>
+        <input type='radio' id='race_white' name='race' />
+        <label for='race_white'>White</label>
+        <input type='radio' id='race_other' name='race' />
+        <label for='race_other'>Mixed/Other</label>
+        <span id='please-select-race' title='Please Select Your Race' class='required hidden'>
+          Please select your race.
+        </span>
+      </div>
+      
+      <h3>Are you taking any of these enzyme inducers
+      <br/>(carbamazepine, phenytoin, rifampin, or rifampicin)?</h3>
+      <div class='description'>
+        These drugs induce Cytochrome P450 enzymes, which metabolize warfarin.
+        Inducing these drugs will require additional warfarin.
+      </div>
+      <div id='enzyme' class='setting'>
+        <input type='radio' id='enzyme_yes' name='enzyme' />
+        <label for='enzyme_yes'>Yes</label>
+        <input type='radio' id='enzyme_no' name='enzyme' />
+        <label for='enzyme_no'>No</label>
+        <span id='please-select-enzyme' title='Please Select Your Enzyme Inducer Status' class='required hidden'>
+          Please select whether you are taking any enzyme inducers.
+        </span>
+      </div>
+      
+      <h3>Are you taking amiodarone?</h3>
+      <div class='description'>
+        Amiodarone is an important interacting drug with warfarin.
+        Individuals taking amiodarone should take less warfarin.
+      </div>
+      <div id='amiodarone' class='setting'>
+      <input type='radio' id='amiodarone_yes' name='amiodarone' />
+      <label for='amiodarone_yes'>Yes</label>
+      <input type='radio' id='amiodarone_no' name='amiodarone' />
+      <label for='amiodarone_no'>No</label>
+      <span id='please-select-amiodarone' title='Please Select Your Amiodarone Status' class='required hidden'>
+        Please select whether you are taking any amiodarone.
+      </span>
+      </div>
+      <br />
+      <button id='warfarin-dose' type='submit'>
+        Calculate my Warfarin Dose
+      </button>
     </div>
     <br />
     <table id='warfarin-graph-table' class='hidden'>
-        <tr>
-            <th>Clinical</th>
-            <th>Pharmacogenomic</th>
-            <th>Extended</th>
-        </tr>
-        <script id='warfarin-graph-template' type='text/template'>
-            <tr align=center><td><%= clinical %></td><td><%= genetic %></td><td><%= extended %></td></tr>
-        </script>
+      <tr>
+        <th>Clinical</th>
+        <th>Pharmacogenomic</th>
+        <th>Extended</th>
+      </tr>
+      <script id='warfarin-graph-template' type='text/template'>
+        <tr align=center><td><%= clinical %></td><td><%= genetic %></td><td><%= extended %></td></tr>
+      </script>
     </table>
     <br>
     <table id='warfarin-table' class='results-table hidden'>
-        <tr>
-            <th>Feature</th>
-            <td class="line"><td/>
-            <th>Multiplier</th>
-            <th>Personal Factor</th>
-            <th>Running Total</th>
-            <td class="line"><td/>
-            <th>Multiplier</th>
-            <th>Personal Factor</th>
-            <th>Running Total</th>
-        </tr>
-        <script id='warfarin-dose-template' type='text/template'>
-            <tr><td><%= feature %></td><td class="line"><td/><td><%= clinical_multiplier %></td><td><%= clinical_value %></td><td><%= clinical_total %></td>
-            <td class="line"><td/><td><%= genetic_multiplier %></td><td><%= genetic_value %></td><td><%= genetic_total %></td></tr>
-        </script>
+      <tr>
+        <th>Feature</th>
+        <td class="line"><td/>
+        <th>Multiplier</th>
+        <th>Personal Factor</th>
+        <th>Running Total</th>
+        <td class="line"><td/>
+        <th>Multiplier</th>
+        <th>Personal Factor</th>
+        <th>Running Total</th>
+      </tr>
+      <script id='warfarin-dose-template' type='text/template'>
+        <tr><td><%= feature %></td><td class="line"><td/><td><%= clinical_multiplier %></td><td><%= clinical_value %></td><td><%= clinical_total %></td>
+        <td class="line"><td/><td><%= genetic_multiplier %></td><td><%= genetic_value %></td><td><%= genetic_total %></td></tr>
+      </script>
     </table>
   <br>
   <div class='submit'>
@@ -146,35 +133,27 @@
   <div id='confirm-submit-doses' title='Submit your Doses?' class='hidden'>
     Are you sure you want to submit your warfarin doses?
   </div>
-  <div id='thank-you' title='Thank You' class='hidden'>
-    Your doses have been submitted.
-  </div>
-  <div id='nothing' title='Oops' class='hidden'>
-    Nothing was submitted.
-  </div>
 </div>
 
 <div class='help'>
-    <div id='help-warfarin-help'>
-        <h2>Warfarin</h2>
-        <p>
-        Warfarin is an anticoagulant prescribed to millions of patients in the United States, with over 30 million prescriptions filled per year.
-        However, the drug has a very narrow therapeutic range:
-        too much of the drug can cause hemorrhaging, while too little will not have the desired effect in preventing blood clots.
-        </p><br/>
-        <p>
-        This utility calculates an optimal starting dose of warfarin, using a clinical and pharmacogenetic algorithm.
-        These are based on a well-established <a href='http://www.nejm.org/doi/full/10.1056/NEJMoa0809329'>calculator</a>
-        (using the two major genetic components, VKORC1 and CYP2C9)
-        as well as an <a href='http://www.ncbi.nlm.nih.gov/pubmed/20442691?dopt=AbstractPlus'>extension</a>
-        (which includes CYP4F2).
-        </p><br/>
-        <p>
-        Each factor has a multiplier associated with it, derived from a linear regression model.
-        In the table on the left, the cumulative total is shown, multiplying your personal factor by the multiplier.
-        The final total is squared to compute your predicted starting dose.
-        </p><br/>
-    </div>
+  <h2>Warfarin</h2>
+  <p>
+  Warfarin is an anticoagulant prescribed to millions of patients in the United States, with over 30 million prescriptions filled per year.
+  However, the drug has a very narrow therapeutic range:
+  too much of the drug can cause hemorrhaging, while too little will not have the desired effect in preventing blood clots.
+  </p><br/>
+  <p>
+  This utility calculates an optimal starting dose of warfarin, using a clinical and pharmacogenetic algorithm.
+  These are based on a well-established <a href='http://www.nejm.org/doi/full/10.1056/NEJMoa0809329'>calculator</a>
+  (using the two major genetic components, VKORC1 and CYP2C9)
+  as well as an <a href='http://www.ncbi.nlm.nih.gov/pubmed/20442691?dopt=AbstractPlus'>extension</a>
+  (which includes CYP4F2).
+  </p><br/>
+  <p>
+  Each factor has a multiplier associated with it, derived from a linear regression model.
+  In the table on the left, the cumulative total is shown, multiplying your personal factor by the multiplier.
+  The final total is squared to compute your predicted starting dose.
+  </p><br/>
 </div>
 
-<br class='clear'>
+	<br class='clear' />

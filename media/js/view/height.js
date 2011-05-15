@@ -7,12 +7,11 @@ window.HeightView = Backbone.View.extend({
  
   events: {
     'click #height': 'click_height',
-    'click .help-button': 'click_help',
     'click #submit-height': 'check_submit_height'
   },
 
   initialize: function() {
-    _.bindAll(this, 'click_height', 'click_help',
+    _.bindAll(this, 'click_height',
               'calculate_height', 'get_family_height',
               'adjust_height', 'loaded', 
               'check_submit_height', 'submit_height');
@@ -35,6 +34,18 @@ window.HeightView = Backbone.View.extend({
 	  this.el.find('.help > div').show();
     this.el.find('#submit-height').hide();
     this.has_loaded = true;
+    
+    $('#check-submit-height').dialog({
+      autoOpen: false, modal: true, resizable: false, buttons: {
+        'Okay!': function() {
+          $(this).dialog('close');
+          self.submit_height();
+		    },
+        'Cancel': function() {
+          $(this).dialog('close');
+        }
+      }
+    });
     this.priors = { "CEU" : {"male" : 178.9, "female" : 164.8 },
       "YRI" : {"male" : 178, "female" : 163.2 },
       "MEX" : {"male" : 170.6, "female" : 158.7 },
@@ -75,10 +86,7 @@ window.HeightView = Backbone.View.extend({
     
     var raw_height = this.el.find('#mom-height-textarea').val();
     
-    if (
-      $('#mom_height_units label[aria-pressed="true"]').attr('for') == 
-      'mom_height_units_in'
-    ) {
+    if ($('#mom_height_units label[aria-pressed="true"]').attr('for') == 'mom_height_units_in') {
       window.App.user.mom_height = check_inches(raw_height);
     } else {
       window.App.user.mom_height = check_float(raw_height);
@@ -221,32 +229,13 @@ window.HeightView = Backbone.View.extend({
   },
   
   check_submit_height: function() {
-    //console.log('Submitting');
-    var self = this;
-    $('#check-submit-height').dialog({
-      autoOpen: false, modal: true, resizable: false, buttons: {
-        'Okay!': function() {
-          $(this).dialog('close');
-          self.submit_height();
-		    },
-        'Cancel': function() {
-          $(this).dialog('close');
-        }
-      }
-    });
     $('#check-submit-height').dialog('open');
   },
   
   submit_height: function() {
     var submit_values = this.values;
     submit_values['exercise'] = 'class_height';
-    $.get('/submit/', submit_values, function(response) {
-      $('#submitted-height').dialog({
-        modal: true, resizable: false, buttons: {
-          'Okay!': function() {$(this).dialog('close');}
-        }
-      });
-    });
+    $.get('/submit/', submit_values, check_submission);
   }
   });
 });

@@ -1,44 +1,46 @@
 <div class='main'>
-	<h2>Enter information to calculate disease risk</h2>
+	<h2>GWAS Catalog</h2>
+  <br/>
+  Click to intersect your personal genome with the NHGRI Catalog.
 	<div>
-	  <button id='disease' type='submit'>
-	    Calculate my Disease Risk
+	  <button id='get-gwas' type='submit'>
+	    Show my GWAS SNPs
 	  </button>
-		<button id='help-disease' class='help-button'>About Disease</button>
 	</div>
-	<br />
-	<table id='disease-graph-table' class='hidden'>
-    <tr>
-	    <th>Clinical</th>
-      <th>Pharmacogenomic</th>
-      <th>Extended</th>
-    </tr>
-    <script id='disease-graph-template' type='text/template'>
-		  <tr align=center><td><%= clinical %></td><td><%= genetic %></td><td><%= extended %></td></tr>
-		</script>
-  </table>
-  <br>
-	<table id='disease-table' class='hidden'>
+  <br/>
+  <br/>
+	<table id='disease-table' class='results-table hidden'>
 	  <tr>
-	    <th>Feature</th>
-      <th>Multiplier</th>
-      <th>Personal Factor</th>
-      <th>Running Total</th>
-      <th>Multiplier</th>
-      <th>Personal Factor</th>
-      <th>Running Total</th>
+      <th>Disease</th>
+	    <th>dbSNP</th>
+      <th>Genotype</th>
+      <th>Risk Allele</th>
+      <!--<th>Genes</th>-->
+      <th>OR</th>
+      <th>P-Value</th>
+      <th>Study Size</th>
+      <th>Link</th>
+      <th>Imputed from</th>
+      <th>R squared</th>
 	  </tr>
 	  <script id='disease-template' type='text/template'>
-		  <tr><td><%= feature %></td><td><%= clinical_multiplier %></td><td><%= value %></td><td><%=  clinical_total %></td>
-      <td><%= genetic_multiplier %></td><td><%= value %></td><td><%=  genetic_total %></td></tr>
+		  <tr>
+      <td><%= disease_trait %></td>
+      <td><%= strongest_snp %></td><td><%= genotype %></td><td><%= risk_allele %></td>
+      <!--<td><%=  reported_genes %></td>-->
+      <td><%=  or_or_beta %></td><td><%=  p_value %></td>
+      <!--<td><%=  initial_sample_size %></td>-->
+      <td><a href='<%=  link %>'><%=  pubmedid %></a></td>
+      <td><%= imputed_from %></td>
+      <td><%= r_squared %></td>
 		</script>
 	</table>
 	
 </div>
 
 <div class='help'>
-  <div id='help-warfarin-help'>
-    <h2>Warfarin is an anticoagulant, etc.</h2>
+  <div id='help-disease-help'>
+    <h2>GWAS Catalog</h2>
   </div>
 </div>
 
