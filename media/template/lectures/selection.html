@@ -1,0 +1,22 @@
+<table id='selection_table' class='results-table hidden'>
+  <tr>
+    <th class='dbsnp'>dbSNP</th>
+    <th class='dbsnp'>Genotype</th>
+    <th>Ancestral allele</th>
+    <th>Selected allele</th>
+    <th>Genes</th>
+    <th class='imputed'>Imputed from</th>
+    <th class='rsq'>R<sup>2</sup></th>
+  </tr>
+  <script id='selection_template' type='text/template'>
+    <tr>
+      <td><%= dbsnp %></td>
+      <td><%= genotype %></td>
+      <td><%= ancestral %></td>
+      <td><%= selected %></td>
+      <td><%= genes %></td>
+      <td class='imputed'><%= imputed_from %> <%= explain %></td>
+      <td class='rsq'><%= r_squared %></td>
+    </tr>
+  </script>
+</table>

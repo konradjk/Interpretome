@@ -14,6 +14,7 @@ window.AppView = Backbone.View.extend({
   initialize: function() {
     _.bindAll(this, 
       'change_genome', 'clear_genome',
+      'check_genome', 'check_any_genome',
 	    'change_population', 'change_population_from_toolbar',
 	    'change_population_from_check',
       'select_module', 'change_module',
@@ -23,23 +24,35 @@ window.AppView = Backbone.View.extend({
   
   reverse_routes: {
     'start' : 'start',
-    'lookup' : 'lookup',
-    'diabetes': 'clinical',
-    'warfarin': 'clinical',
-    'disease': 'clinical',
     
-    'gwas': 'traits',
-    'height': 'traits',
-    'longevity': 'traits',
-    'neandertal': 'traits',
+    'lookup' : 'lookup',
+    
+    'explore': 'explore',
+    
+    'diabetes': 'clinical',
+    'disease': 'clinical',
+    'warfarin': 'clinical',
+    'pharmacogenomics': 'clinical',
     
     'similarity': 'ancestry',
     'pca': 'ancestry',
-    'painting': 'ancestry'
+    'painting': 'ancestry',
+    'family': 'ancestry'
   },
   
   render: function() {
-    this.el.find('#advanced-settings').hide();
+    $('#advanced').hide();
+    $('#clear-genome').button({ icons: {primary: 'ui-icon-circle-close'} }).show();
+    $('#advanced-settings').button().show();
+    $('#full-genome-tooltip').css('display: none');
+    $('#full-genome-bar').mouseover(function(){
+			$('#full-genome-tooltip').css({display:"none"}).fadeIn(50);
+		}).mousemove(function(kmouse){
+			$('#full-genome-tooltip').css({left:kmouse.pageX+15, top:kmouse.pageY+15});
+		}).mouseout(function(){
+			$('#full-genome-tooltip').fadeOut(50);
+		});
+
     this.el.find('#module_selection').buttonset();
     this.el.find('#tabs').tabs({
       select: function(event, ui) {
@@ -71,7 +84,7 @@ window.AppView = Backbone.View.extend({
       $('.' + $(v).attr('for').replace('module_', '')).hide(speed);
     });
     
-    if (module == 'start' || module == 'lookup' || module == undefined) {
+    if (module == 'start' || module == 'lookup' || module == 'explore' || module == undefined) {
       $('#module-arrow').hide(speed);
       if (module != undefined) {
         window.location.hash = '#' + module;
@@ -83,28 +96,17 @@ window.AppView = Backbone.View.extend({
   },
   
   change_genome: function(event) {
-    //var load_progress = document.querySelector('#percent');
-    //load_progress.style.width = '0%';
-    //load_progress.textContent = '0%';
-    
-    //var parse_progress = document.querySelector('#percent_parsed');
-    //parse_progress.style.width = '0%';
-    //parse_progress.textContent = '0%';
-    
-    this.el.find('#loading-genome').dialog({modal: true, resizable: false});
+    $('#loading-genome').dialog('open');
     this.el.find('.progress-bar').progressbar({value: 0});
     this.el.find('.progress-bar > div').css('background', get_secondary_color());
     
     var reader = new FileReader();
     
-    // I think this would refer to reader. Not actually sure, though.
     var self = this;
     reader.onprogress = function(event) {
       if (event.lengthComputable) {
         var percent = Math.round((event.loaded / event.total) * 100);
         if (percent < 100) {
-          //load_progress.style.width = percentLoaded + '%';
-          //load_progress.textContent = percentLoaded + '%';
           self.el.find('#loading-bar').progressbar('option', 'value', percent);
         }
       }
@@ -113,10 +115,7 @@ window.AppView = Backbone.View.extend({
     reader.onloadend = function(event) {
       $('#loading-bar').progressbar('option', 'value', 100);
       $('#genome label, #genome input').hide();
-      $('#clear-genome').button({
-        icons: {primary: 'ui-icon-circle-close'}
-      }).show();
-      $('#advanced-settings').button().show();
+      $('#advanced').show();
       window.App.user.parse_genome(event.target.result.split('\n'));
       
       // Should this be here?
@@ -162,8 +161,8 @@ window.AppView = Backbone.View.extend({
     ).attr('selected', true);
   },
   
-  check_genome: function() {
-    if (_.isEmpty(this.user.snps)) {
+  check_any_genome: function(name) {
+    if (_.isEmpty(this[name].snps)) {
       this.el.find('#please-load-genome').dialog({
         modal: true, resizable: false, width: 400, buttons: {
           'Cancel': function() {$(this).dialog('close');}
@@ -172,6 +171,10 @@ window.AppView = Backbone.View.extend({
       return false;
     }
     return true;
+  },
+  
+  check_genome: function() {
+    this.check_any_genome('user');
   },
   
   check_population: function() {

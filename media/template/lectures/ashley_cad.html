@@ -1,0 +1,26 @@
+<table id='ashley_cad_table' class='results-table hidden'>
+  <tr>
+    <th class='dbsnp'>dbSNP</th>
+    <th class='dbsnp'>Genotype</th>
+    <th class='risk_allele'>Risk</th>
+    <th class='risk_frequency'>Risk frequency</th>
+    <th class='genes'>Genes</th>
+    <th class='pvalue'>P-value</th>
+    <th class='odds_ratio'>OR</th>
+    <th class='imputed'>Imputed From</th>
+    <th class='rsq'>R<sup>2</sup></th>
+  </tr>
+  <script id='ashley_cad_template' type='text/template'>
+    <tr>
+      <td class='key'><%= dbsnp %></td>
+      <td class='value'><%= genotype %></td>
+      <td><%= risk_allele %></td>
+      <td><%= risk_frequency %></td>
+      <td><%= genes %></td>
+      <td><%= combined_p %></td>
+      <td><%= combined_or %></td>
+      <td class='imputed'><%= imputed_from %> <%= explain %></td>
+      <td class='rsq'><%= r_squared %></td>
+    </tr>
+  </script>
+</table>

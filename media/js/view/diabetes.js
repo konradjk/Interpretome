@@ -34,8 +34,6 @@ window.DiabetesView = Backbone.View.extend({
 	  this.el.append(response);
 	  
 	  this.el.find('button').button();
-	  this.el.find('.help-button').button({icons: {primary: 'ui-icon-help'}});
-	  
 	  match_style(this.el);
 	  
 	  this.diabetes_snp_template = this.el.find('#diabetes-snp-template').html();

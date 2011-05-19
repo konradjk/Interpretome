@@ -24,5 +24,6 @@ urlpatterns = patterns('interpretome.application.views',
   
   (r'disease/get_gwas_catalog/$', 'get_gwas_catalog'),
   (r'^diabetes/$', 'diabetes'),
+  (r'^get_pharmacogenomics_snps/$', 'get_pharmacogenomics_snps'),
   (r'^get_painting_params/$', 'get_painting_params')
 )

@@ -1,0 +1,22 @@
+<table id='snyder_binding_table' class='results-table hidden'>
+  <tr>
+    <th>dbSNP</th>
+    <th>Genotype</th>
+    <th>Binding Level</th>
+    <th>P-Value</th>
+    <th>Genes</th>
+    <th>Imputed From</th>
+    <th>R<sup>2</sup></th>
+  </tr>
+  <script id='snyder_binding_template' type='text/template'>
+    <tr>
+      <td class='key'><%= dbsnp %></td>
+      <td class='value'><%= genotype %></td>
+      <td><%= binding_level %></td>
+      <td><%= pvalue %></td>
+      <td><%= genes %></td>
+      <td><%= imputed_from %></td>
+      <td><%= r_squared %></td>
+    </tr>
+  </script>
+</table>

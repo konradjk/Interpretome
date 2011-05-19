@@ -2,6 +2,9 @@ $(function() {
 window.PaintingView = Backbone.View.extend({
   el: $('#painting'),
   has_loaded: false,
+  all_paintings_m: [],
+  all_paintings_f: [],
+  all_positions: [],
   
   events: {
     'click #compute-painting': 'click_compute_painting'
@@ -12,8 +15,8 @@ window.PaintingView = Backbone.View.extend({
       'loaded', 'got_painting_params',
       'to_flip_or_not_to_flip', 'calculate_score',
       'get_best_population', 'smooth', 'find_mode',
-      'init_probs', 'get_prior',
-      'assign_population',
+      'init_probs', 'get_prior', 'calculate_painting',
+      'assign_population', 'update_counter',
       'compute_weighted_average',
       'paint_chromosomes',
       'paint_chromosome',
@@ -30,13 +33,18 @@ window.PaintingView = Backbone.View.extend({
 	  this.el.append(response);
 	  this.el.find('button').button();
     $('#painting_options').buttonset();
+    this.el.find('#advanced-painting').accordion({autoHeight: true, minHeight: 1000, collapsible: true, active: false});
+    this.el.find('#painting-genome').dialog({modal: true, resizable: false, autoOpen: false});
+    $('#painting-bar').progressbar();
+    
     $('#smoothing-slider').slider({
-      min: 0, max: 50, step: 5, value: 5,
+      min: 0, max: 50, step: 5, value: 20, range: 'min',
       slide: function(event, ui) { document.getElementById('smoothing-constant').innerText = ui.value; }
     });
     document.getElementById('smoothing-constant').innerText = $("#smoothing-slider").slider("value");
+    
     $('#block-size-slider').slider({
-      min: 20, max: 400, step: 20, value: 100,
+      min: 20, max: 400, step: 20, value: 100, range: 'min',
       slide: function(event, ui) {
         document.getElementById('block-size').innerText = ui.value;
         document.getElementById('block-size-bp').innerText = 3*ui.value;
@@ -44,23 +52,42 @@ window.PaintingView = Backbone.View.extend({
     });
     document.getElementById('block-size').innerText = $("#block-size-slider").slider("value");
     document.getElementById('block-size-bp').innerText = 3*$("#block-size-slider").slider("value");
+    
+    $('#chisq-slider').slider({
+      min: 0, max: 1, step: 0.05, value: 0.25, range: 'min',
+      slide: function(event, ui) { document.getElementById('chisq-value').innerText = ui.value; }
+    });
+    document.getElementById('chisq-value').innerText = $("#chisq-slider").slider("value");
+    
+    $('#heterozygosity-slider').slider({
+      min: 0.5, max: 1, step: 0.05, value: 0.8, range: 'min',
+      slide: function(event, ui) { document.getElementById('heterozygosity-threshold').innerText = ui.value; }
+    });
+    document.getElementById('heterozygosity-threshold').innerText = $("#heterozygosity-slider").slider("value");
+    
     $('#bootstrap-slider').slider({
-      min: 5, max: 200, step: 5, value: 20,
+      min: 5, max: 50, step: 5, value: 10, range: 'min',
       slide: function(event, ui) { document.getElementById('bootstrap-iterations').innerText = ui.value; }
     });
     document.getElementById('bootstrap-iterations').innerText = $("#bootstrap-slider").slider("value");
+    
 	  match_style(this.el);
     this.has_loaded = true;
   },
   
   click_compute_painting: function(event) {
     if (window.App.check_genome() == false) return;
+    this.all_painting_m = [];
+    this.all_painting_f = [];
+    this.all_positions = [];
     var source = $('#painting_options label[aria-pressed="true"]').attr('for');
     //var resolution = $('#painting_resolution label[aria-pressed="true"]').attr('for');
-    $('#looking-up').dialog('open');
+    this.update_counter(0);
+    $('#painting-genome').dialog('open');
     $.get('/get_painting_params/', {
       source: source,
-      resolution: 'v2'
+      resolution: 'v2',
+      chisq: $("#chisq-slider").slider("value")
     }, this.got_painting_params);
   },
   
@@ -115,8 +142,18 @@ window.PaintingView = Backbone.View.extend({
     return (1/total);
   },
   
+  get_all_populations: function(row) {
+    pops = [];
+    $.each(row, function(key, v) {
+	if (key.match('_reffreq') != null) {
+	  pops.push(key.replace('_reffreq',''));
+	}
+    });
+    return pops;
+  },
+  
   assign_population: function(options, bootstrap) {
-    var threshold = 0.7;
+    var threshold = $("#heterozygosity-slider").slider("value");
     var high_threshold = threshold*bootstrap;
     var best = this.get_best_population(options);
     if (options[best] > high_threshold) {
@@ -138,6 +175,74 @@ window.PaintingView = Backbone.View.extend({
     return average;
   },
   
+  calculate_painting: function(chrom, this_chrom, block_size, smoothing, bootstrap, prior, chrom_info, all_populations) {
+    var self = this;
+    this.update_counter(chrom);
+    
+    var painting_m = [];
+    var painting_f = [];
+    var positions = [];
+    for (var i = 0; i < this_chrom.length; i += block_size) {
+      var options = self.init_probs(this_chrom[0], 0);
+      var snps = this_chrom.slice(i, i + block_size);
+      for (var j = 0; j < bootstrap; j += 1) {
+        var probs = self.init_probs(this_chrom[0], prior);
+        $.each(snps, function(i, v) {
+          var dbsnp = window.App.user.lookup(v['rsid']);
+          if (dbsnp != undefined) {
+            allele = dbsnp.genotype[Math.floor(Math.random()*2)];
+            var average = self.compute_weighted_average(v, probs);
+            $.each(v, function(key, value) {
+              if (key.match('_reffreq') != null) {
+                if (allele == v['refallele']) {
+                  update = value/(average);
+                } else {
+                  update = (1-value)/(1-average);
+                }
+                probs[key.replace('_reffreq', '')] *= update;
+              }
+            });
+          }
+        });
+        options[self.get_best_population(probs)]++; //omg.
+      }
+      results = self.assign_population(options, bootstrap);
+      var start_position = this_chrom[i]['position'];
+      if (i+(block_size-1) > this_chrom.length) {
+        var stop_position = this_chrom[this_chrom.length-1]['position'];
+      } else {
+        var stop_position = this_chrom[i+(block_size-1)]['position'];
+      }
+      positions.push([start_position, stop_position])
+      painting_m.push(results[0]);
+      painting_f.push(results[1]);
+    }
+    smoothed_m = self.smooth(painting_m, smoothing);
+    smoothed_f = self.smooth(painting_f, smoothing);
+    
+    this.all_painting_m.push(smoothed_m);
+    this.all_painting_f.push(smoothed_f);
+    this.all_positions.push(positions);
+    
+    this.update_counter(chrom);
+    
+    if (chrom == 22) {
+      this.paint_chromosomes(this.all_painting_m, this.all_painting_f, this.all_positions, chrom_info, all_populations);
+    }
+    
+    //return [smoothed_m, smoothed_f, positions];
+  },
+  
+  update_counter: function(chrom) {
+    $('#painting-bar').progressbar('option', 'value', 100*chrom/22);
+    if (chrom == 0) {      
+      document.getElementById('chrom-painted').innerHTML = 'Downloading';
+    } else {
+      document.getElementById('chrom-painted').innerHTML = 'Chromosome ' + chrom;      
+    }
+    $('#painting-bar > div').css('opacity', 100*chrom/22);
+  },
+  
   got_painting_params: function(response) {
     var block_size = $("#block-size-slider").slider("value");
     var smoothing = $("#smoothing-slider").slider("value");
@@ -146,111 +251,83 @@ window.PaintingView = Backbone.View.extend({
     var all_painting_f = [];
     var all_positions = [];
     var bootstrap = $("#bootstrap-slider").slider("value"); //wtf!?
-    var prior = self.get_prior(response[1][0]);
-    $.each(response, function(chrom, this_chrom) {
-      var painting_m = [];
-      var painting_f = [];
-      var positions = [];
-      for (var i = 0; i < this_chrom.length; i += block_size) {
-        var options = self.init_probs(this_chrom[0], 0);
-        var snps = this_chrom.slice(i, i + block_size);
-        for (var j = 0; j < bootstrap; j += 1) {
-          var probs = self.init_probs(this_chrom[0], prior);
-          $.each(snps, function(i, v) {
-            var dbsnp = window.App.user.lookup(v['rsid']);
-            if (dbsnp != undefined) {
-              allele = dbsnp.genotype[Math.floor(Math.random()*2)];
-              var average = self.compute_weighted_average(v, probs);
-              $.each(v, function(key, value) {
-                if (key.match('_reffreq') != null) {
-                  if (allele == v['refallele']) {
-                    update = value/(average);
-                  } else {
-                    update = (1-value)/(1-average);
-                  }
-                  probs[key.replace('_reffreq', '')] *= update;
-                }
-              });
-            }
-          });
-          options[self.get_best_population(probs)]++; //omg.
-        }
-        results = self.assign_population(options, bootstrap);
-        var start_position = this_chrom[i]['position'];
-        if (i+(block_size-1) > this_chrom.length) {
-          var stop_position = this_chrom[this_chrom.length-1]['position'];
-        } else {
-          var stop_position = this_chrom[i+(block_size-1)]['position'];
-        }
-        positions.push([start_position, stop_position])
-        painting_m.push(results[0]);
-        painting_f.push(results[1]);
-      }
-      smoothed_m = self.smooth(painting_m, smoothing);
-      smoothed_f = self.smooth(painting_f, smoothing);
-      
-      all_painting_m.push(smoothed_m);
-      all_painting_f.push(smoothed_f);
-      all_positions.push(positions);
-    });
-    //console.log(painting_m);
-    //console.log(painting_f);
-    //console.log(positions);
-    //smoothed_pos = this.smooth_positions(positions, smoothing);
-    console.log(all_painting_m);
-    //console.log(smoothed_m);
-    //console.log(smoothed_f);
-    //console.log(smoothed_pos);
+    var chroms = response['chromosomes'];
+    var prior = self.get_prior(chroms[1][0]);
+    var all_populations = self.get_all_populations(chroms[1][0]);
     
-    //this.paint_chromosomes(smoothed_m, smoothed_f, positions);
+    $.each(chroms, function(chrom, this_chrom) {
+      setTimeout(function(chrom, this_chrom){
+        self.update_counter(chrom);
+        painting = self.calculate_painting(chrom, this_chrom, block_size, smoothing, bootstrap, prior, response['chrom_info'], all_populations);
+        //all_painting_m.push(painting[0]);
+        //all_painting_f.push(painting[1]);
+        //all_positions.push(painting[2]);
+      }, 0, chrom, this_chrom);
+    });
+    
+    //this.paint_chromosomes(all_painting_m, all_painting_f, all_positions, response['chrom_info'], all_populations);
   },
   
-  paint_chromosomes: function(painting_m, painting_f, positions) {
+  paint_chromosomes: function(all_painting_m, all_painting_f, all_positions, chrom_info, all_populations) {
     
-    $('#looking-up').dialog('close');
+    $('#painting-genome').dialog('close');
     
     var canvas = document.getElementById('canvas');
     canvas.width = canvas.width; // clear the canvas
-    
-    // We want to scale the positions so they fit on the screen.
-    // new_pos = old_pos/m - b
-    var centromere_relpos = 0.525; // relative to size of chromosome
-    var chrom_length = 400;
-    var b = positions[0][0];
-    var m = (positions[positions.length-1][1]-b)/chrom_length;
-    var centromere_pos = (positions[Math.floor(positions.length*centromere_relpos)][1]-b)/m;
-    var long_arm = centromere_pos;
-    var short_arm = chrom_length - centromere_pos;
-    
-    var top_paint = {};
-    var bot_paint = {};
-    
-    for (i=0; i<painting_m.length; i++) {
-      top_pop = painting_m[i];
+    for (j = 0; j < all_painting_m.length; j++) {
+      var painting_m = all_painting_m[j];
+      var painting_f = all_painting_f[j];
+      var positions = all_positions[j];
+      //var positions = [];
+      //var painting_m = [];
+      //var painting_f = [];
+      
+      //$.each(flip_positions, function(i, v) {
+      //  positions.push([chrom_info[j][2] - v[0], chrom_info[j][2] - v[1]]);
+      //});
+      //var centromere_relpos = chrom_info[j][1]; // relative to size of chromosome
+      var centromere_relpos = 1.0-chrom_info[j][1]; // relative to size of chromosome
+      var chrom_length = 400*chrom_info[j][0]; // relative size of chromosome
+      var m = chrom_info[j][2]/chrom_length; // how to convert chrom pos to canvas position
+      var centromere_pos = centromere_relpos*(chrom_length);
+      var long_arm = centromere_pos;
+      var short_arm = chrom_length - centromere_pos;
+      
+      var top_paint = {};
+      var bot_paint = {};
+      
+      for (i=0; i<painting_m.length; i++) {
+        top_pop = painting_m[i];
       if (!(top_pop in top_paint)) {
         top_paint[top_pop] = []
       }
-      top_paint[top_pop].push([(positions[i][0]-b)/m,(positions[i][1]-b)/m])
+      x_pos = positions[i][0]/m;
+      y_pos = positions[i][1]/m;
+      
+      if (x_pos < long_arm & y_pos > long_arm) {
+        y_pos = long_arm;
+      }
+      
+      top_paint[top_pop].push([x_pos,y_pos]);
       
       bot_pop = painting_f[i];
       if (!(bot_pop in bot_paint)) {
         bot_paint[bot_pop] = []
       }
-      bot_paint[bot_pop].push([(positions[i][0]-b)/m,(positions[i][1]-b)/m])
+      bot_paint[bot_pop].push([x_pos,y_pos]);
     }
-    
+      
     var paint_coordinates = {
-      'top': top_paint, 
-      'bottom': bot_paint
+    'top': top_paint,
+  	'bottom': bot_paint
     };
-    
-    var all_populations = _.uniq(_.flatten(_.map(_.values(paint_coordinates), function(k) {
-      return _.keys(k);
-    })));
-    
-    this.paint_legend([1, 1], paint_coordinates);
-    this.paint_chromosome([1, 16*all_populations.length+20], 35, [long_arm, short_arm], paint_coordinates);
-    
+      
+      if (j == 0) {
+      	this.paint_legend([1, 1], paint_coordinates, all_populations);
+      }
+      
+      this.paint_chromosome([1, j*40+all_populations.length*16+10], 30, [long_arm, short_arm], paint_coordinates, all_populations);      
+    }
   },
   
   find_mode: function(populations) {
@@ -296,20 +373,16 @@ window.PaintingView = Backbone.View.extend({
     return smoothed;
   },
   
-  paint_legend: function(base, paint_coordinates) {
+  paint_legend: function(base, paint_coordinates, all_populations) {
     var alpha = 0.7;
     var fill_colors = _.map([
         'E41A1C', '377EB8', '4DAF4A', '984EA3', 'FF7F00', 
-        'FFFF33', 'A65628', 'F781BF', '999999'
+        'FFFF33', 'A65628', 'F781BF', '491D83', '187B7B','999999'
       ], function(v) {
       return 'rgba(' + _.map(_.range(0, 6, 2), function(i) {
         return parseInt('0x' + v.slice(i, i + 2));
       }).join(', ') + ', ' + alpha + ')';
     });
-    
-    var all_populations = _.uniq(_.flatten(_.map(_.values(paint_coordinates), function(k) {
-      return _.keys(k);
-    })));
     
     var canvas = document.getElementById('canvas');
     var context = canvas.getContext('2d');
@@ -319,18 +392,18 @@ window.PaintingView = Backbone.View.extend({
     $.each(all_populations, function(i, pop) {
       context.fillStyle = fill_colors[_.indexOf(all_populations, pop)];
       context.fillRect(base[0], base[1]+i*16, 30, 14);
-      context.fillText(pop, base[0] + 40, base[1]+i*17+12);
+      context.fillText(pop.toUpperCase(), base[0] + 40, base[1]+i*17+12);
     });
     
   },
   
   // Putting this here, until we find a better place for it.
-  paint_chromosome: function (base, size, arms, paint_coordinates) {
+  paint_chromosome: function (base, size, arms, paint_coordinates, all_populations) {
     // define the colors
     var alpha = 0.7;
 	  var fill_colors = _.map([
 	    'E41A1C', '377EB8', '4DAF4A', '984EA3', 'FF7F00', 
-	    'FFFF33', 'A65628', 'F781BF', '999999'
+	    'FFFF33', 'A65628', 'F781BF', '491D83', '187B7B', '999999'
 	  ], function(v) {
       return 'rgba(' + _.map(_.range(0, 6, 2), function(i) {
         return parseInt('0x' + v.slice(i, i + 2));
@@ -419,10 +492,6 @@ window.PaintingView = Backbone.View.extend({
     var y_top = base[1];
     var y_bottom = base[1] + size;
     var y_middle = (y_top + y_bottom) / 2;
-    
-    var all_populations = _.uniq(_.flatten(_.map(_.values(paint_coordinates), function(k) {
-      return _.keys(k);
-    })));
 
     $.each(_.keys(paint_coordinates), function(i, position) {
       $.each(_.keys(paint_coordinates[position]), function(j, population) {

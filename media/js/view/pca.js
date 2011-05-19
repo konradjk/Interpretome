@@ -126,7 +126,6 @@ window.PCAView = Backbone.View.extend({
   },
   
   get_pca_scores: function(response) {
-    console.log(response);
     var pc1 = 0;
     var pc2 = 0;
     $.each(response['snp_ids'], function(i, v) {

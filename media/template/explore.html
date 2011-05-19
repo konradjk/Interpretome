@@ -1,0 +1,72 @@
+<div class='main'>
+  <h2>Explore</h2>
+  <br/>
+  <div> 
+    Choose an exercise to explore your genome.
+    <br />
+    <div id='exercises'>
+      <select id='toolbar-exercise' name='exercise'>
+        <option id='dummy-2' value="null">Select an exercise</option>
+        <option value="null">-----------------</option>
+        <option value="eqtl">eQTLs</option>
+        <option value="selection">Selection</option>
+        <option value="neandertal">Neandertal</option>
+        <option value="longevity">Exceptional Longevity</option>
+        <option value="height">Height</option>
+        <option value="null">-----------------</option>
+        <option value="ashley_cad">CAD SNPs (4/6, Euan Ashley)</option>
+        <option value="tang_ancestry">Ancestry SNPs (4/13, Hua Tang)</option>
+        <option value="altman_pgx">Pharmacogenomic SNPs (4/20, Russ Altman)</option>
+        <option value="butte_diabetes">Diabetes SNPs (5/4, Atul Butte)</option>
+        <option value="assimes_cad">MI and CAD SNPs (5/11, Themistocles Assimes)</option>
+        <option value="snyder_binding">Binding SNPs (5/18, Mike Snyder)</option>
+        <!--<option value="class_writeups">Class SNPs (5/23)</option>-->
+        <!--<option value="mignot_narcolepsy">Narcolepsy SNPs (5/25, Emmanuel Mignot)</option>-->
+        <!--<option value="kim_aging">Aging SNPs (6/1, Stuart Kim)</option>-->
+      </select>
+    </div>
+    <br/>
+    <i>Coming soon: custom exercises.</i>
+    <br/>
+    <br />
+    <button id='lookup-exercise' type='submit' class='small-button'>
+      Lookup SNPs for exercise
+    </button>
+  </div> <!-- Exercise. -->
+  
+  <br/>
+  <!-- Submission buttons. -->
+  <br />
+  <div id='table-options'>
+		<button id='submit-exercise' class='small-button'>Submit my information</button>
+		<div id='confirm-submit-exercise' title='Confirm submission' class='dialog hidden'>
+		  Are you sure you want to submit your information?
+		</div>
+    <button id='clear-snps' type='submit' class='small-button'>
+      Clear Table
+    </button>
+    <button id='toggle-unknown-genotypes' type='submit' class='small-button'>
+      Hide unknown genotypes
+    </button>
+  </div>
+  
+  <div id='too-many-snps' title='Too Many' class='dialog hidden'>
+    You have entered too many SNPs. Your browser will not be able to display this many SNPs.
+  </div>
+  
+	<br />
+  <div id='exercise-content'>
+  </div>
+  
+</div>
+
+<div class='help'>
+  <div id='help-explore-help'>
+    <h2>Exploration</h2>
+    The world is your oyster.
+  </div>
+  <br/><br/>
+  <div id='help-exercise-help'>
+  </div>
+</div>
+<br class='clear' />

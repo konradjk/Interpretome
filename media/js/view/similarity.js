@@ -28,11 +28,6 @@ window.SimilarityView = Backbone.View.extend({
 	  
 	  // Widget initialization.
 	  this.el.find('button').button();
-	  this.el.find('.help-button').button({
-	    icons: {primary: 'ui-icon-help'}	    
-	  });
-	  this.el.find('.help > div').show();
-	  this.el.find('.description > div').show();
 	  this.el.find('.submit > div').hide();
     
     this.el.find('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});
@@ -40,6 +35,7 @@ window.SimilarityView = Backbone.View.extend({
 	  // Template initialization.
 	  this.similarity_snp_template = $('#similarity-snp-template').html();
 	  
+	  match_style(this.el);
 	  this.has_loaded = true;
   },
   

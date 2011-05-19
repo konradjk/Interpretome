@@ -1,0 +1,25 @@
+<div id='neandertal_chart'>
+  You have <strong><span id='neandertal_count'></span></strong> out of <span id='neandertal_total'></span> Neandertal alleles.
+</div>
+<br/>
+<br/>
+<table id='neandertal_table' class='results-table hidden'>
+  <tr>
+    <th>dbSNP</th>
+    <th>Derived Allele</th>
+    <th>Ancestral Allele</th>
+    <th>Out of Africa Allele</th>
+    <th>Genotype</th>
+    <th>Count</th>
+  </tr>
+  <script id='neandertal_template' type='text/template'>
+    <tr>
+      <td><%= dbsnp %></td>
+      <td><%= derived_allele %></td>
+      <td><%= ancestral_allele %></td>
+      <td><%= out_of_africa_allele %></td>
+      <td><%= genotype %></td>
+      <td><%= count %></td>
+    </tr>
+  </script>
+</table>

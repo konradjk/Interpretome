@@ -19,6 +19,8 @@
     <label for='popres_all'>POPRES: European</label>
     <input type='radio' id='khoisan_all' name='source' />
     <label for='khoisan_all'>African</label>
+    <input type='radio' id='behar_all' name='source' />
+    <label for='behar_all'>Mid-East</label>
   </div>
   <div id='level' class='setting'>
     Select which labels to display:
@@ -119,8 +121,7 @@
     While each individual's genome is unique in itself, signatures of ancestry are encoded within the genome.
     We can use these patterns to infer genetic ancestry using a dimensionality reduction method known as PCA.
     <br/><br/>
-    We will leverage data from various genetic diversity panels, such as <a href='http://en.wikipedia.org/wiki/Human_Genome_Diversity_Project'>HGDP</a>, <a href='http://hapmap.ncbi.nlm.nih.gov/'>Hapmap</a>, and
-    <a href='http://www.ncbi.nlm.nih.gov/pubmed/18760391'>POPRES</a>, which have generated genotype data from individuals around the world.
+    We will leverage data from various genetic diversity panels, such as HGDP, POPRES, and other data sources (below), which have generated genotype data from individuals around the world.
     <br/><br/>
     Here, we have pre-computed the principal components for these panels and we will "project" ourselves onto these datasets.
     <br/><br/>
@@ -134,6 +135,23 @@
     First, start with "HGDP: World" or "Hapmap: World" to explore your ancestry on a global population scale.
     For more detail in a specific region, choose the reference panel from the relevant population.
     If applicable, choose a level of detail for the results to be plotted.
+    <br/><br/>
+    Data sources:
+    <li>
+    <a href='http://en.wikipedia.org/wiki/Human_Genome_Diversity_Project'>HGDP</a>
+    </li>
+    <li>
+    <a href='http://hapmap.ncbi.nlm.nih.gov/'>Hapmap</a>
+    </li>
+    <li>
+    <a href='http://www.ncbi.nlm.nih.gov/pubmed/18760391'>POPRES</a>
+    </li>
+    <li>
+    <a href='http://www.pnas.org/content/108/13/5154.full'>African</a>
+    </li>
+    <li>
+    <a href='http://www.nature.com/nature/journal/v466/n7303/abs/nature09103.html'>Mid-East</a> (Data formatted by Zack from the <a href='http://www.harappadna.org/'>Harappa Ancestry Project</a>)
+    </li>
   </div>
 </div>
 

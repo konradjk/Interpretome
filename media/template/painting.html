@@ -5,30 +5,57 @@
   <div id='painting_options'>
     <input type="radio" id="hapmap2" name='painting' checked/><label for="hapmap2">Hapmap 2</label>
     <input type="radio" id="hapmap3" name='painting'/><label for="hapmap3">Hapmap 3</label>
+    <input type="radio" id="hapmap23" name='painting'/><label for="hapmap23">Hapmap 2+3</label>
+    <!--<input type="radio" id="popres" name='painting'/><label for="popres">Popres</label>-->
   </div>
   <br/>
-  <div>
-    <h3>Parameters</h3>
-    Larger blocks are more accurate. Smaller will be more fine-grained.
-    <br/>
-    <br/>
-    <div>
-      Block Size: <strong><span id='block-size'></span></strong> SNPs (mean: <strong><span id='block-size-bp'></span></strong> kb)
-      <span id='block-size-slider' style='width: 400px; float: right'></span>
-    </div>
-    <br/>
-    <div>
-      Smoothing Constant: <strong><span id='smoothing-constant'></span></strong> <span id='smoothing-slider' style='width: 400px; float: right'></span>
-    </div>
-    <br/>
-    <div>
-      Bootstrap Samples: <strong><span id='bootstrap-iterations'></span></strong> <span id='bootstrap-slider' style='width: 400px; float: right'></span>
-    </div>
+  <div id='advanced-painting'>
+    <h3><a href='#'>Advanced Painting Options</a></h3>
+      <div>
+        <br/>
+        <div>
+          Block Size: <strong><span id='block-size'></span></strong> SNPs (mean: <strong><span id='block-size-bp'></span></strong> kb)
+          <span id='block-size-slider' style='width: 400px; float: right'></span>
+          <div class='description'>
+            Larger blocks will be more accurate. Smaller blocks will be more fine-grained, but with added noise.
+          </div>
+        </div>
+        <br/>
+        <div>
+          Smoothing Constant: <strong><span id='smoothing-constant'></span></strong> <span id='smoothing-slider' style='width: 400px; float: right'></span>
+          <div class='description'>
+            A higher smoothing constant will generate a more uniform painting, but may miss shorter segments.
+          </div>
+        </div>
+        <br/>
+        <div>
+          Chi-Squared Cutoff: <strong><span id='chisq-value'></span></strong> <span id='chisq-slider' style='width: 400px; float: right'></span>
+          <div class='description'>
+            A higher value will only keep the most population differentiating SNPs, but may result in lower resolution. A lower value will include more SNPs, but will take longer.
+          </div>
+        </div>
+        <br/>
+        <div>
+          Heterozygosity Threshold: <strong><span id='heterozygosity-threshold'></span></strong> <span id='heterozygosity-slider' style='width: 400px; float: right'></span>
+          <div class='description'>
+            A higher threshold will preferentially call heterozygosity.
+          </div>
+        </div>
+        <br/>
+        <div>
+          Number of Samples: <strong><span id='bootstrap-iterations'></span></strong> <span id='bootstrap-slider' style='width: 400px; float: right'></span>
+          <div class='description'>
+            A larger number will result in more accurate predictions, but will take longer (warning: runtime scales linearly with number of samplings).
+          </div>
+        </div>
+        <br/>
+      </div>
+      <br/>
   </div>
   <br/>
   <div>
     <button id='compute-painting' type='submit'>
-      Compute my Chromosome Painting
+      Paint my Chromosomes
     </button>
   </div>
   
@@ -36,15 +63,41 @@
   <br />
   
   <div id='painting-chart'></div>
-  <canvas id='canvas' width='500' height='500'>
+  <canvas id='canvas' width='500' height='1300'>
   </canvas>
+  <div id='painting-genome' title='Painting' class='dialog hidden'>
+    Please be patient. This may take up to a few minutes.
+    <br/>
+    <br/>
+    <strong>Painting</strong>: <span id='chrom-painted'></span>
+    <div id='painting-bar' class='progress-bar'>
+    </div>
+  </div>
   
   </div>
 
 <div class='help'>
   <div id='help-painting-help'>
     <h2>Chromosome Painting</h2>
-    
+    As humans migrated out of Africa ~50,000 years ago, populations began to form and differentiate.
+    As populations separated, selection and genetic drift led to variable allele frequencies at various loci.
+    This variation in allele frequencies can be used to identify the origin of an individual's personal genome.
+    <br/><br/>
+    In this exercise, we use a heuristic method to paint ancestry onto your chromosomes.
+    We identify the most informative population-differentiating SNPs (which can be varied by the Chi-Squared cutoff parameter)
+    and get allele frequencies for these SNPs in the selected reference panels.
+    Since we do not have phased information, we cannot reliably call the two alleles separately.
+    <br/><br/>
+    Therefore, we use a Monte Carlo-like method to determine the most likely populations from which the chromosomes originated.
+    For each block (set by the 'block size' parameter), we sample an allele from each genotype randomly and get the allele frequency for that SNP.
+    We then update a Bayesian model for the likelihood of the block originating from each population given the data.
+    The "best" population is chosen for each block, and this simulation is run multiple times (set by the 'Samples' parameter) to generate a number of "votes" for each block.
+    <br/><br/>
+    The "votes" are then aggregated and ancestry is assigned to both blocks:
+    if the proportion of votes goes over the 'heterozygosity threshold,' both blocks are considered the highest voted ancestry; otherwise, the highest and 2nd highest ancestries are chosen.
+    The results are then smoothed (window set by the 'smoothing parameter') and the results are displayed.
+    <br/><br/>
+    <!--Hapmap2 with the default parameters should provide a reliable estimate of ancestry for many individuals.-->
   </div>
 </div>
 

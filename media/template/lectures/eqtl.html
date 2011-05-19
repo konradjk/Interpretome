@@ -1,0 +1,38 @@
+<table id='eqtl_table' style='width: 90%;' class='results-table hidden'>
+  <tr>
+    <th class='dbsnp'>dbSNP</th>
+    <th class='dbsnp'>Genotype</th>
+    <th class='dbsnp'>Gene</th>
+    <th class='dbsnp'>Num hetero</th>
+    <th class='dbsnp'>ASE proportion</th>
+    <th class='dbsnp'>Major</th>
+    <th class='dbsnp'>Minor</th>
+    <th class='risk_allele'>Risk</th>
+    <th class='dbsnp'>Fold change</th>
+    <th class='pvalue'>P-Value</th>
+    <th class='dbsnp'>Gene</th>
+    <th class='dbsnp'>Function</th>
+    <th class='dbsnp'>Disease</th>
+    <th class='imputed'>Imputed</th>
+    <th class='rsq'>R<sup>2</sup></th>
+  </tr>
+  <script id='eqtl_template' type='text/template'>
+    <tr>
+      <td class='key'><%= dbsnp %></td>
+      <td class='value'><%= genotype %></td>
+      <td><%= gene %></td>
+      <td><%= num_hetero %></td>
+      <td><%= ase_prop %></td>
+      <td><%= major_allele %></td>
+      <td><%= minor_allele %></td>
+      <td><%= risk_allele %></td>
+      <td><%= mean_foldchange %></td>
+      <td><%= pvalue %></td>
+      <td><%= gene_name %></td>
+      <td><%= fxn %></td>
+      <td><%= disease %></td>
+      <td class='imputed'><%= imputed_from %> <%= explain %></td>
+      <td class='rsq'><%= r_squared %></td>
+    </tr>
+  </script>
+</table>

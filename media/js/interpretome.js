@@ -2,19 +2,17 @@
 $(function() {
   window.Start = new StartView();
   window.Lookup = new LookupView();
+  window.Explore = new ExploreView();
   
-  window.Warfarin = new WarfarinView();
   window.Diabetes = new DiabetesView();
   window.Disease = new DiseaseView();
-  
-  window.Gwas = new GwasView();
-  window.Height = new HeightView();
-  window.Longevity = new LongevityView();
-  window.Neandertal = new NeandertalView();
+  window.Warfarin = new WarfarinView();
+  window.Pharmacogenomics = new PharmacogenomicsView();
   
   window.Similarity = new SimilarityView();
   window.PCA = new PCAView();
   window.Painting = new PaintingView();
+  window.Family = new FamilyView();
   
   window.App = new AppView();
   window.App.user = new User();
@@ -24,6 +22,8 @@ $(function() {
   
   window.Controller = new AppController();
   Backbone.history.start();
+  
+  $('#loading-genome').dialog({modal: true, resizable: false, autoOpen: false});
   
   $('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});
   $('#imputing-lots').dialog({modal: true, resizable: false, autoOpen: false});
@@ -42,13 +42,14 @@ $(function() {
     minWidth: '600', minHeight: '600',
     buttons: { 'Okay' : function() { $(this).dialog('close'); } }
   });
-  $("#ld-slider").slider({ 
+  $("#ld-slider").slider({
+    range: 'min',
     min: 0.3, max: 1.0, step: 0.05, value: 0.7,
     slide: function(event, ui) { 
       document.getElementById('amount').innerText = ui.value; 
     }
   });
-  $('#advanced-settings').button();
+  
   document.getElementById('amount').innerText = $("#ld-slider").slider("value");
   
   $('#ThemeRoller').themeswitcher();
@@ -171,6 +172,10 @@ var filter_identifier = filter_identifiers;
 
 function get_secondary_color() {
   return $('#clear-snps .ui-button-text').css('color');
+}
+
+function sort_genotype(genotype) {
+  return genotype.split('').sort().join('');
 }
 
 function check_submission(response){

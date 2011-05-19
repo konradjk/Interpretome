@@ -96,11 +96,11 @@ function User() {
     for (var j=0; j<=chunks; j++) {
       snps = add_commas(parseInt(j*chunk_size));
       output = lines.slice(chunk_size*(j), chunk_size*(j+1))
-      if (!this.full_genome) {
-        setTimeout(this.add_genotype_snps, 0, output, this, j, snps);
-      } else {
-        setTimeout(this.add_vcf_snps, 0, output, this, j, snps);
-      }
+      //if (!$('#full-genome').attr('checked')) {
+      setTimeout(this.add_genotype_snps, 0, output, this, j, snps);
+      //} else {
+      //  setTimeout(this.add_vcf_snps, 0, output, this, j, snps);
+      //}
     }
   }
   
@@ -123,7 +123,9 @@ function User() {
     var self = this;
     $.each(all_dbsnps, function(i, v) {
       extended_snps[v] = self.blank_extended_snp(v);
-      self.set_comments(extended_snps[v], comments[v]);
+      if (comments != undefined && comments[v] != undefined) {
+        self.set_comments(extended_snps[v], comments[v]);
+      }
       
       if (window.App.user.lookup(v) == undefined) {
         self.set_no_genotype(extended_snps[v]);

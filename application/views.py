@@ -215,6 +215,12 @@ def get_pca_parameters(request):
   
   return http.HttpResponse(simplejson.dumps(params), mimetype = "application/json")
 
+def get_pharmacogenomics_snps(request):
+  query = 'select * from exercises.pharmaco'
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
 def get_possible_studies(population):
   possible_studies = {
     'CEU' : ['European'],
@@ -258,13 +264,11 @@ def get_height_snps(request):
 def get_painting_params(request):
   source = request.GET.get('source', None)
   resolution = request.GET.get('resolution', None)
-  if None in (source, resolution):
+  chisq_cutoff = request.GET.get('chisq', None)
+  if None in (source, resolution, chisq_cutoff):
     return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
-  if source == 'hapmap2':
-    populations = ('CEU', 'YRI', 'CHB')
-    
-  chisq_cutoff = 0.2
+  
   info = {}
   query = '''
     SELECT * FROM pca.%s_%s_frequencies
@@ -277,8 +281,20 @@ def get_painting_params(request):
     if res['chromosome'] not in chromosomes:
       chromosomes[res['chromosome']] = []
     chromosomes[res['chromosome']].append(res)
-    
-  return http.HttpResponse(simplejson.dumps(chromosomes), mimetype = "application/json")
+  
+  query = '''
+    SELECT chromosome, rel_length, rel_centromere, length
+    FROM pca.chrom_info
+    ORDER BY chromosome;
+  '''
+  cursor.execute(query)
+  chrom_info = []
+  for res in cursor.fetchall():
+    chrom_info.append( [res['rel_length'], res['rel_centromere'], res['length']] )
+  
+  response = {'chromosomes':chromosomes, 'chrom_info':chrom_info}
+  
+  return http.HttpResponse(simplejson.dumps(response), mimetype = "application/json")
 
 def get_allele_frequencies(request):
   dbsnp_request = request.GET.get('snps', None)
@@ -348,11 +364,7 @@ def submit_snps(request):
   statement = '''
     INSERT INTO exercises.general (dbsnp, genotype, population, sid)
     VALUES %s;''' % ','.join(statement)
-  
-  
-  
   cursor.execute(statement)
-  
   return http.HttpResponse()
   
 def submit_gwas_snps(request):
@@ -376,7 +388,10 @@ def submit(request):
     return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   
-  if exercise not in ('class_diabetes', 'class_selection', 'class_assimes', 'class_neandertal'):
+  if exercise not in (
+    'butte_diabetes', 'selection', 'assimes_cad', 'neandertal', 'eqtl',
+    'snyder_binding'
+  ):
 	  query = '''
 	    INSERT INTO exercises.%s (submit_time, `%s`) VALUES (NOW(), '%s')
 	  ''' % (exercise, '`,`'.join(request_dict.keys()), "','".join(request_dict.values()))
@@ -423,35 +438,59 @@ def exercise(request):
   '''Get SNP data for an exercise.'''
   exercise = request.GET.get('exercise', None)
     
-  if exercise == 'cad':
-	  query = '''
-	    SELECT dbsnp, genes, risk_allele, risk_frequency, combined_or, combined_p 
-	    FROM exercises.cad;'''
-  elif exercise == 'ancestry':
-    query = 'SELECT dbsnp, euro_allele, azn_allele FROM exercises.ancestry'
-  elif exercise == 'longevity':
-    query = 'SELECT * FROM exercises.longevity ORDER BY log10_bf DESC;'
-  elif exercise == 'pgx':
-    query = 'SELECT dbsnp, gene, risk_allele, risk_info FROM exercises.pgx;'
-  elif exercise == 'selection':
-    pop = request.REQUEST.get('population')
-    query = '''
-      SELECT dbsnp, ancestral, selected, genes 
-	    FROM exercises.selection WHERE pop = '%s' AND selected IS NOT NULL;''' % pop
-  elif exercise == 'diabetes':
-    query = '''SELECT dbsnp, genes, risk, `or`, source FROM exercises.diabetes;'''
-  elif exercise == 'assimes':
-    query = '''SELECT * FROM exercises.assimes_cad;'''
-  else:
+  # Defaults
+  fields = '*'
+  where_clause = ''
+  db = 'exercises'
+  table = exercise
+  
+  # Supported exercises
+  exercises = ['ashley_cad', 'tang_ancestry', 'altman_pgx', 'butte_diabetes',
+               'assimes_cad', 'snyder_binding',
+               'eqtl', 'longevity', 'selection', 'neandertal']
+  if exercise not in exercises:
     return http.HttpResponseBadRequest()
   
+  # Set query parameters
+  if exercise == 'ashley_cad':
+    fields = 'dbsnp, genes, risk_allele, risk_frequency, combined_or, combined_p'
+  elif exercise == 'tang_ancestry':
+    fields = 'dbsnp, euro_allele, azn_allele'
+  elif exercise == 'altman_pgx':
+    fields = 'dbsnp, gene, risk_allele, risk_info'
+  elif exercise == 'butte_diabetes':
+    fields = 'dbsnp, genes, risk, `or`, source'
+  elif exercise == 'longevity':
+    where_clause = 'ORDER BY log10_bf DESC'
+  elif exercise == 'selection':
+    pop = request.REQUEST.get('population')
+    fields = 'dbsnp, ancestral, selected, genes'
+    where_clause = "WHERE pop = '%s' AND selected IS NOT NULL" % pop
+  elif exercise == 'neandertal':
+    pass
+  
+  query = '''SELECT %(fields)s FROM %(db)s.%(table)s %(where)s
+  ''' % {'fields': fields, 'db': db, 'table': table, 'where': where_clause}
+  
+  # Get type of snp_dict
   cursor = connections['default'].dict_cursor()
   cursor.execute(query)
-  snps = helpers.create_snp_dict(cursor.fetchall())
+  snps = {}
+  if exercise in ('snyder_binding'):
+    result = cursor.fetchall()
+    snps['snps'] = helpers.create_multi_snp_dict(result)
+  else:
+    result = cursor.fetchall()
+    snps['snps'] = helpers.create_snp_dict(result)
+  
+  # Post-processing
+  if exercise == 'longevity':
+    snps['sorted_dbsnps'] = [e['dbsnp'] for e in result]
+  
   return http.HttpResponse(
     simplejson.dumps(snps), mimetype = 'application/json'
-	)
-  
+  )
+
 def diabetes(request):
   cursor = connections['default'].dict_cursor()
   query = 'SELECT * FROM exercises.diabetes_old_with_sizes ORDER BY study_size DESC;'
@@ -464,18 +503,6 @@ def diabetes(request):
   output = {'snps': snps, 'dbsnps': order_snps}
   return http.HttpResponse(
     simplejson.dumps(output), mimetype = 'application/json'
-  )
-
-def longevity(request):
-  cursor = connections['default'].dict_cursor()
-  query = 'SELECT * FROM exercises.longevity ORDER BY log10_bf DESC;'
-  cursor.execute(query)
-  result = cursor.fetchall()
-  snps = {'snps': helpers.create_snp_dict(result)}
-  snps['sorted_dbsnps'] = [e['dbsnp'] for e in result]
-  
-  return http.HttpResponse(
-    simplejson.dumps(snps), mimetype = 'application/json'
   )
 
 def get_neandertal_snps(request):
