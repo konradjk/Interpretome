@@ -3,6 +3,7 @@ $(function() {
   window.Start = new StartView();
   window.Lookup = new LookupView();
   window.Explore = new ExploreView();
+  window.Terms = new TermsView();
   
   window.Diabetes = new DiabetesView();
   window.Disease = new DiseaseView();
