@@ -1,4 +1,6 @@
 # Django settings for interpretome project.
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -15,7 +17,7 @@ DATABASES = {
         'NAME': 'dbsnp',                      # Or path to database file if using sqlite3.
         'USER': 'gene210-user',                      # Not used with sqlite3.
         'PASSWORD': 'genomics',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'HOST': 'esquilax.stanford.edu',                      # Set to empty string for localhost. Not used with sqlite3.
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
@@ -54,7 +56,8 @@ MEDIA_URL = ''
 
 # Absolute path to the directory that holds static files.
 # Example: "/home/media/media.lawrence.com/static/"
-STATIC_ROOT = '/usr/local/www/interpretome/media/'
+STATIC_ROOT = 'static.com'
+#STATIC_ROOT = '/usr/local/www/interpretome/media/'
 
 # URL that handles the static files served from STATIC_ROOT.
 # Example: "http://media.lawrence.com/static/"
@@ -66,7 +69,8 @@ STATIC_URL = '/media/'
 ADMIN_MEDIA_PREFIX = '/media/admin/'
 
 # A list of locations of additional static files
-STATICFILES_DIRS = ()
+STATICFILES_DIRS = ('/home/tsuname/Documents/courses/bmi212/interpretome2/interpretome/media/',)
+#STATICFILES_DIRS = ()
 
 # List of finder classes that know how to find static files in
 # various locations.
@@ -89,7 +93,7 @@ TEMPLATE_LOADERS = (
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+#    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
 )

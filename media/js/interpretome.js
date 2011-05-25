@@ -1,21 +1,53 @@
-// Later, we can load these on-demand if we want.
+// Later, we can load these on-demand if we CustomExercise.
 $(function() {
-  window.Start = new StartView();
+  try{
+    window.Start = new StartView();
+  }catch(err){}
+
+  try{
   window.Lookup = new LookupView();
+  }catch(err){}
+
+  try{
   window.Explore = new ExploreView();
-  
+  }catch(err){}
+
+  try{
   window.Diabetes = new DiabetesView();
+  }catch(err){}
+
+  try{
   window.Disease = new DiseaseView();
+  }catch(err){}
+
+  try{
   window.Warfarin = new WarfarinView();
+  }catch(err){}
+
+  try{
   window.Pharmacogenomics = new PharmacogenomicsView();
-  
+  }catch(err){}
+
+  try{
   window.Similarity = new SimilarityView();
+  }catch(err){}
+
+  try{
   window.PCA = new PCAView();
+  }catch(err){}
+
+  try{
   window.Painting = new PaintingView();
+  }catch(err){}
+
+  try{
   window.Family = new FamilyView();
+  }catch(err){}
+
   
   window.App = new AppView();
   window.App.user = new User();
+  window.App.custom_exercise = new CustomExercise();
   
   window.App.render();
   window.Start.render();
@@ -36,7 +68,7 @@ $(function() {
     {modal: true, resizable: false, autoOpen: false,
     buttons: { 'Okay' : function() { $(this).dialog('close'); } }
   });
-  
+  $('#login-dialog').dialog({modal: true, resizable: false, autoOpen: false});
   $('#settings').dialog(
     {modal: true, resizable: false, autoOpen: false,
     minWidth: '600', minHeight: '600',
@@ -49,6 +81,9 @@ $(function() {
       document.getElementById('amount').innerText = ui.value; 
     }
   });
+  $('#login-link').click(function() {
+     $('#login-dialog').dialog("open");
+   });
   
   document.getElementById('amount').innerText = $("#ld-slider").slider("value");
   

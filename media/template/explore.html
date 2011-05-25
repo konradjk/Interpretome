@@ -1,7 +1,8 @@
 <div class='main'>
   <h2>Explore</h2>
   <br/>
-  <div> 
+  <br>
+  <div id='default-exercises'> 
     Choose an exercise to explore your genome.
     <br />
     <div id='exercises'>
@@ -25,8 +26,20 @@
         <!--<option value="kim_aging">Aging SNPs (6/1, Stuart Kim)</option>-->
       </select>
     </div>
+    </div>
     <br/>
-    <i>Coming soon: custom exercises.</i>
+    <br/>
+    <div id='custom-exercise'>
+      <div id='custom-load'>
+        <h3> Load your own SNP annotations </h3>
+        <input id='exercise-file' type='file' name='file'/>
+      </div>
+    </div>
+    <strong> or </strong>
+    <br/>
+    <br />
+    <button id='toggle-custom' class='small-button'>Custom Exercise</button>
+    <button id='toggle-default' class='small-button'>Default Exercises</button>
     <br/>
     <br />
     <button id='lookup-exercise' type='submit' class='small-button'>

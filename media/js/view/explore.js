@@ -3,13 +3,18 @@ window.ExploreView = Backbone.View.extend({
   el: $('#explore'),
   has_loaded: false,
   hidden: false,
+  custom: false,
 
   events: {
+    'change #exercise-file': 'load_exercise_file',
+    'change #toolbar-exercise': 'change_exercise',
     'click #clear-snps': 'click_clear_snps',
     'click #submit-snps': 'click_submit',
     'click #confirm-submit-snps': 'click_confirm_submit',
     'click #lookup-exercise': 'lookup_exercise',
     'click #submit-exercise': 'click_submit_exercise',
+    'click #toggle-default': 'click_toggle_default',    
+    'click #toggle-custom': 'click_toggle_custom',    
     'click #toggle-unknown-genotypes': 'toggle_unknown_genotypes'    
   },
 
@@ -40,6 +45,10 @@ window.ExploreView = Backbone.View.extend({
 	  this.el.find('#exercises label').css('width', '50%');
 	  this.el.find('#table-options').hide();
 	  this.el.find('.submit').hide();
+	  this.el.find('#custom-exercise').hide();
+	  this.el.find('#toggle-default').hide();
+	  this.el.find('#toggle-custom').show();
+	  this.el.find('#default-exercises').show();
     
     $('#too-many-snps').dialog({
       modal: true, resizable: false, autoOpen: false, buttons: {
@@ -63,7 +72,20 @@ window.ExploreView = Backbone.View.extend({
       }
     });
   },
-  
+
+  load_exercise_file: function(event) {
+    window.App.load_file(event.target.files[0], function(event) {
+      $('#loading-bar').progressbar('option', 'value', 100);
+      window.App.custom_exercise.parse_exercise_snps(event.target.result.split('\n'));
+    });
+    this.custom = true;
+    $('#toolbar-exercise option').get(0).selected = 'selected'
+  },
+
+  change_exercise: function(event) {
+    this.custom = false;
+  },
+
   click_confirm_submit: function(event) {
 	  var ks = _.map(
 	    $('#lookup-snps-table td.key'), 
@@ -92,10 +114,15 @@ window.ExploreView = Backbone.View.extend({
     
   },
   lookup_exercise: function() {
-	  $('#help-exercise-help').empty();
+    $('#help-exercise-help').empty();
     $('#exercise-content').empty();
     
-    var exercise = $('#toolbar-exercise option:selected').val();
+    if (this.custom) {
+      var exercise = 'custom';
+    }
+    else {
+      var exercise = $('#toolbar-exercise option:selected').val();
+    }
     window.App.exercise = exercise;
     if (window.App.exercise == null || window.App.exercise == 'null') return;
     
@@ -108,10 +135,16 @@ window.ExploreView = Backbone.View.extend({
     window.Generic = new GenericView();
     window.Generic.render();
     if (window.Generic.start() != false){
-      $.get('/lookup/exercise/', {
-        'exercise': window.App.exercise,
-        'population': window.App.user.population
-      }, this.got_exercise_data);
+      if (this.custom) {
+	window.App.user.lookup_snps(
+	  window.Generic.display, App.custom_exercise, _.keys(App.custom_exercise.snps), null);
+      }
+      else {
+	$.get('/lookup/exercise/', {
+	  'exercise': window.App.exercise,
+	  'population': window.App.user.population
+	}, this.got_exercise_data);
+      }
     }
   },
   
@@ -148,6 +181,22 @@ window.ExploreView = Backbone.View.extend({
         'Cancel': function() {$(this).dialog('close');}
       }
     });
+  },
+ 
+  click_toggle_custom: function() {
+    $('#custom-exercise').show();
+    $('#default-exercises').hide();
+    $('#toggle-default').show();
+    $('#toggle-custom').hide();
+    console.log('hello');
+  },
+     
+  click_toggle_default: function() {
+    $('#custom-exercise').hide();
+    $('#default-exercises').show();
+    $('#toggle-default').hide();
+    $('#toggle-custom').show();
+    $('#toolbar-exercise option').get(0).selected = 'selected';
   },
   
   toggle_unknown_genotypes: function() {

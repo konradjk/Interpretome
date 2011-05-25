@@ -136,10 +136,8 @@ function User() {
         self.set_genotype(extended_snps[v], window.App.user.lookup(v).genotype);
       }
     });
-    
     if (lookup_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
     //$('#imputing-lots').dialog('open');
-    
     var self = this;
     $.post(
       '/lookup/linked/', {

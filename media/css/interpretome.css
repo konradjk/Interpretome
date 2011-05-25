@@ -245,3 +245,12 @@ color:#fff;
 background-color:#222;
 padding:2px 7px;
 }
+
+.customize_module_list{
+margin:5px;
+list-style:none;
+}
+
+.customize_module_listitem li{
+padding:5px;
+}

@@ -18,7 +18,7 @@ window.AppView = Backbone.View.extend({
 	    'change_population', 'change_population_from_toolbar',
 	    'change_population_from_check',
       'select_module', 'change_module',
-      'click_settings'
+      'click_settings', 'load_file'
 	  );
   },
   
@@ -95,7 +95,7 @@ window.AppView = Backbone.View.extend({
     }
   },
   
-  change_genome: function(event) {
+  load_file: function(file, onloadedfun) {
     $('#loading-genome').dialog('open');
     this.el.find('.progress-bar').progressbar({value: 0});
     this.el.find('.progress-bar > div').css('background', get_secondary_color());
@@ -112,16 +112,20 @@ window.AppView = Backbone.View.extend({
       }
     };
     
-    reader.onloadend = function(event) {
+    reader.onloadend = onloadedfun;
+    reader.readAsText(file);
+  },
+
+  
+  change_genome: function(event) {
+    this.load_file(event.target.files[0], function(event) {
       $('#loading-bar').progressbar('option', 'value', 100);
       $('#genome label, #genome input').hide();
       $('#advanced').show();
       window.App.user.parse_genome(event.target.result.split('\n'));
-      
       // Should this be here?
       $('#please-load-genome').dialog('close');
-    };
-    reader.readAsText(event.target.files[0]);
+    });
   },
   
   clear_genome: function(event) {
