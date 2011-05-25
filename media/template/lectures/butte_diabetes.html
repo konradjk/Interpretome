@@ -1,3 +1,8 @@
+<div id='butte_diabetes_chart'>
+  You have <strong><span id='butte_diabetes_count'></span></strong> out of <span id='butte_diabetes_total'></span> Type 2 Diabetes risk alleles.
+</div>
+<br/>
+<br/>
 <table id='butte_diabetes_table' class='results-table hidden'>
   <tr>
     <th class='dbsnp'>dbSNP</th>
@@ -15,7 +20,7 @@
       <td class='value'><%= genotype %></td>
       <td><%= genes %></td>
       <td><%= risk %></td>
-      <td><%= or %></td>
+      <td><%= odds_ratio %></td>
       <td><%= source %></td>
       <td class='imputed'><%= imputed_from %> <%= explain %></td>
       <td class='rsq'><%= r_squared %></td>

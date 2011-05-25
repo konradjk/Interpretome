@@ -7,7 +7,7 @@ window.AppView = Backbone.View.extend({
     'click #clear-genome': 'clear_genome',
     'change #toolbar-population': 'change_population_from_toolbar',
     'change #check-population': 'change_population_from_check',
-    'change #module_selection': 'select_module',
+    'change .module_selection': 'select_module',
     'click #advanced-settings': 'click_settings'
   },
 
@@ -37,7 +37,9 @@ window.AppView = Backbone.View.extend({
     'similarity': 'ancestry',
     'pca': 'ancestry',
     'painting': 'ancestry',
-    'family': 'ancestry'
+    'family': 'ancestry',
+    
+    'terms': 'terms'
   },
   
   render: function() {
@@ -53,7 +55,7 @@ window.AppView = Backbone.View.extend({
 			$('#full-genome-tooltip').fadeOut(50);
 		});
 
-    this.el.find('#module_selection').buttonset();
+    this.el.find('.module_selection').buttonset();
     this.el.find('#tabs').tabs({
       select: function(event, ui) {
         window.location.hash = ui.tab.hash;
@@ -63,7 +65,7 @@ window.AppView = Backbone.View.extend({
     
     route = this.reverse_routes[loc];
     
-    $("#module_selection label[for='module_" + route + "']").click();
+    $(".module_selection label[for='module_" + route + "']").click();
     this.change_module(route);
   },
   
@@ -72,7 +74,7 @@ window.AppView = Backbone.View.extend({
   },
   
   select_module: function() {
-    var module = $('#module_selection label[aria-pressed="true"]').attr('for').replace('module_', '');
+    var module = $('.module_selection label[aria-pressed="true"]').attr('for').replace('module_', '');
     this.change_module(module);
     $('.' + module).css('top', '2px').css('font-size', '0.9em').attr('line-height', '1.1em');
   },
@@ -80,11 +82,11 @@ window.AppView = Backbone.View.extend({
   change_module: function(module) {
     var speed = 'fast';
     
-    $.each($('#module_selection label'), function(i, v) {
+    $.each($('.module_selection label'), function(i, v) {
       $('.' + $(v).attr('for').replace('module_', '')).hide(speed);
     });
     
-    if (module == 'start' || module == 'lookup' || module == 'explore' || module == undefined) {
+    if (module == 'start' || module == 'lookup' || module == 'explore' || module == 'terms' || module == undefined) {
       $('#module-arrow').hide(speed);
       if (module != undefined) {
         window.location.hash = '#' + module;

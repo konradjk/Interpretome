@@ -1,0 +1,22 @@
+<table id='class_writeups_table' class='results-table hidden'>
+  <tr>
+    <th>SNPedia Link</th>
+    <th>Genotype</th>
+    <th>Risk Variant</th>
+    <th>Disease/Trait</th>
+    <th>Odds Ratio</th>
+    <th>Imputed From</th>
+    <th>R<sup>2</sup></th>
+  </tr>
+  <script id='class_writeups_template' type='text/template'>
+    <tr>
+      <td><a href="http://snpedia.com/index.php/Rs<%= dbsnp %>">rs<%= dbsnp %></a></td>
+      <td><%= genotype %></td>
+      <td><%= risk_variant %></td>
+      <td><%= disease %></td>
+      <td><%= odds_ratio %></td>
+      <td><%= imputed_from %></td>
+      <td><%= r_squared %></td>
+    </tr>
+  </script>
+</table>
