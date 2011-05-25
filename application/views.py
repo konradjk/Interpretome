@@ -447,6 +447,7 @@ def exercise(request):
   # Supported exercises
   exercises = ['ashley_cad', 'tang_ancestry', 'altman_pgx', 'butte_diabetes',
                'assimes_cad', 'snyder_binding', 'class_writeups',
+               'mignot_narcolepsy', 'kim_aging'
                'eqtl', 'longevity', 'selection', 'neandertal']
   if exercise not in exercises:
     return http.HttpResponseBadRequest()
