@@ -15,9 +15,10 @@ window.StartView = Backbone.View.extend({
     this.el.append(response);
     this.el.find('button').button();
     if (window.File && window.FileReader) {
-      $('#compatible').show();
+      //$('#compatible').show();
     } else {
       $('#not-compatible').show();
+      $('#global-settings').hide();
     }
     this.has_loaded = true;
 	}

@@ -1,0 +1,52 @@
+<div class='main'>
+  <h2>Pharmacogenomics</h2>
+  <br/>
+  <div>
+    Click to explore your pharmacogenomic profile (courtesy of <a href='http://www.pharmgkb.org'>PharmGKB</a>).
+    <br/>
+    <button id='get-pharmacogenomics' type='submit'>
+      Show my Pharmacogenomics Variants
+    </button>
+  </div>
+  
+  <br />
+  
+  <table id='pharmacogenomics-table' class='results-table hidden'>
+    <tr>
+      <th>dbSNP</th>
+      <th>Genotype</th>
+      <th>Evidence Level</th>
+      <th>Gene</th>
+      <th>Interpretation</th>
+    </tr>
+    <script id='pharmacogenomics-template' type='text/template'>
+      <tr>
+        <td class='key'><%= dbsnp %></td>
+        <td class='value'><%= genotype %></td>
+        <td><%= evidence_level %></td>
+        <td><%= gene %></td>
+        <td><%= interpretation %></td>
+      </tr>
+    </script>
+  </table>
+</div>
+
+<div class='help'>
+  <div id='help-pgx-help'>
+    <h2>Genetics of Drug Response</h2>
+    Like many traits, clinical and otherwise, response to various drugs often has a significant genetic component.
+    Traditional GWAS methods can be used to discover these variants, searching for associations between genotypes and efficacy of drugs.
+    <br/><br/>
+    
+    <br/><br/>
+    Annotations courtesy of Michelle Carillo and the PharmGKB team. Additional annotations can be found at <a href='http://www.pharmgkb.org'>PharmGKB</a>.
+    <br/><br/>
+    Note that these annotations are not intended as diagnoses.
+    They are based on published scientific evidence, but have not been evaluated by the FDA for clinical decision making.
+    While variants may alter your probability for a reaction to a drug (intended or adverse event),
+    no single variant or combination of variants can definitively predict your pharmacogenomic response.
+    The disclaimers from <a href='http://www.pharmgkb.org/'>PharmGKB</a> apply to the information on this website.
+  </div>
+</div>
+
+<br class='clear' />

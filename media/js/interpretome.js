@@ -1,29 +1,61 @@
-// Later, we can load these on-demand if we want.
+// Later, we can load these on-demand if we CustomExercise.
 $(function() {
-  window.Start = new StartView();
+  try{
+    window.Start = new StartView();
+  }catch(err){}
+
+  try{
   window.Lookup = new LookupView();
-  
-  window.Warfarin = new WarfarinView();
+  }catch(err){}
+
+  try{
+  window.Explore = new ExploreView();
+  }catch(err){}
+
+  try{
   window.Diabetes = new DiabetesView();
+  }catch(err){}
+
+  try{
   window.Disease = new DiseaseView();
-  
-  window.Gwas = new GwasView();
-  window.Height = new HeightView();
-  window.Longevity = new LongevityView();
-  window.Neandertal = new NeandertalView();
-  
+  }catch(err){}
+
+  try{
+  window.Warfarin = new WarfarinView();
+  }catch(err){}
+
+  try{
+  window.Pharmacogenomics = new PharmacogenomicsView();
+  }catch(err){}
+
+  try{
   window.Similarity = new SimilarityView();
+  }catch(err){}
+
+  try{
   window.PCA = new PCAView();
+  }catch(err){}
+
+  try{
   window.Painting = new PaintingView();
+  }catch(err){}
+
+  try{
+  window.Family = new FamilyView();
+  }catch(err){}
+
   
   window.App = new AppView();
   window.App.user = new User();
+  window.App.custom_exercise = new CustomExercise();
   
   window.App.render();
   window.Start.render();
   
   window.Controller = new AppController();
   Backbone.history.start();
+  
+  $('#loading-genome').dialog({modal: true, resizable: false, autoOpen: false});
   
   $('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});
   $('#imputing-lots').dialog({modal: true, resizable: false, autoOpen: false});
@@ -36,19 +68,23 @@ $(function() {
     {modal: true, resizable: false, autoOpen: false,
     buttons: { 'Okay' : function() { $(this).dialog('close'); } }
   });
-  
+  $('#login-dialog').dialog({modal: true, resizable: false, autoOpen: false});
   $('#settings').dialog(
     {modal: true, resizable: false, autoOpen: false,
     minWidth: '600', minHeight: '600',
     buttons: { 'Okay' : function() { $(this).dialog('close'); } }
   });
-  $("#ld-slider").slider({ 
+  $("#ld-slider").slider({
+    range: 'min',
     min: 0.3, max: 1.0, step: 0.05, value: 0.7,
     slide: function(event, ui) { 
       document.getElementById('amount').innerText = ui.value; 
     }
   });
-  $('#advanced-settings').button();
+  $('#login-link').click(function() {
+     $('#login-dialog').dialog("open");
+   });
+  
   document.getElementById('amount').innerText = $("#ld-slider").slider("value");
   
   $('#ThemeRoller').themeswitcher();
@@ -171,6 +207,10 @@ var filter_identifier = filter_identifiers;
 
 function get_secondary_color() {
   return $('#clear-snps .ui-button-text').css('color');
+}
+
+function sort_genotype(genotype) {
+  return genotype.split('').sort().join('');
 }
 
 function check_submission(response){

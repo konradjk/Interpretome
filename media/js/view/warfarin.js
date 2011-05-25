@@ -25,19 +25,15 @@ window.WarfarinView = Backbone.View.extend({
   loaded: function(response) {
     this.el.append(response);
     this.el.find('button').button();
-    this.el.find('.help-button').button({
-      icons: {primary: 'ui-icon-help'}	    
-    });
     this.warfarinDoseTemplate = $('#warfarin-dose-template').html();
     this.warfarinGraphTemplate = $('#warfarin-graph-template').html();
-    this.el.find('.help > div').show();
-    this.el.find('.description > div').show();
 	  this.el.find('.submit > div').hide();
     this.el.find('#race').buttonset();
     this.el.find('#enzyme').buttonset();
     this.el.find('#amiodarone').buttonset();
     this.el.find('#weight_units').buttonset();
     this.el.find('#height_units').buttonset();
+	  match_style(this.el);
     this.has_loaded = true;
   },
   

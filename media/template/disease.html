@@ -1,7 +1,7 @@
 <div class='main'>
-	<h2>GWAS Catalog</h2>
+	<h2>GWAS Variants</h2>
   <br/>
-  Click to intersect your personal genome with the NHGRI Catalog.
+  Click to intersect your personal genome with the NHGRI GWAS Catalog.
 	<div>
 	  <button id='get-gwas' type='submit'>
 	    Show my GWAS SNPs
@@ -18,10 +18,8 @@
       <!--<th>Genes</th>-->
       <th>OR</th>
       <th>P-Value</th>
-      <th>Study Size</th>
+      <!--<th>Study Size</th>-->
       <th>Link</th>
-      <th>Imputed from</th>
-      <th>R squared</th>
 	  </tr>
 	  <script id='disease-template' type='text/template'>
 		  <tr>
@@ -31,8 +29,6 @@
       <td><%=  or_or_beta %></td><td><%=  p_value %></td>
       <!--<td><%=  initial_sample_size %></td>-->
       <td><a href='<%=  link %>'><%=  pubmedid %></a></td>
-      <td><%= imputed_from %></td>
-      <td><%= r_squared %></td>
 		</script>
 	</table>
 	
@@ -41,6 +37,12 @@
 <div class='help'>
   <div id='help-disease-help'>
     <h2>GWAS Catalog</h2>
+    Genome-wide association studies (GWAS) have been successful at identifying some of the variation in traits attributable to genetics.
+    The National Human Genome Research Institute (<a href='http://www.genome.gov'>NHGRI</a>)
+    has begun aggregating results of association studies into a master <a href='http://www.genome.gov/gwastudies/'>GWAS catalog</a>.
+    
+    <br/><br/>
+    Note that no information in this exercise is intended as a diganosis.
   </div>
 </div>
 

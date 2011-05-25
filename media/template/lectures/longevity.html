@@ -1,0 +1,29 @@
+<div id='longevity_chart'>
+</div>
+
+<table id='longevity_table' class='results-table hidden'>
+  <tr>
+    <th>dbSNP</th>
+    <th>Alleles</th>
+    <th>Genotype</th>
+    <th>Imputed from</th>
+    <th>R squared</th>
+    <th>Odds ratio</th>
+    <th>Running oods ratio</th>
+    <th>Running probability (%)</th>
+  </tr>
+  <tr><td>Prior</td><td></td><td></td><td></td><td></td><td></td><td></td><td>50</td></tr>
+  <script id='longevity_template' type='text/template'>
+    <tr>
+      <td><%= dbsnp %></td>
+      <td><%= alleles %></td>
+      <td><%= genotype %></td>
+      <td><%= imputed_from %></td>
+      <td><%= r_squared %></td>
+      <td><%= or %></td>
+      <td><%= ror %></td>
+      <td><%= rp %></td>
+    </tr>
+  </script>
+</table>
+  

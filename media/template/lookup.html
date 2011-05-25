@@ -1,266 +1,51 @@
 <div class='main'>
   <h2>Lookup</h2>
   <br/>
-  <div id='lookup-accordion'>
-	  <h3><a href='#'>Lookup for an exercise</a></h3>
-	  <div> 
-	    This section contains lookup shortcuts for some of the studies
-	    we discuss in class.
-	    <br />
-	    <br />
-	    <div id='exercises'>
-			  <input type='radio' id='cad' name='radio' />
-			  <label for='cad' class='small-button'>CAD SNPs (4/6, Euan Ashley)</label>
-			  <br />
-			  <input type='radio' id='ancestry' name='radio' />
-			  <label for='ancestry' class='small-button'>Ancestry SNPs (4/13, Hua Tang)</label>
-			  <br/>
-			  <input type='radio' id='pgx' name='radio'/>
-			  <label for='pgx' class='small-button'>Pharmacogenomic SNPs (4/20, Russ Altman)</label>
-			  <br />
-			  <input type='radio' id='selection' name='radio'/>
-			  <label for='selection' class='small-button'>Selection SNPs (5/2)</label>
-			  <br />
-			  <input type='radio' id='diabetes' name='radio'/>
-			  <label for='diabetes' class='small-button'>Diabetes SNPs (5/4, Atul Butte)</label>
-			  <br />
-			  <input type='radio' id='assimes' name='radio'/>
-			  <label for='assimes' class='small-button'>MI and CAD SNPs (5/11, Themistocles Assimes)</label>
-			  
-			  <!--<br/>-->
-			  <!--
-			  <br/>
-			  <input type='radio' id='longevity' name='radio'/>
-			  <label for='longevity' class='small-button'>Longevity SNPs</label>
-			  -->
-			  <!--<input type='radio' id='Cardio' name='radio' />-->
-			  <!--<label for='Cardio' class='small-button'>Cardiovascular SNPs (5/11, Tim Assimes)</label>-->
-			  <!--<br/>-->
-			  <!--<input type='radio' id='Narcolepsy' name='radio' />-->
-			  <!--<label for='Narcolepsy' class='small-button'>Narcolepsy SNPs (5/25, Emmanuel Mignot)</label>-->
-			  <!--<br/>-->
-			  <!--<input type='radio' id='Aging' name='radio' />-->
-			  <!--<label for='Aging' class='small-button'>Aging SNPs (6/1, Stuart Kimg</label>-->
-			  <!--<br/>-->
-			  <!--<input type='radio' id='Class' name='radio' />-->
-			  <!--<label for='Class' class='small-button'>Class SNPs (6/1)</label>-->
-			</div>
-	    <br />
-	    <button id='lookup-exercise' type='submit' class='small-button'>
-	      Lookup SNPs for exercise
-	    </button>
-	  </div> <!-- Exercise. -->
-	  <h3><a href='#'>Lookup by input or upload</a></h3>
+  <div>
     <div>
-			<div class='left'>
-				<h4>Enter SNPs to lookup (one per line)</h4>
-			  <textarea id='lookup-snps-textarea' rows='5' cols='30'></textarea>
-		  </div>
-		  
-		  <div class='right'>
-		    <h4>Upload SNP file</h4>
-		    <br />
-		    <input id='lookup-file' type='file' name='file' />
-		  </div>
-		  
-		  <div class='left clear-left'>
-			  <button id='lookup-snps' type='submit' class='small-button'>
-			    Lookup SNPs
-			  </button>
-		  </div>
-		  <div class='right clear-right'>
-		    <button id='lookup-by-file' type='submit' class='small-button'>
-		      Lookup SNPs in File
-		    </button>
-		  </div>
-		</div> <!-- Input or upload. -->
-
-	</div> <!-- Accordion. -->
-	
-  <br />
-	<button id='clear-snps' type='submit' class='small-button'>
-    Clear Table
-  </button>
-  <button id='toggle-unknown-genotypes' type='submit' class='small-button'>
-    Hide unknown genotypes
-  </button>
-	<button id='help-lookup' class='help-button small-button'>
-	  About Lookup
-	</button>
-	
-	<br />
-	<br />
-	
-	<!-- Exercise tables and templates. -->
-	<table id='cad-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th class='risk_allele'>Risk</th>
-	    <th class='risk_frequency'>Risk frequency</th>
-	    <th class='genes'>Genes</th>
-	    <th class='pvalue'>P-value</th>
-	    <th class='odds_ratio'>OR</th>
-      <th class='imputed'>Imputed From</th>
-      <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='cad-snp-template' type='text/template'>
-		  <tr>
-		    <td class='key'><%= dbsnp %></td>
-		    <td class='value'><%= genotype %></td>
-		    <td><%= comments.risk_allele %></td>
-		    <td><%= comments.risk_frequency %></td>
-		    <td><%= comments.genes %></td>
-		    <td><%= comments.combined_p %></td>
-		    <td><%= comments.combined_or %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
-        <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	<table id='assimes-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th class='risk_allele'>Risk</th>
-	    <th class='risk_freq'>Risk frequency</th>
-	    <th class='genes'>Genes</th>
-	    <th class='odds_ratio'>OR</th>
-      <th class='imputed'>Imputed From</th>
-      <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='assimes-snp-template' type='text/template'>
-		  <tr>
-		    <td class='key'><%= dbsnp %></td>
-		    <td class='value'><%= genotype %></td>
-		    <td><%= comments.risk_allele %></td>
-		    <td><%= comments.risk_freq %></td>
-		    <td><%= comments.genes %></td>
-		    <td><%= comments.or %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
-        <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	
-	<table id='pgx-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th class='dbsnp'>Gene</th>
-            <th class='imputed'>Imputed From</th>
-	     <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='pgx-snp-template' type='text/template'>
-		  <tr>
-		    <td class='key'><%= dbsnp %></td>
-		    <td class='value'><%= genotype %></td>
-		    <td class='gene'><%= comments.gene %></td>
-		    <td class='imputed'><%= imputed_from %> <%= explain %></td>
-		    <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	
-	<table id='ancestry-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th class='euro_allele'>European allele</th>
-	    <th class='azn_allele'>East Asian allele</th>
-      <th class='imputed'>Imputed From</th>
-      <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='ancestry-snp-template' type='text/template'>
-		  <tr>
-		    <td class='key'><%= dbsnp %></td>
-		    <td class='value'><%= genotype %></td>
-		    <td><%= comments.euro_allele %></td>
-		    <td><%= comments.azn_allele %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
-        <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	
-	<table id='longevity-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th class='dbsnp'>Reference</th>
-	    <th>Genes</th>
-	    <th>EL/normal</th>
-	    <th>Bayes factor</th>
-      <th class='imputed'>Imputed from</th>
-      <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='longevity-snp-template' type='text/template'>
-		  <tr>
-		    <td class='key'><%= dbsnp %></td>
-		    <td class='value'><%= genotype %></td>
-		    <td><%= comments.genes %></td>
-		    <td><%= comments.alleles %></td>
-		    <td><%= comments.log10_bf %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
-        <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	
-	<table id='diabetes-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th>Genes</th>
-	    <th>Risk allele</th>
-	    <th>Odds ratio</th>
-	    <th>Source</th>
-      <th class='imputed'>Imputed from</th>
-      <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='diabetes-snp-template' type='text/template'>
-		  <tr>
-		    <td class='key'><%= dbsnp %></td>
-		    <td class='value'><%= genotype %></td>
-		    <td><%= comments.genes %></td>
-		    <td><%= comments.risk %></td>
-		    <td><%= comments.or %></td>
-		    <td><%= comments.source %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
-        <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	
-	<table id='selection-table' class='results-table hidden'>
-	  <tr>
-	    <th class='dbsnp'>dbSNP</th>
-	    <th class='dbsnp'>Genotype</th>
-	    <th>Ancestral allele</th>
-	    <th>Selected allele</th>
-	    <th>Genes</th>
-      <th class='imputed'>Imputed from</th>
-      <th class='rsq'>R<sup>2</sup></th>
-	  </tr>
-		<script id='selection-snp-template' type='text/template'>
-		  <tr>
-		    <td><%= dbsnp %></td>
-		    <td><%= genotype %></td>
-		    <td><%= comments.ancestral %></td>
-		    <td><%= comments.selected %></td>
-		    <td><%= comments.genes %></td>
-        <td class='imputed'><%= imputed_from %> <%= explain %></td>
-        <td class='rsq'><%= r_squared %></td>
-		  </tr>
-		</script>
-	</table>
-	
-	<div id='submit-exercise-area' class='hidden'>
-		<button id='submit-exercise' class='small-button'>Submit my information</button>
-		<dialog id='confirm-submit-exercise' title='Confirm submission' class='dialog hidden'>
-		  Are you sure you want to submit your information?
-		</dialog>
+      <div class='left'>
+        <h4>Enter SNPs to lookup (one per line)</h4>
+        <textarea id='lookup-snps-textarea' rows='5' cols='30'></textarea>
+      </div>
+      
+      <!--<div class='right'>-->
+      <!--  <h4>Upload SNP file</h4>-->
+      <!--  <br />-->
+      <!--  <input id='lookup-file' type='file' name='file' />-->
+      <!--</div>-->
+      
+      <div class='left clear-left'>
+        <button id='lookup-snps' type='submit' class='small-button'>
+          Lookup SNPs
+        </button>
+      </div>
+      <!--<div class='right clear-right'>-->
+      <!--  <button id='lookup-by-file' type='submit' class='small-button'>-->
+      <!--    Lookup SNPs in File-->
+      <!--  </button>-->
+      <!--</div>-->
+    </div> <!-- Input or upload. -->
   </div>
+  <br class='clear' />
+  <br/>
+  <div id='table-options'>
+    <!--<button id='submit-snps' type='submit'>-->
+    <!--  Submit my SNPs-->
+    <!--</button>-->
+    <button id='clear-snps' type='submit' class='small-button'>
+      Clear Table
+    </button>
+    <button id='toggle-unknown-genotypes' type='submit' class='small-button'>
+      Hide unknown genotypes
+    </button>
+  </div>
+	
+  <!-- Submission buttons. -->
+  <div id='too-many-snps' title='Too Many' class='dialog hidden'>
+    You have entered too many SNPs. Your browser will not be able to display this many SNPs.
+  </div>
+  
+	<br />
 	
 	<!-- General lookup template. -->
 	<table id='lookup-snps-table' class='results-table hidden'>
@@ -275,12 +60,12 @@
 		  <tr>
 		    <td class='dbsnp key'><%= dbsnp %></td>
         <td class='genotype value'><%= genotype %></td>
-        <td class='reference details'><%= reference %></td>
-        <td class='refallele_freq details'><%= refallele_freq %></td>
-        <td class='other details'><%= otherallele %></td>
-        <td class='other_freq details'><%= otherallele_freq %></td>
-        <td class='chrom details'><%= chrom %></td>
-        <td class='position details'><%= end %></td>
+        //<td class='reference details'><%= reference %></td>
+        //<td class='refallele_freq details'><%= refallele_freq %></td>
+        //<td class='other details'><%= otherallele %></td>
+        //<td class='other_freq details'><%= otherallele_freq %></td>
+        //<td class='chrom details'><%= chrom %></td>
+        //<td class='position details'><%= end %></td>
         <td class='imputed'><%= imputed_from %> </td>
         <td class='rsq'><%= r_squared %></td>
         <td><%= comments %></td>
@@ -288,19 +73,6 @@
 		</script>
 	</table>
 	
-  <br/ >
-  
-  <div class='submit'>
-    <button id='submit-snps' type='submit'>
-      Submit my SNPs
-    </button>
-  </div>
-  
-  <!-- Submission buttons. -->
-  <div id='too-many-snps' title='Too Many' class='dialog hidden'>
-    You have entered too many SNPs. Your browser will not be able to display this many SNPs.
-  </div>
-  
   <br/>
   
   <!-- Lookup demo. -->
@@ -328,7 +100,6 @@
     <textarea id='bed-file-text' rows=5 cols=70>track name=myGenome description="Personal Genotype" visibility=3 itemRgb="On"
 </textarea>
   </div>
-  <br/>
 </div>
 
 <div class='help'>

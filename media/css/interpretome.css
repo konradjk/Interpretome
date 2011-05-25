@@ -17,7 +17,7 @@ div#wrap {
   width: 96%;
   float: center;
 }
-.required{
+.required {
   color: red;
 }
 
@@ -152,13 +152,14 @@ table.results-table th {
 }
 
 table.results-table {
-  border-collapse:collapse;
+  border-collapse: collapse;
+  // CSS3 only.
 }
 
 table.results-table th,
 table.results-table td {
   padding: 3px 7px;
-  white-space: nowrap;
+  white-space: pre-wrap; /* CSS3. */
 }
 
 .ui-button-text {
@@ -166,7 +167,7 @@ table.results-table td {
 } 
 
 .small-button {
-   font-size: .8em !important;
+   font-size: .9em !important;
 }
 
 /* Allow accordion to compute dimensions,
@@ -228,3 +229,28 @@ table.results-table td {
   line-height: 1.2em;
 }
 
+.tooltip{
+position:absolute;
+left:-2000px;
+background-color:#dedede;
+padding:5px;
+border:1px solid #fff;
+width:350px;
+}
+
+.tooltip p{
+margin:0;
+padding:0;
+color:#fff;
+background-color:#222;
+padding:2px 7px;
+}
+
+.customize_module_list{
+margin:5px;
+list-style:none;
+}
+
+.customize_module_listitem li{
+padding:5px;
+}

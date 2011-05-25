@@ -1,5 +1,5 @@
 <div class='main'>
-  <h2>Diabetes risk</h2>
+  <h2>Diabetes Risk</h2>
   <br/>
   <div>
     <button id='compute-diabetes' type='submit'>
@@ -57,8 +57,30 @@
   <div id='help-diabetes-help'>
     <h2>Clinical Assessment</h2>
     Type 2 diabetes mellitus is a complex polygenic trait and is the most common form of diabetes.
-    Heritability is estimated at about 20%, and discoveries of disease-associated variants only
-    account for a few percentage points of that heritability.
+    Heritability is estimated at about 20%, but thus far, variants discovered by GWAS have only been able to explain a fraction of the heritability.
+    <br/><br/>
+    In this exercise, you can profile your risk for this common disease using a few of the SNPs identified by association studies.
+    We will use the method demonstrated by the <a href='http://www.ncbi.nlm.nih.gov/pubmed/20435227'>first clinical assessment of a personal genome</a>.
+    For this assessment, we require likelihood ratios conferred by each SNP (which are not always provided by the initial GWAS).
+    The likelihood ratio is then multiplied by your prior probability (given the background population selected) to obtain a posterior likelihood.
+    This likelihood represents the likelihood of the disease given the data observed so far, and is converted to a probability, which is shown here.
+    This process is repeated for all the SNPs in the dataset (ordered by discovery study size) to obtain your final probability.
+    <br/><br/>
+    Note that this does not include all the SNPs associated with the disease (nor are all these SNPs even known, as the heritability is not yet fully explained).
+    Note that because of this:
+    <br/><br/>
+    <li>
+      This analysis is <strong>incomplete</strong>, as plenty more variants may be identified
+    </li>
+    <li>
+      This analysis <strong>may differ</strong> from other interpretations offered by other companies (such as 23andme) or programs, which may consider different SNPs for their interpretation.
+    </li>
+    <br/>
+    Again, note that this information is not intended as a diagnosis.
+    First, even a full clinical genomic assessment would not constitute a diagnosis, as these variants simply alter the disease risk of an individual.
+    In addition, this exercise does not consider all variants, but simply illustrates current methods for genome interpretation.
+    As always, consult your physician for medical advice.
+    <br/><br/>
   </div>
 </div>
 

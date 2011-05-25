@@ -1,0 +1,75 @@
+<h3>Choose Your Sex</h3>
+<div id='sex' class='setting'>
+  <input type='radio' id='male' name='sex' />
+  <label for='male' class='small-button'>Male</label>
+  <input type='radio' id='female' name='sex'/>
+  <label for='female' class='small-button'>Female</label>
+  <span id='please-select-sex' title='Please Select Your Sex' class='required hidden'>
+    Please select your sex.
+  </span>
+</div>
+<div>
+  <h3>Mother's Height</h3>
+  <textarea id='mom-height-textarea' rows='1' cols='6'></textarea>
+  <span id='mom_height_units' class='setting'>
+      <input type='radio' id='mom_height_units_cm' name='mom_height_units' checked/>
+      <label for='mom_height_units_cm' class='small-button'>cm</label>
+      <input type='radio' id='mom_height_units_in' name='mom_height_units' />
+      <label for='mom_height_units_in' class='small-button'>in</label>
+  </span>
+  <span id='please-enter-mom-height' title="Please Enter Your Mother's Height" class='required hidden'>
+      Please enter your mother's adult height.
+  </span>
+</div>
+<div>
+  <h3>Father's Height</h3>
+  <textarea id='dad-height-textarea' rows='1' cols='6'></textarea>
+  <span id='dad_height_units' class='setting'>
+      <input type='radio' id='dad_height_units_cm' name='dad_height_units' checked/>
+      <label for='dad_height_units_cm' class='small-button'>cm</label>
+      <input type='radio' id='dad_height_units_in' name='dad_height_units' />
+      <label for='dad_height_units_in' class='small-button'>in</label>
+  </span>
+  <span id='please-enter-dad-height' title="Please Enter Your Father's Height" class='required hidden'>
+      Please enter your father's adult height.
+  </span>
+</div>
+<div>
+  <h3>Your Actual Height</h3>
+  <textarea id='height-textarea' rows='1' cols='6'></textarea>
+  <span id='height_units' class='setting'>
+      <input type='radio' id='height_units_cm' name='height_units' checked/>
+      <label for='height_units_cm' class='small-button'>cm</label>
+      <input type='radio' id='height_units_in' name='height_units' />
+      <label for='height_units_in' class='small-button'>in</label>
+  </span>
+  <span id='please-enter-height' title="Please Enter Your Height" class='required hidden'>
+      Please enter your height.
+  </span>
+</div>
+
+<br/>
+<div>
+  <button id='predict_height' type='submit' class='small-button'>
+    Predict My Height
+  </button>
+  <div id='please-choose-another-population' title='Please Select Another Population' class='required hidden'>
+    This exercise is not implemented for population: <span id='pop-error-box'></span>. Please choose another population.
+  </div>
+</div>
+
+<br/>
+<table id='height_table' class='results-table hidden'>
+  <tr>
+    <th>Genetic</th>
+    <th>Family</th>
+    <th>Population</th>
+    <th>Actual</th>
+  </tr>
+  <script id='height_template' type='text/template'>
+    <tr><td><%= genetic %> cm</td><td><%= family %> cm</td><td><%= population %> cm</td><td><%=  actual %> cm</td>
+  </script>
+</table>
+<br/>
+<div id='height_chart'>
+</div>
