@@ -24,24 +24,35 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-
+    $.get('/media/help/butte_diabetes.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
+    return true;
   },
   
   display: function(response, all_dbsnps, extended_dbsnps) {
     var self = this;
     
+    var diabetes_count = 0;
+    var total = 0;
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-       self.el.find(self.table_id).append(_.template(self.table_template, v))
+      if (v['genotype'] != '??') {
+        diabetes_count += count_genotype(v['genotype'], v['risk']);
+        total += 2;
+      }
+      self.el.find(self.table_id).append(_.template(self.table_template, v));
     });
-    this.el.find(this.table_id).show();
+    this.el.find(self.table_id).show();
     $('#table-options').show();
     
-    this.finish(all_dbsnps, extended_dbsnps);
+    this.finish(diabetes_count, total);
   },
   
-  finish: function(all_dbsnps, extended_dbsnps) {
-
+  finish: function(diabetes_count, total) {
+    $('#butte_diabetes_count').html(diabetes_count);
+    $('#butte_diabetes_total').html(total);
+    this.el.find('#butte_diabetes_chart').show();
   }
 });
 });

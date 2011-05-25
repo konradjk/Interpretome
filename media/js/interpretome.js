@@ -13,6 +13,10 @@ $(function() {
   }catch(err){}
 
   try{
+  window.Terms = new TermsView();
+  }catch(err){}
+  
+  try{
   window.Diabetes = new DiabetesView();
   }catch(err){}
 

@@ -34,6 +34,8 @@
     </script>
     <script type='text/javascript' src='/media/js/view/start.js'>
     </script>
+    <script type='text/javascript' src='/media/js/view/terms.js'>
+    </script>
     <script type='text/javascript' src='/media/js/view/lookup.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/explore.js'>
@@ -192,7 +194,7 @@
         </span>
       <div id='tabs'>
         <ul>
-          <span style='float:left' id='module_selection' class='setting'>
+          <span style='float:left' class='module_selection' class='setting'>
             <input type='radio' id='module_start' name='module_selection'/>
             <label for='module_start'>
               Start
@@ -250,6 +252,15 @@
           <!--<li class='ancestry'>-->
           <!--  <a href='#family'>Family</a>-->
           <!--</li>-->
+          <span style='float: right' class='module_selection setting'>
+          <input type='radio' id='module_terms' name='module_selection'/>
+            <label for='module_terms'>
+              Terms
+            </label>
+          </span>
+          <li class='terms'>
+            <a href='#terms'>Terms and Conditions</a>
+          </li>
         </ul>
         <div id='start'>
         </div>
@@ -272,6 +283,9 @@
         <div id='painting'>
         </div>
         <div id='family'>
+        </div>
+        
+        <div id='terms'>
         </div>
       </div>
       <div id='settings' title='Advanced Settings' class='dialog hidden'>

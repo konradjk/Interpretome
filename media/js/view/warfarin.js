@@ -273,7 +273,7 @@ window.WarfarinView = Backbone.View.extend({
     this.extended_dose = -1.2948 + (1.0409 * this.final_genetic_dose)
     this.printFactor('Extended Dosing', '', '', 'Initial:', this.extended_dose, '')
     if (cyp4f2 != undefined && count_genotype(cyp4f2.genotype, 'T') > 0){
-        extended_dose += 7.5016
+        this.extended_dose += 7.5016
         cyp4f2_var = 1
     }
     results = this.printFactor('CYP4F2 (CT)', '', '', 7.5016, this.extended_dose, cyp4f2_var);

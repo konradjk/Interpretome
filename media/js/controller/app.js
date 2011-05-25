@@ -13,7 +13,9 @@ window.AppController = Backbone.Controller.extend({
     'similarity': 'similarity',
     'pca': 'pca',
     'painting': 'painting',
-    'family': 'family'
+    'family': 'family',
+    
+    'terms': 'terms'
   },
   
   start: function() {
@@ -52,6 +54,10 @@ window.AppController = Backbone.Controller.extend({
   },
   family: function() {
     this.render_or_show(window.Family);
+  },
+  
+  terms: function() {
+    this.render_or_show(window.Terms);
   },
 
   render_or_show: function(controller) {

@@ -1,3 +1,8 @@
+<div id='tang_ancestry_chart'>
+  You have <strong><span id='tang_ancestry_european_count'></span></strong> European alleles
+  and <strong><span id='tang_ancestry_east_asian_count'></span></strong> East Asian alleles.
+</div>
+<br/>
 <table id='tang_ancestry_table' class='results-table hidden'>
   <tr>
     <th class='dbsnp'>dbSNP</th>
@@ -11,8 +16,8 @@
     <tr>
       <td class='key'><%= dbsnp %></td>
       <td class='value'><%= genotype %></td>
-      <td><%= euro_allele %></td>
-      <td><%= azn_allele %></td>
+      <td><%= european_allele %></td>
+      <td><%= east_asian_allele %></td>
       <td class='imputed'><%= imputed_from %> <%= explain %></td>
       <td class='rsq'><%= r_squared %></td>
     </tr>

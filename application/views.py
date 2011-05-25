@@ -446,28 +446,18 @@ def exercise(request):
   
   # Supported exercises
   exercises = ['ashley_cad', 'tang_ancestry', 'altman_pgx', 'butte_diabetes',
-               'assimes_cad', 'snyder_binding',
+               'assimes_cad', 'snyder_binding', 'class_writeups',
+               'mignot_narcolepsy', 'kim_aging'
                'eqtl', 'longevity', 'selection', 'neandertal']
   if exercise not in exercises:
     return http.HttpResponseBadRequest()
   
   # Set query parameters
-  if exercise == 'ashley_cad':
-    fields = 'dbsnp, genes, risk_allele, risk_frequency, combined_or, combined_p'
-  elif exercise == 'tang_ancestry':
-    fields = 'dbsnp, euro_allele, azn_allele'
-  elif exercise == 'altman_pgx':
-    fields = 'dbsnp, gene, risk_allele, risk_info'
-  elif exercise == 'butte_diabetes':
-    fields = 'dbsnp, genes, risk, `or`, source'
-  elif exercise == 'longevity':
+  if exercise == 'longevity':
     where_clause = 'ORDER BY log10_bf DESC'
   elif exercise == 'selection':
     pop = request.REQUEST.get('population')
-    fields = 'dbsnp, ancestral, selected, genes'
     where_clause = "WHERE pop = '%s' AND selected IS NOT NULL" % pop
-  elif exercise == 'neandertal':
-    pass
   
   query = '''SELECT %(fields)s FROM %(db)s.%(table)s %(where)s
   ''' % {'fields': fields, 'db': db, 'table': table, 'where': where_clause}
