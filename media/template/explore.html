@@ -1,11 +1,10 @@
 <div class='main'>
-  <h2>Explore</h2>
-  <br/>
-  <br>
-  <div id='default-exercises'> 
-    Choose an exercise to explore your genome.
-    <br />
-    <div id='exercises'>
+  <h2>Explore your genome</h2>
+  <br />
+  <div id='exercises'> 
+    <div id='default-exercises' class='left'>
+	    <h3>Choose an existing exercise</h3>
+	    <br />
       <select id='toolbar-exercise' name='exercise'>
         <option id='dummy-2' value="null">Select an exercise</option>
         <option value="null">-----------------</option>
@@ -25,26 +24,45 @@
         <option value="mignot_narcolepsy">Narcolepsy SNPs (5/25, Emmanuel Mignot)</option>
         <!--<option value="kim_aging">Aging SNPs (6/1, Stuart Kim)</option>-->
       </select>
+      <br />
+      <br />
+	    <button id='lookup-exercise' type='submit' class='small-button'>
+	      Lookup Exercise
+	    </button>
     </div>
-    </div>
-    <br/>
-    <br/>
-    <div id='custom-exercise'>
+    <div id='custom-exercise' class='right'>
+      <h3>Load your own SNP annotations</h3>
+      <br />
+      <i><a href='#explore' id='annotation-file-help'>Example annotation file</a></i>
+      <br />
+      <br />
       <div id='custom-load'>
-        <h3> Load your own SNP annotations </h3>
-        <input id='exercise-file' type='file' name='file'/>
+        <input id='exercise-file' type='file' name='file' />
+      <br/>
+      <div id='annotation-file-help-dialog' class='dialog hidden'>
+      <p>
+        Custom annotation files must be <strong>tab delimited</strong>, 
+        have a header row, and the first column must be the SNP rsid. 
+        For example,
+      </p>
+	    <br />
+        <pre style='font-size: 0.9em'>
+   # This line is ignored
+   # Actually, any line that starts with a hash...
+   rsid        Disease/Trait   Risk Alelle   Comments
+   rs3094315   RLS             A             This is a SNP
+   rs3934834   Earwax          G             G = wet earwax
+   rs9442372   High IQ         C             Not a real association
+        </pre>
+        </div>
       </div>
+      <br />
+	    <button id='lookup-custom' class='small-button'>
+	      Lookup Custom Exercise
+	    </button>
     </div>
-    <strong> or </strong>
-    <br/>
     <br />
-    <button id='toggle-custom' class='small-button'>Custom Exercise</button>
-    <button id='toggle-default' class='small-button'>Default Exercises</button>
-    <br/>
     <br />
-    <button id='lookup-exercise' type='submit' class='small-button'>
-      Lookup SNPs for exercise
-    </button>
   </div> <!-- Exercise. -->
   
   <br/>
@@ -71,7 +89,6 @@
   </div>
   
 </div>
-
 <div class='help'>
   <div id='help-explore-help'>
     <h2>Exploration</h2>

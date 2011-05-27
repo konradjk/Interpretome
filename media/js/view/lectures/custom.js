@@ -23,7 +23,8 @@ window.GenericView = Backbone.View.extend({
   loaded: function(response) {
 	  this.el.append(response);
 	  this.table_template = $(this.template_id).html();
-	  this.header_template= $(this.table_header_template_id).html();
+	  this.header_template = $(this.table_header_template_id).html();
+    window.App.user.lookup_snps(window.Generic.display, App.custom_exercise, _.keys(App.custom_exercise.snps), null);
   },
   
   start: function(response) {
@@ -33,14 +34,24 @@ window.GenericView = Backbone.View.extend({
   display: function(response, all_dbsnps, extended_dbsnps) {
     var self = this;
     n = window.App.custom_exercise.head.length;
+    this.el.find(this.table_header_id).append('<th>dbSNP</th>');
+    this.el.find(this.table_header_id).append('<th>Genotype</th>');
+    this.el.find(this.table_header_id).append('<th>Imputed from</th>');
+    this.el.find(this.table_header_id).append('<th>R<sup>2</sup></th>');
     $.each(window.App.custom_exercise.head.slice(1, n), function(i ,v) {
       self.el.find(self.table_header_id).append('<th>'+v+'</th>');
     });
-    this.el.find(this.table_header_id).append('<th>Genotype</th>');
-    this.el.find(this.table_header_id).append('<th>dbSNP</th>');
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id).append(_.template(self.table_template, {row:v}));
+      output = {}
+      output['dbsnp'] = v['dbsnp'];
+      output['genotype'] = v['genotype'];
+      output['imputed_from'] = v['imputed_from'];
+      output['r_squared'] = v['r_squared'];
+      $.each(window.App.custom_exercise.head.slice(1, n), function(key, value) {
+        output[value] = v[value];
+      });
+      self.el.find(self.table_id).append(_.template(self.table_template, {row:output}));
     });
     this.el.find(this.table_id).show();
     $('#table-options').show();

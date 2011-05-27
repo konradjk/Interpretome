@@ -24,40 +24,34 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-
+    $.get('/media/help/assimes_cad.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
+    return true;
   },
   
   display: function(response, all_dbsnps, extended_dbsnps) {
     var self = this;
+    var cad_count = 0;
+    var total = 0;
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id).append(_.template(self.table_template, v))
+      self.el.find(self.table_id).append(_.template(self.table_template, v));
+      if (v['genotype'] != '??') {
+        cad_count += count_genotype(v['genotype'], v['risk_allele']);
+        total += 2;
+      }
     });
     this.el.find(this.table_id).show();
     $('#table-options').show();
     
-    this.finish(all_dbsnps, extended_dbsnps);
+    this.finish(cad_count, total);
   },
   
-  finish: function(all_dbsnps, extended_dbsnps) {
-    var n_risk = 0, n_total = 0;
-    var rows = this.el.find('.results-table:visible tr').slice(1);
-    $.each(rows, function(i, v) {
-      var genotype = $(v).find('td:nth-child(2)').text();
-      if (genotype == '??') return;
-      
-      n_total += 2;
-      var count = count_genotype(genotype, $(v).find('td:nth-child(3)').text());
-      n_risk += count;
-    });
-    this.el.find('.results-table:visible tr:last').after(
-      '<tr><td class="key"><strong>Number of risk alleles</strong></td><td class="value">' + 
-        n_risk + '</td></tr>'
-    );
-    this.el.find('.results-table:visible tr:last').after(
-      '<tr><td class="key"><strong>Total</strong></td><td class="value">' + n_total + '</td></tr>'
-    );
-
+  finish: function(cad_count, total) {
+    $('#assimes_cad_count').html(cad_count);
+    $('#assimes_cad_total').html(total);
+    this.el.find('#assimes_cad_chart').show();
   }
 });
 });

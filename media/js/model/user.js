@@ -137,7 +137,6 @@ function User() {
       }
     });
     if (lookup_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
-    //$('#imputing-lots').dialog('open');
     var self = this;
     $.post(
       '/lookup/linked/', {
@@ -201,10 +200,8 @@ function User() {
         self.set_genotype(extended_snps[request_snp], gt1 + gt2);
       });
     }
-    //$('#imputing-lots').dialog('close');
     $('#looking-up').dialog('close');
     return callback(args, all_dbsnps, extended_snps);
-    //return self.get_reference_alleles(callback, args, all_dbsnps, extended_snps);
   },
   
   this.get_reference_alleles = function(callback, args, all_dbsnps, extended_snps) {

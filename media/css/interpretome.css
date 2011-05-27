@@ -1,3 +1,7 @@
+pre {
+  font-family: 'lucida console';
+  color: '#006600';
+}
 * {
   font-family: 'myriad pro', helvetica;
   margin: 0;
@@ -62,16 +66,34 @@ div.main {
 
 .left {
   float: left;
-  width: 50%;
+  width: 49%;
 }
 
 .right {
   float: right;
-  width: 50%;
+  width: 49%;
+}
+.left_third {
+  float: left;
+  width: 30%;
+}
+.middle_third {
+  float: none;
+  display: inline-block;
+  width: 40%;
+}
+
+.right_third {
+  float: right;
+  width: 25%;
 }
 
 .advanced-setting {
   margin-top: 2.5%;
+}
+
+.goog-gauge {
+  display: inline-block;
 }
 
 #settings .left {

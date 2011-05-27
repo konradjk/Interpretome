@@ -1,0 +1,29 @@
+<div id='mignot_narcolepsy_chart'>
+  Combined Risk: <strong><span id='mignot_narcolepsy_count' class='submission'></span></strong>.
+</div>
+<br/>
+<br/>
+<table id='mignot_narcolepsy_table' class='results-table hidden'>
+  <tr>
+    <th class='dbsnp'>dbSNP</th>
+    <th class='dbsnp'>Genotype</th>
+    <th>Gene</th>
+    <th>Risk allele</th>
+    <th>Odds ratio</th>
+    <th>Disorder</th>
+    <th class='imputed'>Imputed from</th>
+    <th class='rsq'>R<sup>2</sup></th>
+  </tr>
+  <script id='mignot_narcolepsy_template' type='text/template'>
+    <tr>
+      <td class='key'><%= dbsnp %></td>
+      <td class='value'><%= genotype %></td>
+      <td><%= gene %></td>
+      <td><%= risk %></td>
+      <td><%= odds_ratio %></td>
+      <td><%= disorder %></td>
+      <td class='imputed'><%= imputed_from %> <%= explain %></td>
+      <td class='rsq'><%= r_squared %></td>
+    </tr>
+  </script>
+</table>

@@ -18,7 +18,7 @@ window.AppView = Backbone.View.extend({
 	    'change_population', 'change_population_from_toolbar',
 	    'change_population_from_check',
       'select_module', 'change_module',
-      'click_settings', 'load_file'
+      'click_settings'
 	  );
   },
   
@@ -37,9 +37,7 @@ window.AppView = Backbone.View.extend({
     'similarity': 'ancestry',
     'pca': 'ancestry',
     'painting': 'ancestry',
-    'family': 'ancestry',
-    
-    'terms': 'terms'
+    'family': 'ancestry'
   },
   
   render: function() {
@@ -86,7 +84,8 @@ window.AppView = Backbone.View.extend({
       $('.' + $(v).attr('for').replace('module_', '')).hide(speed);
     });
     
-    if (module == 'start' || module == 'lookup' || module == 'explore' || module == 'terms' || module == undefined) {
+    // You can also use _.include([...], value);
+    if (module == 'start' || module == 'lookup' || module == 'explore' || module == undefined) {
       $('#module-arrow').hide(speed);
       if (module != undefined) {
         window.location.hash = '#' + module;
@@ -97,14 +96,14 @@ window.AppView = Backbone.View.extend({
     }
   },
   
-  load_file: function(file, onloadedfun) {
+  change_genome: function(event) {
     $('#loading-genome').dialog('open');
     this.el.find('.progress-bar').progressbar({value: 0});
     this.el.find('.progress-bar > div').css('background', get_secondary_color());
     
     var reader = new FileReader();
-    
     var self = this;
+    
     reader.onprogress = function(event) {
       if (event.lengthComputable) {
         var percent = Math.round((event.loaded / event.total) * 100);
@@ -114,20 +113,15 @@ window.AppView = Backbone.View.extend({
       }
     };
     
-    reader.onloadend = onloadedfun;
-    reader.readAsText(file);
-  },
-
-  
-  change_genome: function(event) {
-    this.load_file(event.target.files[0], function(event) {
+    reader.onloadend = function(event) {
       $('#loading-bar').progressbar('option', 'value', 100);
       $('#genome label, #genome input').hide();
       $('#advanced').show();
       window.App.user.parse_genome(event.target.result.split('\n'));
       // Should this be here?
       $('#please-load-genome').dialog('close');
-    });
+    }
+    reader.readAsText(event.target.files[0]);
   },
   
   clear_genome: function(event) {
@@ -180,14 +174,14 @@ window.AppView = Backbone.View.extend({
   },
   
   check_genome: function() {
-    this.check_any_genome('user');
+    return this.check_any_genome('user');
   },
   
   check_population: function() {
     if (this.user.population == null) {
       this.el.find('#please-select-population').dialog({
         modal: true, resizable: false, buttons: {
-          'Okay': function() {$(this).dialog('close');}
+          'Cancel': function() {$(this).dialog('close');}
         }
       });
       return false;

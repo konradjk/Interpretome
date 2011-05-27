@@ -94,17 +94,19 @@
       </button>
     </div>
     <br />
-    <table id='warfarin-graph-table' class='hidden'>
-      <tr>
-        <th>Clinical</th>
-        <th>Pharmacogenomic</th>
-        <th>Extended</th>
-      </tr>
-      <script id='warfarin-graph-template' type='text/template'>
-        <tr align=center><td><%= clinical %></td><td><%= genetic %></td><td><%= extended %></td></tr>
-      </script>
-    </table>
-    <br>
+    <div id='table-options'>
+      <button id='submit-doses' type='submit'>
+        Submit my Warfarin Doses
+      </button>
+      <button id='clear-snps' type='submit'>
+        Clear Table
+      </button>
+    </div>
+    <div id='warfarin-vis'>
+      
+      <div id='warfarin-graph-table'>
+      </div>
+    </div>
     <table id='warfarin-table' class='results-table hidden'>
       <tr>
         <th>Feature</th>
@@ -122,14 +124,6 @@
         <td class="line"><td/><td><%= genetic_multiplier %></td><td><%= genetic_value %></td><td><%= genetic_total %></td></tr>
       </script>
     </table>
-  <br>
-  <div class='submit'>
-    <div id='submit-button'>
-      <button id='submit-doses' type='submit'>
-        Submit my Warfarin Doses
-      </button>
-    </div>
-  </div>
   <div id='confirm-submit-doses' title='Submit your Doses?' class='hidden'>
     Are you sure you want to submit your warfarin doses?
   </div>

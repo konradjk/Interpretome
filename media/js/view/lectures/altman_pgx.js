@@ -24,7 +24,10 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-
+    $.get('/media/help/altman_pgx.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
+    return true;
   },
   
   display: function(response, all_dbsnps, extended_dbsnps) {

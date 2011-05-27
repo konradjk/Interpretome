@@ -1,53 +1,18 @@
 // Later, we can load these on-demand if we CustomExercise.
 $(function() {
-  try{
-    window.Start = new StartView();
-  }catch(err){}
-
-  try{
+  window.Start = new StartView();
   window.Lookup = new LookupView();
-  }catch(err){}
-
-  try{
   window.Explore = new ExploreView();
-  }catch(err){}
-
-  try{
-  window.Terms = new TermsView();
-  }catch(err){}
-  
-  try{
-  window.Diabetes = new DiabetesView();
-  }catch(err){}
-
-  try{
+ 
+  window.Diabetes = new DiabetesView(); 
   window.Disease = new DiseaseView();
-  }catch(err){}
-
-  try{
   window.Warfarin = new WarfarinView();
-  }catch(err){}
-
-  try{
   window.Pharmacogenomics = new PharmacogenomicsView();
-  }catch(err){}
-
-  try{
+  
   window.Similarity = new SimilarityView();
-  }catch(err){}
-
-  try{
   window.PCA = new PCAView();
-  }catch(err){}
-
-  try{
   window.Painting = new PaintingView();
-  }catch(err){}
-
-  try{
   window.Family = new FamilyView();
-  }catch(err){}
-
   
   window.App = new AppView();
   window.App.user = new User();

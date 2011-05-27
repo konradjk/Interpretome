@@ -8,22 +8,33 @@
         Number of SNPs to be used in the comparison. A higher number takes longer, but could be more accurate.
       </div>
     </div>
-    <textarea id='numsnps-textarea' rows='1' cols='8'>1000</textarea>
     <br/>
-    <div>
-      <br/>
-      <button id='similarity-snps' type='submit' class='small-button'>
-        Compare!
+    <div id='similarity-resolution' class='setting'>
+      <input type='radio' id='1000' name='similarity-resolution' checked/>
+      <label for='1000'>1,000</label>
+      <input type='radio' id='10000' name='similarity-resolution' />
+      <label for='10000'>10,000</label>
+      <input type='radio' id='100000' name='similarity-resolution' />
+      <label for='100000'>100,000</label>
+    </div>
+    <br/>
+    <button id='similarity-snps' type='submit'>
+      Compare!
+    </button>
+    <br/>
+    <br/>
+    <div id='table-options'>
+      <button id='clear-snps' type='submit'>
+        Clear Table
       </button>
+      <!--<button id='submit-snps' type='submit'>-->
+      <!--  Submit my Similarities-->
+      <!--</button>-->
     </div>
   </div>
   <div id='looking-up' title='Loading' class='dialog hidden'>
     Please be patient. This may take a few moments. <br/> <br/>
   </div>
-  <br/>
-	<button id='clear-snps' type='submit' class='small-button'>
-    Clear Table
-  </button>
   <br/>
 	<table id='similarity-snps-table' class='results-table hidden'>
 	  <tr>
@@ -36,18 +47,6 @@
 		  </tr>
 		</script>
 	</table>
-  <br>
-  <div class='submit'>
-    <div>
-      
-    </div>
-    <br/>
-    <div id='submit-button'>
-      <button id='submit-snps' type='submit'>
-        Submit my Similarities
-      </button>
-    </div>
-  </div>
 </div>
 
 <div class='help'>

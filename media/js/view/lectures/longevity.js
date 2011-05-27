@@ -26,7 +26,10 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-
+    $.get('/media/help/longevity.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
+    return true;
   },
   
   display: function(response, all_dbsnps, extended_dbsnps) {
@@ -38,7 +41,7 @@ window.GenericView = Backbone.View.extend({
     
     data = new google.visualization.DataTable();
     data.addColumn('string', 'SNP');
-    data.addColumn('number', 'Running probability');
+    data.addColumn('number', 'Running Probability');
     
     _.each(response.sorted_dbsnps, function(v) {
       var found = false;
@@ -88,7 +91,7 @@ window.GenericView = Backbone.View.extend({
       el_odds = v[0] / v[1];
       el_running_odds.push(el_running_odds[i] * el_odds);
 	    el_running_probability.push(100 * (el_running_odds[i + 1] / (1 + el_running_odds[i + 1])));
-      data.addRow([dbsnp, el_running_probability[i + 1]]);
+      data.addRow([dbsnp, Math.round(el_running_probability[i + 1]*100)/100]);
       var template_data = {
         dbsnp: dbsnp, alleles: el_alleles[i], genotype: extended_dbsnps[dbsnp].genotype,
         imputed_from: extended_dbsnps[dbsnp].imputed_from, 
@@ -112,11 +115,11 @@ window.GenericView = Backbone.View.extend({
     chart.draw(data, {
       width: 0.9 * this.el.find('.main').width(), 
       height: 400, 
-      title: 'Probability of extreme longevity',
+      title: 'Probability of Extreme Longevity',
       fontSize: 14, vAxis: {
-        title: 'Probability'
+        title: 'Probability (%)'
       }, hAxis: {
-        title: 'SNP index (ordered by informativeness)'
+        title: 'SNP (Ordered by Informativeness)'
       }
     });      
     

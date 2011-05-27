@@ -28,10 +28,10 @@ window.SimilarityView = Backbone.View.extend({
 	  
 	  // Widget initialization.
 	  this.el.find('button').button();
-	  this.el.find('.submit > div').hide();
+	  this.el.find('#table-options').hide();
     
     this.el.find('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});
-	  
+	  this.el.find('#similarity-resolution').buttonset();
 	  // Template initialization.
 	  this.similarity_snp_template = $('#similarity-snp-template').html();
 	  
@@ -68,14 +68,17 @@ window.SimilarityView = Backbone.View.extend({
   click_clear_snps: function(event) {
     this.el.find('#similarity-snps-table tr').slice(1).remove();
     this.el.find('#similarity-snps-table').hide();
-    this.el.find('.submit > div').hide();
+    this.el.find('#table-options').hide();
   },
   
   click_similarity_snps: function(event) {
+    this.el.find('#similarity-snps-table tr').slice(1).remove();
+    this.el.find('#similarity-snps-table').hide();
     if (window.App.check_genome() == false) return;
     $('#looking-up').dialog('open');
-    var numsnps = this.el.find('#numsnps-textarea').val();
+    var numsnps = $('#similarity-resolution label[aria-pressed="true"]').attr('for');
     var self = this;
+	  this.el.find('#table-options').show();
     $.get(
       '/similarity/get_individuals/', {numsnps : numsnps},
       function(response) {

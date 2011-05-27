@@ -15,7 +15,6 @@ window.DiabetesView = Backbone.View.extend({
     YRI: 0.233
   },
 
-
   initialize: function() {
     _.bindAll(this, 
       'click_compute_diabetes', 
@@ -43,6 +42,7 @@ window.DiabetesView = Backbone.View.extend({
   
   click_compute_diabetes: function(event) {
     if (window.App.check_all() == false) return;
+    $('#diabetes-chart').empty();
     
     this.el.find('#diabetes-table tr').slice(1).remove();
     this.el.find('#diabetes-table').hide();
@@ -62,10 +62,11 @@ window.DiabetesView = Backbone.View.extend({
     var lr = compute_odds(this.priors[window.App.user.population]);
     
     data = new google.visualization.DataTable();
+
     data.addColumn('string', 'SNP');
     data.addColumn('number', 'Running LR');
     data.addColumn('number', 'Prior');
-    data.addRow(['Prior', 100 * compute_probability(lr), 100 * this.priors[window.App.user.population]]);
+    data.addRow(['Prior', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[window.App.user.population]]);
     
     self.el.find('#diabetes-table').append(
       '<tr><td><strong>Prior</td><td></td><td></td><td></td><td></td></tr>'
@@ -79,9 +80,6 @@ window.DiabetesView = Backbone.View.extend({
         var study_snp = response[all_dbsnps[i]][j];
         if (user_snp.genotype == 'NA') continue;
         if (!compare_arrays(user_snp.genotype.split(''), study_snp.genotype.split(''))) continue;
-        //console.log(i);
-        //console.log(all_dbsnps[i]);
-        //console.log(response[all_dbsnps[i]][j]);
         user_snp.study_size = study_snp.study_size;
         user_snp.LR = study_snp.LR;
         self.el.find('#diabetes-table').append(_.template(self.diabetes_snp_template, user_snp));
@@ -89,7 +87,7 @@ window.DiabetesView = Backbone.View.extend({
 	      self.el.find('#diabetes-table tr:last').
 	        append('<td>' + study_snp.LR.toFixed(3) + '</td><td>' + parseFloat(lr).toFixed(3) + 
 	          '</td><td>' + parseFloat(100 * compute_probability(lr)).toFixed(3) + '% </td>');
-	      data.addRow([study_snp.dbsnp + '', 100 * compute_probability(lr), 100 * this.priors[window.App.user.population]]);
+	      data.addRow([study_snp.dbsnp + '', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[window.App.user.population]]);
 	      break;
       }
     }
@@ -104,7 +102,7 @@ window.DiabetesView = Backbone.View.extend({
       height: 400, 
       title: 'Running Total (By Likelihood Ratios)',
       fontSize: 14, vAxis: {
-        title: 'Adjusted Probability'
+        title: 'Adjusted Probability (%)'
       }, hAxis: {
         title: 'SNP Index (Ordered By Study Size)'
       }
@@ -129,6 +127,5 @@ window.DiabetesView = Backbone.View.extend({
 	    }
 	  }})
 	}
-
 });
 });

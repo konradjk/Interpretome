@@ -27,7 +27,7 @@ window.GenericView = Backbone.View.extend({
 	  this.el.append(response);
     this.el.find('#predict_height').button();
     this.el.find('#sex').buttonset();
-    this.el.find('#height_units').buttonset();
+    this.el.find('#your_height_units').buttonset();
     this.el.find('#mom_height_units').buttonset();
     this.el.find('#dad_height_units').buttonset();
     this.priors = { "CEU" : {"male" : 178.9, "female" : 164.8 },
@@ -41,6 +41,9 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
+    $.get('/media/help/height.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
     this.el.find('.required').hide();
     this.el.find('#height_table tr').slice(1).remove();
     this.el.find('#height_chart').empty();
@@ -57,14 +60,14 @@ window.GenericView = Backbone.View.extend({
     }
     
     var raw_height = this.el.find('#dad-height-textarea').val();
-    if ($('#height_units label[aria-pressed="true"]').attr('for') == 'height_units_in'){
+    if ($('#dad_height_units label[aria-pressed="true"]').attr('for') == 'dad_height_units_in'){
       window.App.user.dad_height = check_inches(raw_height);
     } else {
       window.App.user.dad_height = check_float(raw_height);
     }
     
     var raw_height = this.el.find('#height-textarea').val();
-    if ($('#dad_height_units label[aria-pressed="true"]').attr('for') == 'dad_height_units_in'){
+    if ($('#your_height_units label[aria-pressed="true"]').attr('for') == 'your_height_units_in'){
       window.App.user.height = check_inches(raw_height);
     } else {
       window.App.user.height = check_float(raw_height);

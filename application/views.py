@@ -390,7 +390,7 @@ def submit(request):
   
   if exercise not in (
     'butte_diabetes', 'selection', 'assimes_cad', 'neandertal', 'eqtl',
-    'snyder_binding'
+    'snyder_binding', 'mignot_narcolepsy'
   ):
 	  query = '''
 	    INSERT INTO exercises.%s (submit_time, `%s`) VALUES (NOW(), '%s')
@@ -447,7 +447,7 @@ def exercise(request):
   # Supported exercises
   exercises = ['ashley_cad', 'tang_ancestry', 'altman_pgx', 'butte_diabetes',
                'assimes_cad', 'snyder_binding', 'class_writeups',
-               'mignot_narcolepsy', 'kim_aging'
+               'mignot_narcolepsy', 'kim_aging',
                'eqtl', 'longevity', 'selection', 'neandertal']
   if exercise not in exercises:
     return http.HttpResponseBadRequest()

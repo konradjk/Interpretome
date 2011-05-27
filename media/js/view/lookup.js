@@ -6,7 +6,6 @@ window.LookupView = Backbone.View.extend({
 
   events: {
     'click #lookup-snps': 'click_lookup_snps',
-    'click #lookup-by-file': 'click_lookup_file',
     'click #clear-snps': 'click_clear_snps',
     'click .explain-snp': 'click_explain',
     'click #lookup-demo': 'toggle_demo',
@@ -20,10 +19,10 @@ window.LookupView = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this,  
-      'click_lookup_file', 'click_lookup_snps', 'click_clear_snps', 
+      'click_lookup_snps', 'click_clear_snps', 
       'click_submit', 'click_confirm_submit', 'click_explain', 
       
-      'load_dbsnp_file', 
+      'get_more_info', 
       'loaded',
       
       'toggle_demo', 'toggle_bed',
@@ -43,11 +42,7 @@ window.LookupView = Backbone.View.extend({
     
 	  // Widget initialization.
 	  this.el.find('button').button();
-	  this.el.find('#exercises label').css('width', '50%');
 	  this.el.find('#table-options').hide();
-	  
-	  this.el.find('.submit > div').hide();
-	  this.el.find('.details').hide();
 	  this.el.find('.description').hide();
 	  
 	  // Initialize general templates.
@@ -58,7 +53,6 @@ window.LookupView = Backbone.View.extend({
 	    $('#explain-lookup-bottom-template').html();
 	  this.bed_file_template = $('#bed-file-template').html();
 	  
-    
     $('#too-many-snps').dialog({
       modal: true, resizable: false, autoOpen: false, buttons: {
         'Okay!': function() {$(this).dialog('close');}
@@ -159,57 +153,37 @@ window.LookupView = Backbone.View.extend({
     this.el.find('.submit > div').hide();
   },
   
-  // Reads a file of SNPs.
-  click_lookup_file: function(event) {
-    var reader = new FileReader();
-    reader.onloadend = this.load_dbsnp_file;
-    reader.readAsText(this.el.find('#lookup-file').attr('files')[0]);
-  },
-  
-  // Callback when loading of file is completed.
-  load_dbsnp_file: function(event) {
-    var self = this;
-    var input_dbsnps = [];
-    var dbsnp_comments = {};
-    $.each(event.target.result.split('\n'), function (i, v){
-      var line = v.split(/\s/g);
-      var rsid = line.shift();
-      dbsnp_comments[filter_identifiers(rsid)] = line.join(' ');
-      input_dbsnps.push(rsid);
-    });
-    
-    var dbsnps = filter_identifiers(input_dbsnps);
-    if (dbsnps.length <= 1000)
-      setTimeout(window.App.user.lookup_snps(self.print_snps, {}, dbsnps, dbsnp_comments), 0);
-    else
-      $('#too-many-snps').dialog('open');
-    
-  },
-  
   click_lookup_snps: function(event) {
     if (window.App.check_all() == false) return;
+    $('#looking-up').dialog('open');
     $('#table-options').show();
     var self = this;
     var dbsnps = filter_identifiers(
       this.el.find('#lookup-snps-textarea').val().split('\n')
     );
-    setTimeout(window.App.user.lookup_snps(self.print_snps, {}, dbsnps, {}), 0);
+    window.App.user.lookup_snps(self.get_more_info, {}, dbsnps, {});
+  },
+  
+  get_more_info: function(args, all_dbsnps, extended_dbsnps) {
+    window.App.user.get_reference_alleles(this.print_snps, {}, all_dbsnps, extended_dbsnps);
   },
   
   print_snps: function(args, all_dbsnps, snps_to_print) {
     var self = this;
     $.each(all_dbsnps, function(i, v) {
       var output_snp = snps_to_print[v];
+      _.extend(output_snp, args[v]);
       if (output_snp['imputed_from'] != ''){
         output_snp['explain'] = self.explain_string();
       }
       self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, output_snp));
       self.el.find('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
     });
+    $('#looking-up').dialog('close');
     $('#imputing-lots').dialog('close');
+    $('#table-options').show();
     self.el.find('#lookup-snps-table').show();
-    self.el.find('.details').hide();
-    self.el.find('.submit > div').show();
+    //self.el.find('.details').hide();
   },
   
   explain_string: function() {

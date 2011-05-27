@@ -5,7 +5,6 @@ window.GenericView = Backbone.View.extend({
   table_id: '#eqtl_table',
   template_id: '#eqtl_template',
   url: '/media/template/lectures/eqtl.html',
-  help_url: '/media/help/eqtl.html',
 
   initialize: function() {
     _.bindAll(this, 'loaded',
@@ -25,7 +24,7 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-    $.get(this.help_url, {}, function(response) {
+    $.get('/media/help/eqtl.html', {}, function(response) {
       $('#help-exercise-help').html(response);
     });
     return true;
