@@ -8,16 +8,16 @@ window.PCAView = Backbone.View.extend({
 
   events: {
     'click #compute-pca': 'click_compute_pca',
-    'click #submit-coordinates': 'click_submit',
-    'change #source': 'change_pop'
+    //'click #submit-coordinates': 'click_submit',
+    'change #pca_source': 'change_pop'
   },
 
   initialize: function() {
     _.bindAll(this, 
       'click_compute_pca', 'get_next_snps',
       'got_pca_params', 'change_pop',
-      'loaded', 'get_pca_scores',
-      'click_submit', 'click_confirm_submit'
+      'loaded', 'get_pca_scores'
+      //'click_submit', 'click_confirm_submit'
     );
   },
   
@@ -30,10 +30,10 @@ window.PCAView = Backbone.View.extend({
 	  
 	  this.el.find('button').button();
 	  this.el.find('.help > div').show();
-    this.el.find('#source').buttonset();
-    this.el.find('#level').hide();
-    this.el.find('#level').buttonset();
-    this.el.find('#resolution').buttonset();
+    this.el.find('#pca_source').buttonset();
+    this.el.find('#pca_level').hide();
+    this.el.find('#pca_level').buttonset();
+    this.el.find('#pca_resolution').buttonset();
     
     this.el.find('#popres_resolution').buttonset();
     this.el.find('#popres_resolution').hide();
@@ -53,38 +53,38 @@ window.PCAView = Backbone.View.extend({
   },
   
   change_pop: function(event) {
-    if ($('#source label[aria-pressed="true"]').attr('for').split(/\_/g)[1] == 'all') {
-      this.el.find('#level').hide();
+    if ($('#pca_source label[aria-pressed="true"]').attr('for').split(/\_/g)[1] == 'all') {
+      this.el.find('#pca_level').hide();
     } else {
-      this.el.find('#level').show();
+      this.el.find('#pca_level').show();
     }
     this.el.find('#popres_resolution').hide();
     this.el.find('#khoisan_resolution').hide();
-    this.el.find('#resolution').hide();
+    this.el.find('#pca_resolution').hide();
     this.el.find('#popres_level').hide();
-    if ($('#source label[aria-pressed="true"]').attr('for') == 'popres_all') {
+    if ($('#pca_source label[aria-pressed="true"]').attr('for') == 'popres_all') {
       this.el.find('#popres_resolution').show();
       this.el.find('#popres_level').show();
-    } else if ($('#source label[aria-pressed="true"]').attr('for') == 'khoisan_all') {
+    } else if ($('#pca_source label[aria-pressed="true"]').attr('for') == 'khoisan_all') {
       this.el.find('#khoisan_resolution').show();
       this.el.find('#khoisan_level').show();
     } else {
-      this.el.find('#resolution').show();
+      this.el.find('#pca_resolution').show();
     }
   },
   
   click_compute_pca: function(event) {
     if (window.App.check_genome() == false) return;
     $('#looking-up').dialog('open');
-    var source = $('#source label[aria-pressed="true"]').attr('for');
-    var level = $('#level label[aria-pressed="true"]').attr('for');
+    var source = $('#pca_source label[aria-pressed="true"]').attr('for');
+    var level = $('#pca_level label[aria-pressed="true"]').attr('for');
     if (source == 'popres_all') {
       var resolution = $('#popres_resolution label[aria-pressed="true"]').attr('for');
       var level = $('#popres_level label[aria-pressed="true"]').attr('for').replace('popres_','');
     } else if (source == 'khoisan_all') {
       var resolution = $('#khoisan_resolution label[aria-pressed="true"]').attr('for');
     } else {
-      var resolution = $('#resolution label[aria-pressed="true"]').attr('for');
+      var resolution = $('#pca_resolution label[aria-pressed="true"]').attr('for');
     }
     axis1 = this.el.find('#pcx-axis option:selected').val();
     axis2 = this.el.find('#pcy-axis option:selected').val();
@@ -147,7 +147,7 @@ window.PCAView = Backbone.View.extend({
     var user = window.App.user;
     legend = { layout: 'vertical', align: 'left', verticalAlign: 'top', x: 0, y: 70, floating: false, backgroundColor: '#FFFFFF', borderWidth: 1 };
     my_color = 'rgba(255, 0, 0, 1)';
-    if ($('#source label[aria-pressed="true"]').attr('for') == 'popres_all') {
+    if ($('#pca_source label[aria-pressed="true"]').attr('for') == 'popres_all') {
       legend = { verticalAlign: 'bottom', y: -20, floating: false, backgroundColor: '#FFFFFF', borderWidth: 1 }
       if ($('#popres_level label[aria-pressed="true"]').attr('for') == 'popres_2') {
         my_color = 'rgba(0, 0, 0, 1)';
@@ -167,7 +167,7 @@ window.PCAView = Backbone.View.extend({
          zoomType: 'xy'
       },
       title: { text: 'Loadings plot of first two principal components' },
-      subtitle: { text: 'Source: ' + $.trim($('#source label[aria-pressed="true"]').attr('innerText')) },
+      subtitle: { text: 'Source: ' + $.trim($('#pca_source label[aria-pressed="true"]').attr('innerText')) },
       xAxis: {
          title: { enabled: true, text: 'PC' + xnum + ' (' + (response['variances']['pc' + xnum]*100).toFixed(2) + '%)'
          },
@@ -197,26 +197,26 @@ window.PCAView = Backbone.View.extend({
     this.el.find('.submit > div').show();
   },
   
-  click_submit: function(event) {
-    var self = this;
-    $('#confirm-submit-coordinates').dialog({
-      modal: true, resizable: false, buttons: {
-        'Confirm' : function() {
-          self.click_confirm_submit();
-          $(this).dialog('close');
-        },
-        'Cancel': function() {$(this).dialog('close');}
-      }
-    });
-  },
-  
-  click_confirm_submit: function(event) {
-    var source = $('#source label[aria-pressed="true"]').attr('for');
-    var resolution = $('#resolution label[aria-pressed="true"]').attr('for');
-    if (source == 'hgdp_all' && resolution == 100000) {
-      var coordinates = [this.pc1, this.pc2];
-      $.get( '/submit/submit_coordinates/', { coordinates: coordinates.join(',') }, check_submission);
-    }
-  }
+  //click_submit: function(event) {
+  //  var self = this;
+  //  $('#confirm-submit-coordinates').dialog({
+  //    modal: true, resizable: false, buttons: {
+  //      'Confirm' : function() {
+  //        self.click_confirm_submit();
+  //        $(this).dialog('close');
+  //      },
+  //      'Cancel': function() {$(this).dialog('close');}
+  //    }
+  //  });
+  //},
+  //
+  //click_confirm_submit: function(event) {
+  //  var source = $('#pca_source label[aria-pressed="true"]').attr('for');
+  //  var resolution = $('#pca_resolution label[aria-pressed="true"]').attr('for');
+  //  if (source == 'hgdp_all' && resolution == 100000) {
+  //    var coordinates = [this.pc1, this.pc2];
+  //    $.get( '/submit/submit_coordinates/', { coordinates: coordinates.join(',') }, check_submission);
+  //  }
+  //}
 });
 });

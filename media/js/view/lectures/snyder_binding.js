@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name:'Binding-Snyder',  
   table_id: '#snyder_binding_table',
   template_id: '#snyder_binding_template',
   url: '/media/template/lectures/snyder_binding.html',

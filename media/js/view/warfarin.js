@@ -9,15 +9,16 @@ window.WarfarinView = Backbone.View.extend({
 
   events: {
     'click #warfarin-dose': 'click_warfarin_dose',
-    'click #submit-doses': 'click_submit',
+    //'click #submit-doses': 'click_submit',
     'click #clear-snps' : 'clear_snps',
-    'click #confirm-submit-doses': 'click_confirm_submit'
+    //'click #confirm-submit-doses': 'click_confirm_submit'
   },
 
   initialize: function() {
     _.bindAll(this, 'click_warfarin_dose', 'generate_graphs',
               'check_warfarin', 'clear_snps',
-      'click_submit', 'click_confirm_submit', 'loaded');
+      //'click_submit', 'click_confirm_submit',
+      'loaded');
   },
   
   render: function() {
@@ -39,24 +40,24 @@ window.WarfarinView = Backbone.View.extend({
     this.has_loaded = true;
   },
   
-  click_submit: function(event) {
-    var self = this;
-    $('#confirm-submit-doses').dialog({
-      modal: true, resizable: false, buttons: {
-        'Confirm' : function() {
-          self.click_confirm_submit();
-          $(this).dialog('close');
-        },
-        'Cancel': function() {$(this).dialog('close');}
-      }
-    });
-  },
-  
-  click_confirm_submit: function(event) {
-    var output_doses = [this.final_clinical_dose, this.final_genetic_dose, this.extended_dose];
-    var self = this;
-    $.get( '/submit/submit_doses/', { doses: output_doses.join(',') }, check_submission);
-  },
+  //click_submit: function(event) {
+  //  var self = this;
+  //  $('#confirm-submit-doses').dialog({
+  //    modal: true, resizable: false, buttons: {
+  //      'Confirm' : function() {
+  //        self.click_confirm_submit();
+  //        $(this).dialog('close');
+  //      },
+  //      'Cancel': function() {$(this).dialog('close');}
+  //    }
+  //  });
+  //},
+  //
+  //click_confirm_submit: function(event) {
+  //  var output_doses = [this.final_clinical_dose, this.final_genetic_dose, this.extended_dose];
+  //  var self = this;
+  //  $.get( '/submit/submit_doses/', { doses: output_doses.join(',') }, check_submission);
+  //},
   
   calculate_and_print_factor: function(feature, results, clincial_multiplier, genetic_multiplier, value) {
     results['clinical_total'] += clincial_multiplier*value;

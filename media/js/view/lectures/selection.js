@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name:'Selection',  
   table_id: '#selection_table',
   template_id: '#selection_template',
   url: '/media/template/lectures/selection.html',

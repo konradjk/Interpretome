@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name: 'Diabetes-Butte', 
   table_id: '#butte_diabetes_table',
   template_id: '#butte_diabetes_template',
   url: '/media/template/lectures/butte_diabetes.html',

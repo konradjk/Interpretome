@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name:'Ancestry-Tang', 
   table_id: '#tang_ancestry_table',
   template_id: '#tang_ancestry_template',
   url: '/media/template/lectures/tang_ancestry.html',

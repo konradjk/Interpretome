@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  nam:'Longevity',  
   table_id: '#longevity_table',
   template_id: '#longevity_template',
   url: '/media/template/lectures/longevity.html',
@@ -84,6 +84,7 @@ window.GenericView = Backbone.View.extend({
   
   finish: function(el_probabilities, el_alleles, dbsnps, extended_dbsnps) {
     
+    var self = this;
     var el_running_odds = [1];
     var el_running_probability = [50]; 
     $.each(el_probabilities, function(i, v) {
@@ -98,7 +99,7 @@ window.GenericView = Backbone.View.extend({
         r_squared: extended_dbsnps[dbsnp].r_squared,
         or: el_odds, ror: el_running_odds[i + 1], rp: el_running_probability[i + 1]
       };
-      $('#longevity_table').append('<tr><td>' + 
+      self.el.find('#longevity_table').append('<tr><td>' + 
         _.map(
           ['dbsnp', 'alleles', 'genotype', 'imputed_from', 'r_squared', 'or', 'ror', 'rp'], 
           function(v) {
@@ -108,6 +109,13 @@ window.GenericView = Backbone.View.extend({
         ).join('</td><td>') + '</td></tr>'
       );
     });
+    this.el.find('#longevity_table').append(
+      '<tr>' + 
+      '<td class="key"><strong>Probability of extreme longevity:</strong>' +
+      '</td><td></td><td></td><td></td><td></td><td></td><td></td>' +
+      '<td class="value">' + 
+      self.el.find('#longevity_table tr:last td:last').text() + '</td></tr>'
+    );
     var chart = new google.visualization.LineChart(
       document.getElementById('longevity_chart')
     );

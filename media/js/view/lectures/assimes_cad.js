@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name: 'Cardiology-Assimes', 
   table_id: '#assimes_cad_table',
   template_id: '#assimes_cad_template',
   url: '/media/template/lectures/assimes_cad.html',

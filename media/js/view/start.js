@@ -9,6 +9,7 @@ window.StartView = Backbone.View.extend({
 	
 	render: function() {
 	  $.get('/media/template/start.html', this.loaded);
+    this.has_loaded = true;
 	},
 	
 	loaded: function(response) {
@@ -20,7 +21,6 @@ window.StartView = Backbone.View.extend({
       $('#not-compatible').show();
       $('#global-settings').hide();
     }
-    this.has_loaded = true;
 	}
 });
 });

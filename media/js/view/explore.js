@@ -9,6 +9,7 @@ window.ExploreView = Backbone.View.extend({
     'click #clear-snps': 'click_clear_snps',
     'click #submit-snps': 'click_submit',
     'click #confirm-submit-snps': 'click_confirm_submit',
+    'click #fb-submit-exercise': 'click_fb_submit',
     'click #lookup-exercise': 'lookup_exercise',
     'click #lookup-custom': 'lookup_custom',
     'click #submit-exercise': 'click_submit_exercise',
@@ -41,10 +42,12 @@ window.ExploreView = Backbone.View.extend({
     
 	  // Widget initialization.
 	  this.el.find('button').button();
-	  this.el.find('#exercises label').css('width', '50%');
 	  this.el.find('#table-options').hide();
 	  this.el.find('.submit').hide();
-	  this.el.find('#default-exercises').show();
+	  
+	  this.el.find('#exercises').accordion();
+	  //this.el.find('#exercises label').css('width', '50%');
+	  //this.el.find('#default-exercises').show();
     
     $('#too-many-snps').dialog({
       modal: true, resizable: false, autoOpen: false, buttons: {
@@ -53,8 +56,7 @@ window.ExploreView = Backbone.View.extend({
     });
 
 	  $('#annotation-file-help-dialog').dialog({
-      modal: true, resizable: false, autoOpen: false,
-      minWidth: '800', minHeight: '400', buttons: {
+      modal: true, autoOpen: false, width: 1000, buttons: {
         'Okay!': function() {$(this).dialog('close');}
       }
     });
@@ -117,6 +119,28 @@ window.ExploreView = Backbone.View.extend({
   got_custom_js: function() {
     window.Generic = new GenericView();
     window.Generic.render();
+  },
+
+  click_fb_submit: function(event) {
+    fb_text = window.Generic.fb_text;
+    if( fb_text == undefined && fb_text == null) {
+      fb_text = 'I just completed the ' + window.Generic.name + ' exercise on Interpretome!';
+    }
+    FB.ui(
+    {
+      method: 'feed',
+      name: 'Interpretome',
+      caption: 'Explore your genome',
+      description: 'Interpretome is a personal and secure genome interpretation index. Harness the power of your genotype!',
+      message: fb_text,
+      link: 'http://www.interpretome.com/'
+    },
+    function(response) {
+      if (response && response.post_id) {
+      } else {
+      }
+    }
+  );
   },
 
   click_confirm_submit: function(event) {
@@ -196,7 +220,9 @@ window.ExploreView = Backbone.View.extend({
           $.each(ks, function(i, v) {
             submission[v] = vs[i];
           });
-          submission['submit'] = $('.submission').text();
+          
+          // This was a workaround for one exercise.
+          // submission['submit'] = $('.submission').text();
           
           $.get('/submit/', submission, check_submission);
           $(this).dialog('close');

@@ -4,7 +4,7 @@
   <div>
   <h3>Data source</h3>
   Choose a reference panel.
-  <div id='source' class='setting'>
+  <div id='pca_source' class='setting'>
     <input type='radio' id='hgdp_all' name='source' checked/>
     <label for='hgdp_all'>HGDP: World</label>
     <input type='radio' id='hgdp_asian' name='source' />
@@ -20,9 +20,9 @@
     <input type='radio' id='khoisan_all' name='source' />
     <label for='khoisan_all'>African</label>
     <input type='radio' id='behar_all' name='source' />
-    <label for='behar_all'>Mid-East</label>
+    <label for='behar_all'>Mid-East/Jewish</label>
   </div>
-  <div id='level' class='setting'>
+  <div id='pca_level' class='setting'>
     Select which labels to display:
     <input type='radio' id='2' name='level' checked/>
     <label for='2'>Regional</label>
@@ -45,13 +45,13 @@
   </div>
   <div id='popres_resolution' class='setting'>
     <input type='radio' id='43000' name='popres_resolution' checked/>
-    <label for='43000'>43,000 (v2 and v3)</label>
+    <label for='43000'>43,000 (v2)</label>
     <input type='radio' id='74000' name='popres_resolution' />
     <label for='74000'>74,000 (v3)</label>
     <!--<input type='radio' id='full' name='popres_resolution' />-->
     <!--<label for='full'>Full (Imputed)</label>-->
   </div>
-  <div id='resolution' class='setting'>
+  <div id='pca_resolution' class='setting'>
     <input type='radio' id='1000' name='resolution' checked/>
     <label for='1000'>1,000</label>
     <input type='radio' id='10000' name='resolution' />
@@ -105,13 +105,13 @@
   <p id='info'></p>
    <div id='pca-plot' style="width: 100%; height: 800px">
    </div>
-   <div class='submit'>
-    <div id='submit-button'>
-      <button id='submit-coordinates' type='submit'>
-        Submit my Coordinates
-      </button>
-    </div>
-  </div>
+  <!-- <div class='submit'>-->
+  <!--  <div id='submit-button'>-->
+  <!--    <button id='submit-coordinates' type='submit'>-->
+  <!--      Submit my Coordinates-->
+  <!--    </button>-->
+  <!--  </div>-->
+  <!--</div>-->
   </div>
 </div>
 
@@ -135,6 +135,9 @@
     First, start with "HGDP: World" or "Hapmap: World" to explore your ancestry on a global population scale.
     For more detail in a specific region, choose the reference panel from the relevant population.
     If applicable, choose a level of detail for the results to be plotted.
+    <br/><br/>
+    For the POPRES dataset, to recapitulate the results of <a href='http://www.ncbi.nlm.nih.gov/pubmed/18760391'>Novembre et al.</a>,
+    use PC1 vs. PC4.
     <br/><br/>
     Data sources:
     <li>

@@ -12,7 +12,7 @@ function User() {
   this.amiodarone = null;
   
   this.sex = null;
-  
+
   this.full_genome = false;
   
   this.no_genotype_string = '??';
@@ -39,7 +39,7 @@ function User() {
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line == '') continue;
       
-      var tokens = _.map(line.split('\t'), $.trim);
+      var tokens = _.map(line.split(/\s+/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
       user.dbsnps.push(dbsnp);
@@ -57,7 +57,7 @@ function User() {
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
       
-      var tokens = _.map(line.split('\t'), $.trim);
+      var tokens = _.map(line.split(/\s/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
       user.dbsnps.push(dbsnp);
@@ -75,7 +75,7 @@ function User() {
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
       
-      var tokens = _.map(line.split('\t'), $.trim);
+      var tokens = _.map(line.split(/\s+/), $.trim);
       var dbsnp = parseInt(tokens[2].replace(regex, ''));
       
       options = {'0': tokens[3], '1' : tokens[4]};

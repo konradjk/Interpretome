@@ -42,15 +42,30 @@ window.AppView = Backbone.View.extend({
   
   render: function() {
     $('#advanced').hide();
-    $('#clear-genome').button({ icons: {primary: 'ui-icon-circle-close'} }).show();
+    $('#clear-genome').button({ 
+      icons: {primary: 'ui-icon-circle-close'} 
+    }).show();
     $('#advanced-settings').button().show();
     $('#full-genome-tooltip').css('display: none');
-    $('#full-genome-bar').mouseover(function(){
-			$('#full-genome-tooltip').css({display:"none"}).fadeIn(50);
-		}).mousemove(function(kmouse){
-			$('#full-genome-tooltip').css({left:kmouse.pageX+15, top:kmouse.pageY+15});
-		}).mouseout(function(){
+    
+    $('#full-genome-bar').mouseover(function() {
+			$('#full-genome-tooltip').css({display: 'none'}).fadeIn(50);
+		}).mousemove(function(kmouse) {
+			$('#full-genome-tooltip').css({
+			  left: kmouse.pageX + 15, top: kmouse.pageY + 15
+			});
+		}).mouseout(function() {
 			$('#full-genome-tooltip').fadeOut(50);
+		});
+    
+    $('#genome').mouseover(function() {
+			$('#unzip-tooltip').css({display: 'none'}).fadeIn(50);
+		}).mousemove(function(kmouse) {
+			$('#unzip-tooltip').css({
+			  left: kmouse.pageX + 15, top: kmouse.pageY + 15
+			});
+		}).mouseout(function() {
+			$('#unzip-tooltip').fadeOut(50);
 		});
 
     this.el.find('.module_selection').buttonset();
@@ -59,9 +74,9 @@ window.AppView = Backbone.View.extend({
         window.location.hash = ui.tab.hash;
       }
     });
-    loc = window.location.hash.replace('#','');
+    var loc = window.location.hash.replace('#','');
     
-    route = this.reverse_routes[loc];
+    var route = this.reverse_routes[loc];
     
     $(".module_selection label[for='module_" + route + "']").click();
     this.change_module(route);
@@ -72,9 +87,14 @@ window.AppView = Backbone.View.extend({
   },
   
   select_module: function() {
-    var module = $('.module_selection label[aria-pressed="true"]').attr('for').replace('module_', '');
+    var module = $('.module_selection label[aria-pressed="true"]').
+      attr('for').
+      replace('module_', '');
+    
     this.change_module(module);
-    $('.' + module).css('top', '2px').css('font-size', '0.9em').attr('line-height', '1.1em');
+    $('.' + module).css('top', '2px').
+      css('font-size', '0.9em').
+      attr('line-height', '1.1em');
   },
   
   change_module: function(module) {
@@ -99,7 +119,8 @@ window.AppView = Backbone.View.extend({
   change_genome: function(event) {
     $('#loading-genome').dialog('open');
     this.el.find('.progress-bar').progressbar({value: 0});
-    this.el.find('.progress-bar > div').css('background', get_secondary_color());
+    this.el.find('.progress-bar > div').
+      css('background', get_secondary_color());
     
     var reader = new FileReader();
     var self = this;

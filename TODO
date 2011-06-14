@@ -1,14 +1,16 @@
-- Check for population on Diabetes page
-- Refresh frontpage issue
-- Terms page sometimes doesn't load
-- Fix theming
-- Y/MT Haplogroups (anyone have a source?)
-- Sanitize Inputs
+- Beef up terms/conditions
+- v2 chip, painting hapmap3, firefox
+- make POPRES PCA clearer
 
 * Blag
 * Release to public
 
+- Y/MT Haplogroups
+- Family
+
 * Paper
 
-
+- eQTL table too large
 - Color of loading bars
+- Loading dialogs?
+- Share on Facebook button for Neandertal is too large - icon needs vertical adjustment.

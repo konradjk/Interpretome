@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name:'Narcolepsy-Mignot',  
   table_id: '#mignot_narcolepsy_table',
   template_id: '#mignot_narcolepsy_template',
   url: '/media/template/lectures/mignot_narcolepsy.html',

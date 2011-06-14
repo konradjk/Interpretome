@@ -41,11 +41,19 @@ window.DiabetesView = Backbone.View.extend({
   },
   
   click_compute_diabetes: function(event) {
+    this.el.find('.required').hide();
     if (window.App.check_all() == false) return;
     $('#diabetes-chart').empty();
     
     this.el.find('#diabetes-table tr').slice(1).remove();
     this.el.find('#diabetes-table').hide();
+    
+    if (!(window.App.user.population in this.priors)) {
+      this.el.find('#pop-error-box').empty();
+      this.el.find('#please-choose-another-population').show('slow');
+      this.el.find('#pop-error-box').append(window.App.user.population);
+      return;
+    }
     
     $.get('/diabetes/', {population: window.App.user.population}, this.got_diabetes_snps);
   },

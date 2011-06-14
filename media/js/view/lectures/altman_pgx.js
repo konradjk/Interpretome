@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name: 'Pharmacogenomics',  
   table_id: '#altman_pgx_table',
   template_id: '#altman_pgx_template',
   url: '/media/template/lectures/altman_pgx.html',

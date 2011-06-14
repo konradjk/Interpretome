@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" lang='en'>
   <head>
     <title>Interpretome</title>
     <meta charset='utf-8'/>
+    <meta property="og:title" content="Interpretome" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://www.interpretome.com" />
+    <meta property="og:image" content="" />
+    <meta property="og:site_name" content="Interpretome" />
+    <meta property="fb:admins" content="678649016" />
 
     <link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'>
 
@@ -63,8 +69,6 @@
     <script type="text/javascript" src="https://www.google.com/jsapi">
     </script>
     <script type="text/javascript">
-
-      // Load the Visualization API and the piechart package.
       google.load('visualization', '1', {'packages': ['corechart', 'gauge']});
     </script>
     <script type='text/javascript'>
@@ -81,15 +85,25 @@
         s.parentNode.insertBefore(ga, s);
       })();
     </script>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <div id="fb-root"></div>
+    <script>
+        FB.init({
+          appId  : '202447703131966',
+          status : true, // check login status
+          cookie : true, // enable cookies to allow the server to access the session
+          xfbml  : true  // parse XFBML
+        });
+    </script>
   </head>
   <body>
     <div id='wrap'>
       <div id='header'>
+        <br/>
         <div id='title'>
           Interpretome
         </div>
-        <div id='global-settings'>
-
+         <div id='global-settings'>
           <div id='user-settings' class='stack'>
             <div id='loading-genome' title='Loading' class='dialog hidden'>
               Please be patient. This may take a few moments.
@@ -185,6 +199,11 @@
         <br/>
         (sites not indicated will be assumed "reference").
       </span>
+      <span class='tooltip hidden' id='unzip-tooltip'>
+        Please load an unzipped
+        <br/>
+        genome data file.
+      </span>
       <div id='tabs'>
         <ul>
           <span style='float:left' class='module_selection' class='setting'>
@@ -278,6 +297,13 @@
             <br/>
             <br/>
             Select a theme:
+            <br/><br/>
+            <div id="fb_buttons">
+              <fb:login-button size="small">Login</fb:login-button>
+            </div>
+            <div id="fb_like">
+              <fb:like href="http://www.interpretome.com" send="true" layout="button_count" width="450" show_faces="true" font=""></fb:like>
+            </div>
           </div>
           <div class='right'>
             <div id='ld-slider'>
@@ -346,7 +372,7 @@
 	          If you are accessing this site on an unecrypted WiFi network, any party may observe the data sent over the connection.
 	        </p>
 	        <br/>
-	        Please feel free to <a href='mailto:gene210-spr1011-staff@lists.stanford.edu'>email us</a> with questions, comments, or concerns.
+	        Please feel free to <a href='mailto:konradjk@stanford.edu'>email us</a> with questions, comments, or concerns.
 	      </div>
 	    </div>
     </div>

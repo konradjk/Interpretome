@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name: 'Neandertal similarity', 
   table_id: '#neandertal_table',
   template_id: '#neandertal_template',
   url: '/media/template/lectures/neandertal.html',
@@ -59,7 +59,7 @@ window.GenericView = Backbone.View.extend({
     data.addRows(1);
     data.setValue(0, 0, 'Neandertal');
     data.setValue(0, 1, total_index);
-    
+    this.fb_text = "My Neandertal index is " + total_index + " what's yours?"; 
     var chart = new google.visualization.Gauge(document.getElementById('neandertal_chart'));
     var options = {width: 900, height: 300, redFrom: total/4, redTo: 84,
         min: 0, max: total,
