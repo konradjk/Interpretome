@@ -9,11 +9,15 @@
 <br>
 <br>
 <table id='custom_table' class='results-table hidden'>
+  <thead>
   <tr id='custom_header'>
   </tr>
+  </thead>
+  <tbody>
   <script id='custom_template' type='text/template'>
     <tr>
       <% _.each(row, function(item) { %> <td><%= item %></td>\n <% }); %>
     </tr>
   </script>
+  </tbody>
 </table>

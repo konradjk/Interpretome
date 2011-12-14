@@ -40,7 +40,7 @@ window.GenericView = Backbone.View.extend({
     
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id).append(_.template(self.table_template, v));
+      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
       
       if (v['genotype'] != '??'){
         var count = count_genotype(v['genotype'], v['ancestral']);
@@ -51,6 +51,7 @@ window.GenericView = Backbone.View.extend({
       }
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(n_selected, n_derived, total);

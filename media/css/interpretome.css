@@ -158,7 +158,7 @@ table.results-table th {
 }
 table.results-table {
   border-collapse: collapse;
-  // CSS3 only.
+  /* CSS3 only.*/
 }
 table.results-table th, table.results-table td {
   padding: 3px 7px;
@@ -175,31 +175,6 @@ even when initially drawn offscreen. */
 .ui-tabs .ui-tabs-hide {
   position: absolute;
   left: -10000px;
-}
-/* I don't actually work. */
-.ui-progressbar-value, .ui-progressbar {
-  color: blue;
-  background-color: blue;
-}
-.progress_bar {
-  background: blue;
-  /*opacity: 0;*/
-  /*-moz-transition: opacity 1s linear;*/
-  /*-o-transition: opacity 1s linear;*/
-  /*-webkit-transition: opacity 1s linear;*/
-}
-.progress_bars .loading {
-  opacity: 1.0;
-}
-.progress_bars #percent {
-  background-color: #99ccff;
-  height: auto;
-  width: 0;
-}
-.progress_bars #percent_parsed {
-  background-color: #99ccff;
-  height: auto;
-  width: 0;
 }
 .large {
   font-size: 1.75em;

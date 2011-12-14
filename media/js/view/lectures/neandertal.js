@@ -41,11 +41,12 @@ window.GenericView = Backbone.View.extend({
         total_index += count;
         v['count'] = count;
         v['genotype'] = snp.genotype;
-        self.el.find(self.table_id).append(_.template(self.table_template, v));
+        self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
         total += 2;
       }
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(total_index, total);

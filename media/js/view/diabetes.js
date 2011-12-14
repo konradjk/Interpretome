@@ -100,6 +100,7 @@ window.DiabetesView = Backbone.View.extend({
       }
     }
     this.el.find('#diabetes-table').show();
+    $("#diabetes-table").tablesorter();
     
     var chart = new google.visualization.LineChart(
       document.getElementById('diabetes-chart')

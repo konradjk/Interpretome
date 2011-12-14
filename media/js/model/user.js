@@ -90,7 +90,28 @@ function User() {
     }
   }
   
-  this.parse_genome = function(lines) {
+  this.parse_genome = function(file_blob, extension) {
+    if (extension == 'zip') {
+      console.log('here');
+      //var unzipper = new JSUnzip(file_blob);
+      //if (unzipper.isZipFile()) {
+      //  unzipper.readEntries();
+      //  if (unzipper.entries[0].compressionMethod === 0) {
+      //    // Uncompressed
+      //    var input_file = unzipper.entries[0].data;
+      //  } else if (unzipper.entries[0].compressionMethod === 8) {
+      //    // Deflated
+      //    console.log('before');
+      //    var data = unzipper.entries[0].data;
+      //    console.log('between');
+      //    var input_file = JSInflate.inflate(data);
+      //    console.log('after');
+      //  }
+      //}
+      //lines = input_file.split('\n');
+    } else {
+      lines = file_blob.split('\n');
+    }
     var chunks = 100;
     var chunk_size = lines.length/chunks;
     for (var j=0; j<=chunks; j++) {

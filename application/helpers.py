@@ -114,7 +114,7 @@ def check_population(population):
 def check_source(source):
   if source in (
     'hapmap2', 'hapmap3',
-    'hapmap23'
+    'refpops'
   ):
     return source
   else:
@@ -143,7 +143,8 @@ def check_pca_source(source):
     'hgdp_all',
     'hapmap_all',
     'khoisan_all',
-    'behar_all'
+    'behar_all',
+    'refpops_all'
   ):
     return source
   else:

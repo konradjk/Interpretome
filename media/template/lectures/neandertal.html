@@ -10,6 +10,7 @@
 </div>
 <br/>
 <table id='neandertal_table' class='results-table hidden'>
+  <thead>
   <tr>
     <th>dbSNP</th>
     <th>Derived Allele</th>
@@ -18,6 +19,8 @@
     <th>Genotype</th>
     <th>Count</th>
   </tr>
+  </thead>
+  <tbody>
   <script id='neandertal_template' type='text/template'>
     <tr>
       <td><%= dbsnp %></td>
@@ -28,4 +31,5 @@
       <td><%= count %></td>
     </tr>
   </script>
+  </tbody>
 </table>

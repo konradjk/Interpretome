@@ -4,6 +4,7 @@
 <br/>
 <br/>
 <table id='mignot_narcolepsy_table' class='results-table hidden'>
+  <thead>
   <tr>
     <th class='dbsnp'>dbSNP</th>
     <th class='dbsnp'>Genotype</th>
@@ -14,6 +15,8 @@
     <th class='imputed'>Imputed from</th>
     <th class='rsq'>R<sup>2</sup></th>
   </tr>
+  </thead>
+  <tbody>
   <script id='mignot_narcolepsy_template' type='text/template'>
     <tr>
       <td class='key'><%= dbsnp %></td>
@@ -26,4 +29,5 @@
       <td class='rsq'><%= r_squared %></td>
     </tr>
   </script>
+  </tbody>
 </table>

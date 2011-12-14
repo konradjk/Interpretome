@@ -37,15 +37,19 @@
   </div>
   <br/>
 	<table id='similarity-snps-table' class='results-table hidden'>
+    <thead>
 	  <tr>
 	    <th>Individual</th><th>Similarity</th>
 	  </tr>
+    </thead>
+    <tbody>
 	  <script id='similarity-snp-template' type='text/template'>
 		  <tr>
 		    <td><%= indiv %></td>
 		    <td><%= sim %></td>
 		  </tr>
 		</script>
+    </tbody>
 	</table>
 </div>
 

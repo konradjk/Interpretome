@@ -18,6 +18,7 @@
   <br />
   
   <table id='diabetes-table' class='results-table hidden'>
+    <thead>
     <tr>
       <th>dbSNP</th>
       <th>Genotype</th>
@@ -28,6 +29,8 @@
       <th>Running LR</th>
       <th>Probability</th>
     </tr>
+    </thead>
+    <tbody>
     <script id='diabetes-snp-template' type='text/template'>
       <tr>
         <td class='key'><%= dbsnp %></td>
@@ -37,6 +40,7 @@
         <td><%= r_squared %></td>
       </tr>
     </script>
+    </tbody>
   </table>
   
   <div class='hidden'>

@@ -10,6 +10,7 @@
   <br/>
   <br/>
 	<table id='disease-table' class='results-table hidden'>
+    <thead>
 	  <tr>
       <th>Disease</th>
 	    <th>dbSNP</th>
@@ -21,6 +22,8 @@
       <!--<th>Study Size</th>-->
       <th>Link</th>
 	  </tr>
+    </thead>
+    <tbody>
 	  <script id='disease-template' type='text/template'>
 		  <tr>
       <td><%= disease_trait %></td>
@@ -30,6 +33,7 @@
       <!--<td><%=  initial_sample_size %></td>-->
       <td><a href='<%=  link %>'><%=  pubmedid %></a></td>
 		</script>
+    </tbody>
 	</table>
 	
 </div>

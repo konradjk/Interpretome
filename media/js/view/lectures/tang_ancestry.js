@@ -36,11 +36,12 @@ window.GenericView = Backbone.View.extend({
     var east_asian_count = 0;
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id).append(_.template(self.table_template, v));
+      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
       european_count += count_genotype(v['genotype'], v['european_allele']);
       east_asian_count += count_genotype(v['genotype'], v['east_asian_allele']);
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(european_count, east_asian_count);

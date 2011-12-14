@@ -33,6 +33,7 @@
 	
 	<!-- General lookup template. -->
 	<table id='lookup-snps-table' class='results-table hidden'>
+    <thead>
 	  <tr>
 	    <th class='dbsnp'>dbSNP</th><th class='genotype'>Genotype</th>
       <th class='reference details'>Reference</th><th class='refallele_freq details'>Reference<br/>Frequency</th>
@@ -40,6 +41,8 @@
       <th class='chrom details'>Chrom.</th><th class='position details'>Position</th>
       <th class='imputed'>Imputed From</th><th class='rsq'>R<sup>2</sup></th>
 	  </tr>
+    </thead>
+    <tbody>
 	  <script id='lookup-snp-template' type='text/template'>
 		  <tr>
 		    <td class='dbsnp key'><%= dbsnp %></td>
@@ -54,6 +57,7 @@
         <td class='rsq'><%= r_squared %></td>
 		  </tr>
 		</script>
+    </tbody>
 	</table>
 	
   <br/>

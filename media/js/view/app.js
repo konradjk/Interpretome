@@ -3,6 +3,8 @@ window.AppView = Backbone.View.extend({
   el: $('body'),
   
   events: {
+    'click #open-confirm-dialog': 'open_confirm_dialog',
+    'click #open-load-genome-dialog': 'open_load_genome_dialog',
     'change #genome-file': 'change_genome',
     'click #clear-genome': 'clear_genome',
     'change #toolbar-population': 'change_population_from_toolbar',
@@ -18,7 +20,8 @@ window.AppView = Backbone.View.extend({
 	    'change_population', 'change_population_from_toolbar',
 	    'change_population_from_check',
       'select_module', 'change_module',
-      'click_settings'
+      'click_settings', 'set_remember_cookie',
+      'open_confirm_dialog'
 	  );
   },
   
@@ -46,28 +49,14 @@ window.AppView = Backbone.View.extend({
       icons: {primary: 'ui-icon-circle-close'} 
     }).show();
     $('#advanced-settings').button().show();
-    $('#full-genome-tooltip').css('display: none');
     
-    $('#full-genome-bar').mouseover(function() {
-			$('#full-genome-tooltip').css({display: 'none'}).fadeIn(50);
-		}).mousemove(function(kmouse) {
-			$('#full-genome-tooltip').css({
-			  left: kmouse.pageX + 15, top: kmouse.pageY + 15
-			});
-		}).mouseout(function() {
-			$('#full-genome-tooltip').fadeOut(50);
-		});
+    var self = this;
+    if (self.get_remember_cookie()) {
+      $('#terms-remembered').attr('checked', 'checked');
+    } else {
+      $('#terms-remembered').removeAttr('checked')
+    }
     
-    $('#genome').mouseover(function() {
-			$('#unzip-tooltip').css({display: 'none'}).fadeIn(50);
-		}).mousemove(function(kmouse) {
-			$('#unzip-tooltip').css({
-			  left: kmouse.pageX + 15, top: kmouse.pageY + 15
-			});
-		}).mouseout(function() {
-			$('#unzip-tooltip').fadeOut(50);
-		});
-
     this.el.find('.module_selection').buttonset();
     this.el.find('#tabs').tabs({
       select: function(event, ui) {
@@ -80,6 +69,21 @@ window.AppView = Backbone.View.extend({
     
     $(".module_selection label[for='module_" + route + "']").click();
     this.change_module(route);
+  },
+  
+  open_confirm_dialog: function() {
+    var self = this;
+    if (self.get_remember_cookie()) {
+      $('#load-genome-dialog').dialog('open');
+    } else {
+      $('#confirm-dialog').dialog('open');
+    }
+  },
+  
+  open_load_genome_dialog: function() {
+    this.set_remember_cookie($('#terms-remembered').attr('checked'));
+    $('#confirm-dialog').dialog('close');
+    $('#load-genome-dialog').dialog('open');
   },
   
   click_settings: function() {
@@ -116,15 +120,31 @@ window.AppView = Backbone.View.extend({
     }
   },
   
+  set_remember_cookie: function(value) {
+    var exdate = new Date();
+    exdate.setDate(exdate.getDate() + 30);
+    document.cookie = "remembered=" + value + "; expires="+exdate.toUTCString();
+  },
+  
+  get_remember_cookie: function() {
+    var cookies = document.cookie.split(";");
+    for (i=0; i < cookies.length; i++) {
+      x = cookies[i].substr(0, cookies[i].indexOf("="));
+      y = cookies[i].substr(cookies[i].indexOf("=")+1);
+      x = x.replace(/^\s+|\s+$/g,"");
+      if (x == 'remembered' && y == 'true') {
+        return true;
+      }
+    }
+    return false;
+  },
+  
   change_genome: function(event) {
     $('#loading-genome').dialog('open');
     this.el.find('.progress-bar').progressbar({value: 0});
-    this.el.find('.progress-bar > div').
-      css('background', get_secondary_color());
+    this.el.find('.progress-bar > div').css('background', get_secondary_color());
     
     var reader = new FileReader();
-    var self = this;
-    
     reader.onprogress = function(event) {
       if (event.lengthComputable) {
         var percent = Math.round((event.loaded / event.total) * 100);
@@ -134,15 +154,25 @@ window.AppView = Backbone.View.extend({
       }
     };
     
+    filename = event.target.files[0].fileName.split('.')
+    extension = filename[filename.length-1]
+
     reader.onloadend = function(event) {
       $('#loading-bar').progressbar('option', 'value', 100);
       $('#genome label, #genome input').hide();
+      $('#open-confirm-dialog').hide();
       $('#advanced').show();
-      window.App.user.parse_genome(event.target.result.split('\n'));
+      window.App.user.parse_genome(event.target.result, extension);
       // Should this be here?
       $('#please-load-genome').dialog('close');
+      $('#load-genome-dialog').dialog('close');
     }
-    reader.readAsText(event.target.files[0]);
+    
+    if (extension == 'txt') {
+      reader.readAsText(event.target.files[0]);
+    } else {
+      reader.readAsBinaryString(event.target.files[0]);
+    }
   },
   
   clear_genome: function(event) {

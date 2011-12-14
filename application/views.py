@@ -209,6 +209,30 @@ def get_pca_parameters(request):
   
   return http.HttpResponse(simplejson.dumps(params), mimetype = "application/json")
 
+def get_polyphen_scores(request):
+  cursor = connections['default'].dict_cursor()
+  query = 'select dbSNP, prediction, pph2_prob from interpretome_clinical.polyphen_dbSNP'
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
+def get_rare_variants(request):
+  population = helpers.check_population(request.GET.get('population', None))
+  cutoff = helpers.check_float(request.GET.get('cutoff', None))
+  if None in (population, cutoff):
+    return http.HttpResponseBadRequest()
+  query = '''SELECT rsid, refallele, otherallele, otherallele_freq
+  FROM var_hapmap.snp_frequencies_%s
+  WHERE otherallele_freq <= %s''' % (population.lower(), cutoff)
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
+def get_drug_targets(request):
+  cursor = connections['default'].dict_cursor()
+  query = 'select dbSNP, gene_name, name, drug_name from interpretome_clinical.drug_targets_snps'
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
 def get_pharmacogenomics_snps(request):
   query = 'select * from interpretome_clinical.pharmaco'
   cursor = connections['default'].dict_cursor()

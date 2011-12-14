@@ -72,7 +72,7 @@ window.GenericView = Backbone.View.extend({
            counts[i] += count_genotype(v['genotype'], v[value]);
         }
       });
-      self.el.find(self.table_id).append(_.template(self.table_template, {row:output}));
+      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, {row:output}));
     });
     if (countcolidx.length > 0) {
       for(i in countcolidx) {
@@ -82,6 +82,7 @@ window.GenericView = Backbone.View.extend({
       this.el.find(this.counts_section_id).show();
     }
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(all_dbsnps, extended_dbsnps);

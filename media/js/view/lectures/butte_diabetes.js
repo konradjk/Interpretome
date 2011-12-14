@@ -41,9 +41,10 @@ window.GenericView = Backbone.View.extend({
         diabetes_count += count_genotype(v['genotype'], v['risk']);
         total += 2;
       }
-      self.el.find(self.table_id).append(_.template(self.table_template, v));
+      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
     });
-    this.el.find(self.table_id).show();
+    this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(diabetes_count, total);

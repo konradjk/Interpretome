@@ -21,6 +21,7 @@
     </script>
     <script type='text/javascript' src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'>
     </script>
+    <script type="text/javascript" src="/media/js/jquery/jquery.tablesorter.min.js"></script>
     <script type='text/javascript' src='http://documentcloud.github.com/underscore/underscore-min.js'>
     </script>
     <script type='text/javascript' src='http://documentcloud.github.com/backbone/backbone.js'>
@@ -102,9 +103,8 @@
         <br/>
         <div id='title'>
           Interpretome
-        
         </div>
-                 <div id='global-settings'>
+        <div id='global-settings'>
           <div id='user-settings' class='stack'>
             <div id='loading-genome' title='Loading' class='dialog hidden'>
               Please be patient. This may take a few moments.
@@ -126,22 +126,111 @@
             </div>
             <div class='setting'>
               <span id='genome' class='stack'>
-                <label for='genome-file' class='setting-label'>
-                  Load your genome
-                </label>
-                <input id='genome-file' type='file' name='file' />
+                <button id='open-confirm-dialog' class='setting-label'>
+                  Begin exploring!
+                </button>
               </span>
               <span id='advanced'>
-                <!--<span id='full-genome-bar'>-->
-                <!--  <input type='checkbox' id='full-genome'><label for="full-genome">Full Genome</label>-->
-                <!--</span>-->
                 <button id='advanced-settings' type='submit' class='small-button hidden'>
                   Advanced Settings
                 </button>
+                <br/>
+                <br/>
+                <label for='toolbar-population' class='setting-label'>
+                 Select genome
+               </label>
+               <select id='genome-analysis' name='genome-analysis'>
+               </select>
                 <button id='clear-genome' class='small-button hidden'>
-                  Clear my information
+                  Clear this genome
                 </button>
               </span>
+              <br/>
+              <br/>
+              <div id='population-setter'>
+               <label for='toolbar-population' class='setting-label'>
+                 Select your population
+               </label>
+               <select id='toolbar-population' name='population'>
+                 <!--
+                 I don't like having to copy and paste,
+                 but these should always be the same as above.
+                 -->
+  
+                 <option id='dummy-2' value="null">Select a population</option>
+                 <option value="CEU">European</option>
+                 <option value="YRI">African</option>
+                 <option value="CHB">Chinese</option>
+                 <option value="JPT">Japanese</option>
+                 <option value="null">--------</option>
+                 <option value="ASW">African-American (Southwest)</option>
+                 <option value="CHD">Chinese (Denver)</option>
+                 <option value="GIH">Guajarti Indian (Houston)</option>
+                 <option value="LWK">Lukya (Kenya)</option>
+                 <option value="MEX">Mexican (Los Angeles)</option>
+                 <option value="MKK">Maasai (Kenya)</option>
+                 <option value="TSI">Toscans (Italy)</option>
+               </select>
+              </div>
+              <div id='confirm-dialog' title='Confirm Terms' class='dialog hidden'>
+                <h3>Interpretome is intended for <i>educational and research purposes only</i>.</h3>
+                <p>
+                  No information should be considered diagnostic and as with any genetic testing service, the interpretation is not regulated by the FDA.
+                  We assume no responsibility for any injury or damage to persons or property arising out of or related to any use of interpretome annotations
+                  or for any errors or omissions: consult your physician with any medical concerns.
+                  We retain copyright to the materials herein.
+                  By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
+                </p>
+                <br/>
+                <h3>How is my data kept private?</h3>
+                <p>
+                  Your genome will not be sent to any server, it remains on your computer.
+                  This website will make requests to a database that only contain "rsid" (without genotypes) and "population" (self-reported in the top-right) information.
+                  At no point will any genotypes be sent across the wires (all computation will be done in the browser).
+                </p>
+                <br>
+                <p>
+                  Some exercises may have an option to submit personal information, including genotypes or results of analyses.
+                  Entry of your data is not required and all information will be anonymously stored on a secure server.
+                  However, there is a theoretical possibility that this information can be intercepted and misused.
+                  If you are accessing this site on an unecrypted WiFi network, any party may observe the data sent over the connection.
+                </p>
+                <br/>
+                Please feel free to <a href='mailto:konradjk@stanford.edu'>email us</a> with questions, comments, or concerns.
+                <br/>
+                <br/>
+                <input id='terms-remembered' type='checkbox'> Remember me (will not prompt for Terms again for 30 days)
+                <br/>
+                <br/>
+                <button id='open-load-genome-dialog' class='setting-label'>
+                  Begin exploring!
+                </button>
+              </div>
+              <div id='load-genome-dialog' title='Load your Genome' class='dialog'>
+                <h3>Please load your genotype file</h3>
+                For genotype files, please load an unzipped .txt file.
+                <br/>
+                At this time, only 23andme and Lumigenix are supported natively.
+                <br/>
+                <br/>
+                <select id='file-format' name='file-format'>
+                  <option value="genotype">Genotype</option>
+                  <option value="exome">Full Exome (coming soon!)</option>
+                  <!--<option value="genome">Full Genome (coming soon!)</option>-->
+                </select>
+                <!--For full exome or genome files, please load a VCF file (experimental).-->
+                <!--<br/>-->
+                <!--<br/>-->
+                <input id='genome-file' type='file' name='file' />
+                <br/>
+                <br/>
+                <span style='font-size: medium' class='link' onclick='$("#terms").dialog({
+                  modal: true, width: "80%", buttons: {
+                    "Close": function() {$(this).dialog("close");}
+                  }});'>
+                  Terms and Conditions
+                </span>
+              </div>
             </div>
             <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
               Are you sure you want to end your session?
@@ -166,46 +255,11 @@
                 <option value="TSI">Toscans (Italy)</option>
               </select>
             </div>
-            <form>
-              <label for='toolbar-population' class='setting-label'>
-                Select your population
-              </label>
-              <select id='toolbar-population' name='population'>
-                <!--
-                I don't like having to copy and paste,
-                but these should always be the same as above.
-                -->
-
-                <option id='dummy-2' value="null">Select a population</option>
-                <option value="CEU">European</option>
-                <option value="YRI">African</option>
-                <option value="CHB">Chinese</option>
-                <option value="JPT">Japanese</option>
-                <option value="null">--------</option>
-                <option value="ASW">African-American (Southwest)</option>
-                <option value="CHD">Chinese (Denver)</option>
-                <option value="GIH">Guajarti Indian (Houston)</option>
-                <option value="LWK">Lukya (Kenya)</option>
-                <option value="MEX">Mexican (Los Angeles)</option>
-                <option value="MKK">Maasai (Kenya)</option>
-                <option value="TSI">Toscans (Italy)</option>
-              </select>
-            </form>
           </div>
         </div>
       </div>
       <br class='clear' />
-      <span class='tooltip hidden' id='full-genome-tooltip'>
-        Check here if your file is a full genome
-        <br/>
-        (sites not indicated will be assumed "reference").
-      </span>
-      <span class='tooltip hidden' id='unzip-tooltip'>
-        Please load an unzipped
-        <br/>
-        genome data file.
-      </span>
-<div class="addthis_toolbox addthis_default_style ">
+        <div class="addthis_toolbox addthis_default_style ">
           <a class="addthis_button_facebook"></a>
           <a class="addthis_button_twitter"></a>
           <a class="addthis_button_email"></a>
@@ -349,7 +403,7 @@
         Nothing was submitted.
       </div>
       <div id='footer'>
-        &copy; 2011 Karczewski, Tatonetti, Tirrell and Zimmerman
+        &copy; 2011 Karczewski, Tirrell, Kim, and the Interpreteam
         <br />
         <span class='link' onclick='$("#terms").dialog({
           modal: true, width: "80%", buttons: {
@@ -367,7 +421,7 @@
 	          By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
 	        </p>
 	        <br/>
-	        <h3>How is my data kept private?</h3>
+	        <h3>How are my data kept private?</h3>
 	        <p>
 	          Your genome will not be sent to any server, it remains on your computer.
 	          This website will make requests to a database that only contain "rsid" (without genotypes) and "population" (self-reported in the top-right) information.

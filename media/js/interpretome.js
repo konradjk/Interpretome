@@ -15,14 +15,26 @@ $(function() {
   window.Family = new FamilyView();
   
   window.App = new AppView();
-  window.App.user = new User();
   window.App.custom_exercise = new CustomExercise();
+  window.App.user = new User();
   
   window.App.render();
   window.Start.render();
   
   window.Controller = new AppController();
   Backbone.history.start();
+  
+  $('#open-confirm-dialog').button();
+  $('#open-load-genome-dialog').button();
+  
+  $('#confirm-dialog').dialog({modal: true, resizable: false, autoOpen: false,
+                              width: "60%", buttons: {
+                                "Close": function() {$(this).dialog("close");}
+                              }});
+  $('#load-genome-dialog').dialog({modal: true, resizable: false, autoOpen: false,
+                              width: "60%", buttons: {
+                                "Close": function() {$(this).dialog("close");}
+                              }});
   
   $('#loading-genome').dialog({modal: true, resizable: false, autoOpen: false});
   
@@ -57,18 +69,8 @@ $(function() {
   document.getElementById('amount').innerText = $("#ld-slider").slider("value");
   
   $('#ThemeRoller').themeswitcher();
+  $(".results-table").addClass("tablesorter")
   
-  var isCtrl = false;
-  $(document).keyup(function (e) {
-    if(e.which == 17) isCtrl=false;
-    }).keydown(function (e) {
-      if(e.which == 17) isCtrl=true;
-      if(e.which == 76 && isCtrl == true) {
-        $("#genome-file").trigger('click');
-        alert('w00t');
-        return false;
-     }
-  });
   var isCtrl = false;
   $(document).keyup(function (e) {
     if(e.which == 17) isCtrl=false;
@@ -79,32 +81,7 @@ $(function() {
       return false;
      }
   });
-  var isCtrl = false;
-  $(document).keyup(function (e) {
-    if(e.which == 17) isCtrl=false;
-    }).keydown(function (e) {
-      if(e.which == 17) isCtrl=true;
-      if(e.which == 69 && isCtrl == true) {
-        //window.Controller.PCA();
-      return false;
-     }
-  });
 });
-
-
-function print_text(text_to_print) {
-  //console.log(text_to_print);
-  var win = window.open();
-  self.focus();
-  win.document.open();
-  win.document.write("<html><head><link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'></head><body>");
-  win.document.write("<h2>Analyze Me - Results</h2>");
-  win.document.write(text_to_print);
-  win.document.write('</body></html>');
-  win.document.close();
-  win.print();
-  win.close();
-}
 
 function count_genotype(value, allele) {
   if (_.isString(value)) value = value.split('');
@@ -134,6 +111,14 @@ function add_commas(nStr) {
 		x1 = x1.replace(rgx, '$1' + ',' + '$2');
 	}
 	return x1 + x2;
+}
+
+function raw_string_to_buffer(str) {
+  var idx, len = str.length, arr = new Array( len );
+  for (idx = 0 ; idx<len ; ++idx) {
+      arr[idx] = str.charCodeAt(idx) & 0xFF;
+  }
+  return new Uint8Array(arr).buffer;
 }
 
 function check_inches(value) {
@@ -175,7 +160,7 @@ function filter_identifiers(ids) {
 var filter_identifier = filter_identifiers;
 
 function get_secondary_color() {
-  return $('#clear-snps .ui-button-text').css('color');
+  return $('#clear-genome .ui-button-text').css('color');
 }
 
 function sort_genotype(genotype) {

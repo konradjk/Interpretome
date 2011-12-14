@@ -36,13 +36,14 @@ window.GenericView = Backbone.View.extend({
     var total = 0;
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id).append(_.template(self.table_template, v));
+      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
       if (v['genotype'] != '??') {
         cad_count += count_genotype(v['genotype'], v['risk_allele']);
         total += 2;
       }
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(cad_count, total);

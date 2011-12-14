@@ -37,11 +37,12 @@ window.GenericView = Backbone.View.extend({
       $.each(array, function(i, v) {
         if (snp != undefined && v['genotype'] == snp['genotype']) {
           _.extend(v, snp);
-          self.el.find(self.table_id).append(_.template(self.table_template, v));
+          self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
         }
       });
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(all_dbsnps, extended_dbsnps);

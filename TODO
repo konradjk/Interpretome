@@ -1,30 +1,25 @@
+Top priorities:
 - Beef up terms/conditions
-- v2 chip, painting hapmap3, firefox
-- make POPRES PCA clearer
+- Loading dialogs?
 - Ethnicity descriptions for explore exercises
+- Clean up sortable tables
+- Finish rare PGx writeup
+
+Medium priority:
 - Ancestry painting percentages
-PCA:
-//
-While using Interpretome I noticed that in the PCA there are some related reference samples who take up dimensions. Could you please remove all relatives out of the reference data so we can have more informative dimensions? For the HGDP dataset try following the recommendations of Rosenberg, there are also a few mislabeled samples in HGDP namely a Biaka Pygmy sample (HGDP00980) who is likely European and a Japanese sample (HGDP00770) who is likely Native American. They mess up the HGDP African and HGDP Asian plots. For the other datasets try removing all related samples with PI_HAT > 0.5 in PLINK. 
-//
-- Is it possible somehow to get the mean “distance” between my plot point and the plot points of the persons originating from country XX?
-- I would like to get a list with one row for each country with that very mean distance.
-//
-I'm wondering if you might have in mind any plans to refine the PCA analysis so that specific regions of a person's genome can be focussed on? For instance, rather than processing the whole genome, can I focus in on part of Chromosome 8 where I suspect there might be some admixture? 
-//
-- Indeed, it'd be wonderful if the Interpretome team could at some point put together a seven-way test, based on relatively unmixed samples from Northern Europe, Southern Europe, the Middle East, South Asia, East Asia, the Americas and Africa. They could do this by combining samples from the HGDP, Behar et al., and even Rasmussen et al. As far as I can see, it should be possible.
-//
-Best so far (fauxdk https://www.23andme.com/you/community/thread/8090/):
-40 SNPs 
-10 Smoothing 
-35 or above Samples
-//
+- eQTL table too large
+- Bug with: v2 chip, painting hapmap3, firefox
+- Chromosome-specific PCA
+- Chooser for ancestry painting populations
+- make POPRES PCA clearer
+
+Low:
+- Share on Facebook button for Neandertal is too large - icon needs vertical adjustment.
+- Check for "cosmopolitan" regions in Neandertal
+- Remove mislabeled samples: Biaka Pygmy sample (HGDP00980) who is likely European and a Japanese sample (HGDP00770) who is likely Native American
+- Remove related samples: PI_HAT > 0.5 in PLINK
+
+Huge projects:
 - Y/MT Haplogroups
 - Family
-
-* Paper
-
-- eQTL table too large
-- Color of loading bars
-- Loading dialogs?
-- Share on Facebook button for Neandertal is too large - icon needs vertical adjustment.
+- Exomez/Genomez
