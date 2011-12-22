@@ -18,7 +18,7 @@ window.PharmacogenomicsView = Backbone.View.extend({
     
   loaded: function(response) {
 	  this.el.append(response);
-	  this.el.find('button').button();
+	  $('button').button();
 	  match_style(this.el);
     $('#common_rare').accordion();
     $('#common-pgx-table').hide();
@@ -97,7 +97,7 @@ window.PharmacogenomicsView = Backbone.View.extend({
         $('#common-pgx-table > tbody').append(_.template(self.common_pgx_template, v));
       }
     });
-    self.el.find('#common-pgx-table').show();
+    $('#common-pgx-table').show();
     $("#common-pgx-table").trigger("update");
   },
   

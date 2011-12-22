@@ -7,14 +7,12 @@ window.SimilarityView = Backbone.View.extend({
     'click #similarity-snps': 'click_similarity_snps',
     'click #clear-snps': 'click_clear_snps',
     'click #submit-snps': 'click_submit',
-    'click #confirm-submit-snps': 'click_confirm_submit',
-    'click #refresh-similarity-individuals': 'click_refresh_individuals',
-    'click #refresh-similarity-individuals-2': 'click_refresh_individuals'
+    'click #confirm-submit-snps': 'click_confirm_submit'
   },
 
   initialize: function() {
     _.bindAll(this,
-      'click_similarity_snps', 'click_refresh_individuals',
+      'click_similarity_snps', 'refresh_individuals',
       'click_submit', 'click_confirm_submit', 'calc_ibs_locus',
       'rearrange_individuals', 'loaded', 'calc_ibs', 'process_ibs',
       'calc_ibs_distance'
@@ -40,23 +38,21 @@ window.SimilarityView = Backbone.View.extend({
 	  $("#similarity-snps-table").tablesorter();
     clear_table('similarity-snps-table');
     
+    window.App.genome_lists.push(this.refresh_individuals);
+    this.refresh_individuals();
 	  match_style(this.el);
 	  this.has_loaded = true;
   },
   
-  click_refresh_individuals: function(event) {
+  refresh_individuals: function(event) {
     $('#other-comparisons').empty();
-    if (_.size($('#genome-analysis option')) == 0) {
-      $('#other-comparisons').append("<small>(Load additional genotypes and click <span class='link' id='refresh-similarity-individuals-2'>here</span> to reload)</small>");
-    } else {
-      $('#genome-analysis option').each(function(i, v) {
-        var item_name = v.value;
-        $('#other-comparisons').append(
-          $(document.createElement("input")).attr({ type:  'checkbox', id: item_name + '-similarity', value: item_name } )
-        );
-        $('#other-comparisons').append(' ' + item_name + '<br/>');
-      });
-    }
+    $('#genome-analysis option').each(function(i, v) {
+      var item_name = v.value;
+      $('#other-comparisons').append(
+        $(document.createElement("input")).attr({ type:  'checkbox', id: item_name + '-similarity', value: item_name } )
+      );
+      $('#other-comparisons').append(' ' + item_name + '<br/>');
+    });
   },
   
   click_submit: function(event) {

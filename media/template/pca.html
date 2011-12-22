@@ -1,5 +1,5 @@
 <div class='main'>
-	<h2>Ancestry by PCA</h2>
+	<h2>Global Ancestry by PCA</h2>
   <br/>
   <div>
   <h3>Data source</h3>
@@ -96,6 +96,15 @@
   </span>
   <br/>
   <br/>
+  <h3>Additional individuals to plot</h3>
+  The selected individual (upper-right corner) is plotted by default. Load additional genotypes and select other individuals here.
+  <span class='link' onclick="$('#pca-individuals').find(':checkbox').attr('checked', 'checked');">Select all</span>,
+  <span class='link' onclick="$('#pca-individuals').find(':checkbox').removeAttr('checked');">Select none</span>
+  <div id='pca-individuals' class='setting'>
+    <small>(Load additional genotypes to compare other individuals)</small>
+  </div>
+  <br/>
+  <br/>
   <div>
     <div id='confirm-submit-coordinates' title='Submit your Coordinates?' class='hidden'>
       Are you sure you want to submit your PCA coordinates?
@@ -105,15 +114,21 @@
     </button>
   </div>
   <p id='info'></p>
-   <div id='pca-plot' style="width: 100%; height: 800px">
-   </div>
-  <!-- <div class='submit'>-->
+  <div id='pca-plot' style="width: 100%; height: 800px">
+  </div>
+  <div id='pca-chart-options' class='hidden'>
+      <button id='reverse-x-axis' type='submit'>
+        Reverse x axis
+      </button>
+      <button id='reverse-y-axis' type='submit'>
+        Reverse y axis
+      </button>
   <!--  <div id='submit-button'>-->
   <!--    <button id='submit-coordinates' type='submit'>-->
   <!--      Submit my Coordinates-->
   <!--    </button>-->
   <!--  </div>-->
-  <!--</div>-->
+  </div>
   </div>
 </div>
 

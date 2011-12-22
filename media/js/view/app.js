@@ -20,12 +20,14 @@ window.AppView = Backbone.View.extend({
       'change_genome', 'clear_genome',
       'check_genome', 'check_any_genome',
 	    'change_population', 'change_population_from_toolbar',
-	    'change_population_from_check',
+	    'change_population_from_check', 'update_genome_lists',
       'select_module', 'change_module',
       'click_settings', 'set_remember_cookie',
       'open_confirm_dialog', 'change_genome_to_analyze'
 	  );
   },
+  
+  genome_lists: [],
   
   reverse_routes: {
     'start' : 'start',
@@ -53,30 +55,27 @@ window.AppView = Backbone.View.extend({
     $('#advanced-settings').button();
     $('#add-genome').button();
     
-    var self = this;
-    if (self.get_remember_cookie()) {
+    if (this.get_remember_cookie()) {
       $('#terms-remembered').attr('checked', 'checked');
     } else {
       $('#terms-remembered').removeAttr('checked')
     }
     
-    this.el.find('.module_selection').buttonset();
-    this.el.find('#tabs').tabs({
+    $('.module_selection').buttonset();
+    $('#tabs').tabs({
       select: function(event, ui) {
         window.location.hash = ui.tab.hash;
       }
     });
+    
     var loc = window.location.hash.replace('#','');
-    
     var route = this.reverse_routes[loc];
-    
     $(".module_selection label[for='module_" + route + "']").click();
     this.change_module(route);
   },
   
   open_confirm_dialog: function() {
-    var self = this;
-    if (self.get_remember_cookie()) {
+    if (this.get_remember_cookie()) {
       $('#load-genome-dialog').dialog('open');
     } else {
       $('#confirm-dialog').dialog('open');
@@ -94,8 +93,7 @@ window.AppView = Backbone.View.extend({
     $("#genome-file-wrap").replaceWith("<input id='genome-file' multiple type='file' name='file' />");
   },
   change_genome_to_analyze: function() {
-    user = get_user();
-    this.change_population(user.population);
+    this.change_population(get_user().population);
   },
   
   click_settings: function() {
@@ -153,6 +151,7 @@ window.AppView = Backbone.View.extend({
   
   change_genome: function(event) {
     $('#loading-genome').dialog('open');
+    var self = this;
     
     $.each(event.target.files, function(i, file){
       filename = file.fileName.split('.')
@@ -183,6 +182,7 @@ window.AppView = Backbone.View.extend({
         $('#open-confirm-dialog').hide();
         $('#advanced').show();
         $('#genome-analysis').append($("<option />").val(name).text(name));
+        self.update_genome_lists();
         window.App.users[name].parse_genome(event.target.result, extension);
         // Should this be here?
         $('#please-load-genome').dialog('close');
@@ -194,6 +194,13 @@ window.AppView = Backbone.View.extend({
       } else {
         reader.readAsBinaryString(file);
       }
+    });
+  },
+  
+  update_genome_lists: function() {
+    var self = this;
+    $.each(self.genome_lists, function(i, v){
+      v();
     });
   },
   
