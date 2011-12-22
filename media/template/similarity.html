@@ -1,22 +1,57 @@
 <div class='main'>
-  <h2>Similarity (Identity By State)</h2>
+  <h2>Similarity (Identity By State) -- UNDER CONSTRUCTION</h2>
   <br/>
   <div>
+    <h3>Individuals</h3>
+    <div class='description'>
+      <div id='help-similarity-help'>
+        Select individuals to compare. Click
+        <span class='link' id='refresh-similarity-individuals'>here to refresh</span> from loaded individuals.
+        <br/>
+        <span class='link' onclick="$('#similarity-comparison').find(':checkbox').attr('checked', 'checked');">Select all</span>,
+        <span class='link' onclick="$('#similarity-comparison').find(':checkbox').removeAttr('checked');">Select none</span>
+      </div>
+    </div>
+    <br/>
+    <div id='similarity-comparison' class='setting'>
+      <h4>Preset comparisons</h4> <span id='please-select-similarity' class='required hidden'>Please select at least one comparison</span>
+      <div id='standard-comparisons'>
+        <input id='210-2011-staff-similarity' value='210-2011-staff' type='checkbox' checked='checked'> Teaching Staff of Gene 210, Spring 2011
+        <br/>
+        <input id='church-similarity' value='Church' type='checkbox' checked='checked'> George Church
+      </div>
+      <h4>Custom comparisons</h4>
+      <div id='other-comparisons'>
+        <small>(Load additional genotypes and click <span class='link' id='refresh-similarity-individuals-2'>here</span> to reload)</small>
+      </div>
+    </div>
+    <br/>
     <h3>Resolution</h3>
     <div class='description'>
       <div id='help-similarity-help'>
-        Number of SNPs to be used in the comparison. A higher number takes longer, but could be more accurate.
+        Limit the number of SNPs to be used in the comparison. A higher number takes longer, but could be more accurate.
       </div>
     </div>
     <br/>
     <div id='similarity-resolution' class='setting'>
-      <input type='radio' id='1000' name='similarity-resolution' checked/>
-      <label for='1000'>1,000</label>
-      <input type='radio' id='10000' name='similarity-resolution' />
-      <label for='10000'>10,000</label>
-      <input type='radio' id='100000' name='similarity-resolution' />
-      <label for='100000'>100,000</label>
+      <input type='radio' id='sim_1000' name='similarity-resolution' checked/>
+      <label for='sim_1000'>1,000</label>
+      <input type='radio' id='sim_10000' name='similarity-resolution' />
+      <label for='sim_10000'>10,000</label>
+      <input type='radio' id='sim_100000' name='similarity-resolution' />
+      <label for='sim_100000'>100,000</label>
     </div>
+    <br/>
+    <h4>Cluster Multiple Individuals</h4>
+    <input id='cluster-similarity' type='checkbox'> Compare all individuals to each other (Warning: may take some time)
+    <br/>
+    Choose a linkage criterion:
+    <select id='cluster-linkage' name='cluster-linkage'>
+      <option value="single-linkage">Single Linkage</option>
+      <option value="complete-linkage">Complete Linkage</option>
+      <option value="average-linkage">Average Linkage</option>
+    </select>
+    <br/>
     <br/>
     <button id='similarity-snps' type='submit'>
       Compare!
@@ -36,7 +71,10 @@
     Please be patient. This may take a few moments. <br/> <br/>
   </div>
   <br/>
-	<table id='similarity-snps-table' class='results-table hidden'>
+  <div id='similarity-number-of-snps'>
+  </div>
+  <br/>
+	<table id='similarity-snps-table' class='results-table hidden tablesorter'>
     <thead>
 	  <tr>
 	    <th>Individual</th><th>Similarity</th>
@@ -51,6 +89,7 @@
 		</script>
     </tbody>
 	</table>
+  <pre id="dendrogram"></pre>
 </div>
 
 <div class='help'>

@@ -70,6 +70,14 @@ div.main {
   float: left;
   width: 49%;
 }
+.left_short {
+  float: left;
+  width: 35%;
+}
+.right_long {
+  float: right;
+  width: 64%;
+}
 .right {
   float: right;
   width: 49%;

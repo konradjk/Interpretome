@@ -16,7 +16,7 @@ $(function() {
   
   window.App = new AppView();
   window.App.custom_exercise = new CustomExercise();
-  window.App.user = new User();
+  window.App.users = {};
   
   window.App.render();
   window.Start.render();
@@ -66,10 +66,10 @@ $(function() {
      $('#login-dialog').dialog("open");
    });
   
-  document.getElementById('amount').innerText = $("#ld-slider").slider("value");
+  $('#ld-cutoff-amount').html($("#ld-slider").slider("value"));
   
   $('#ThemeRoller').themeswitcher();
-  $(".results-table").addClass("tablesorter")
+  $(".results-table").addClass("tablesorter");
   
   var isCtrl = false;
   $(document).keyup(function (e) {
@@ -86,6 +86,12 @@ $(function() {
 function count_genotype(value, allele) {
   if (_.isString(value)) value = value.split('');
   return _.select(value, function(v) {return v == allele;}).length;
+}
+
+function clear_table(table_name) {
+  $('#' + table_name + ' tbody tr').remove();
+  $('#' + table_name).hide();
+  $("#" + table_name).trigger("update");
 }
 
 function check_float(value) {
@@ -201,4 +207,10 @@ function flip_genotype(genotype) {
   return _.map(genotype.split(''), function(v) {return base_map[v]}).join('');
 }
 
+function get_user() {
+  return window.App.users[$('#genome-analysis option:selected').val()];
+}
 
+function get_ld_cutoff() {
+  return check_float($("#ld-slider").slider("value"));
+}

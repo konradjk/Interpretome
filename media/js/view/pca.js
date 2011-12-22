@@ -14,9 +14,9 @@ window.PCAView = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this, 
-      'click_compute_pca', 'get_next_snps',
+      'click_compute_pca',
       'got_pca_params', 'change_pop',
-      'loaded', 'get_pca_scores'
+      'loaded'
       //'click_submit', 'click_confirm_submit'
     );
   },
@@ -93,49 +93,13 @@ window.PCAView = Backbone.View.extend({
   },
   
   got_pca_params: function(response) {
-    var slices = 20;
-    if ($('#popres_resolution label[aria-pressed="true"]').attr('for') == 'full') {
-      response['start'] = 0;
-      response['end'] = response['snp_ids'].length/slices;
-      response['extended'] = {};
-      document.getElementById('imputing-number').innerText = add_commas(response['snp_ids'].length);
-      return window.App.user.lookup_snps(this.get_next_snps, response, response['snp_ids'].slice(response['start'], response['end']), {});
-    } else {
-      return this.get_pca_scores(response);
-    }
-  },
-  
-  get_next_snps: function(response, all_snps, extended_snps) {
-    var slices = 20;
-    response['start'] += response['snp_ids'].length/slices;
-    response['end'] += response['snp_ids'].length/slices;
-    
-    document.getElementById('snps-imputed').innerText = add_commas(parseInt(response['start']));
-    percent = parseInt(100*response['start']/response['snp_ids'].length);
-    $('#imputing-bar').progressbar('option', 'value', percent);
-    $('#imputing-bar').css('opacity', 50 + percent/200);
-    
-    $.each(extended_snps, function(i, v) {
-      response['extended'][i] = v;
-    });
-    if (response['snp_ids'].slice(response['start'], response['end']).length > 0) {
-      return window.App.user.lookup_snps(this.get_next_snps, response, response['snp_ids'].slice(response['start'], response['end']), {});
-    } else {
-      return this.get_pca_scores(response);
-    }
-  },
-  
-  get_pca_scores: function(response) {
     var pc1 = 0;
     var pc2 = 0;
+    user = get_user();
     $.each(response['snp_ids'], function(i, v) {
       genotype_count = 2;
-      if (window.App.user.lookup(v) != undefined) {
-        genotype_count = count_genotype(window.App.user.lookup(v).genotype, response['reference_alleles'][v]);
-      } else {
-        if (response['extended'] != null && response['extended'][v] != undefined && response['extended'][v]['genotype'] != '??') {
-          genotype_count = count_genotype(response['extended'][v]['genotype'], response['reference_alleles'][v]);
-        }
+      if (user.lookup(v) != undefined) {
+        genotype_count = count_genotype(user.lookup(v).genotype, response['reference_alleles'][v]);
       }
       pc1 += genotype_count*response['loadings'][0][i];
       pc2 += genotype_count*response['loadings'][1][i];

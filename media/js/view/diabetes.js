@@ -48,18 +48,18 @@ window.DiabetesView = Backbone.View.extend({
     this.el.find('#diabetes-table tr').slice(1).remove();
     this.el.find('#diabetes-table').hide();
     
-    if (!(window.App.user.population in this.priors)) {
+    if (!(get_user().population in this.priors)) {
       this.el.find('#pop-error-box').empty();
       this.el.find('#please-choose-another-population').show('slow');
-      this.el.find('#pop-error-box').append(window.App.user.population);
+      this.el.find('#pop-error-box').append(get_user().population);
       return;
     }
     
-    $.get('/diabetes/', {population: window.App.user.population}, this.got_diabetes_snps);
+    $.get('/diabetes/', {population: get_user().population}, this.got_diabetes_snps);
   },
   
   got_diabetes_snps: function(response) {
-    window.App.user.lookup_snps(
+    get_user().lookup_snps(
       this.show_diabetes_snps, response['snps'], response['dbsnps'], response
     );
   },
@@ -67,14 +67,14 @@ window.DiabetesView = Backbone.View.extend({
   show_diabetes_snps: function(response, all_dbsnps, extended_dbsnps) {
     all_dbsnps = _.uniq(all_dbsnps);
     var self = this;
-    var lr = compute_odds(this.priors[window.App.user.population]);
+    var lr = compute_odds(this.priors[get_user().population]);
     
     data = new google.visualization.DataTable();
 
     data.addColumn('string', 'SNP');
     data.addColumn('number', 'Running LR');
     data.addColumn('number', 'Prior');
-    data.addRow(['Prior', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[window.App.user.population]]);
+    data.addRow(['Prior', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[get_user().population]]);
     
     self.el.find('#diabetes-table').append(
       '<tr><td><strong>Prior</td><td></td><td></td><td></td><td></td></tr>'
@@ -95,7 +95,7 @@ window.DiabetesView = Backbone.View.extend({
 	      self.el.find('#diabetes-table tr:last').
 	        append('<td>' + study_snp.LR.toFixed(3) + '</td><td>' + parseFloat(lr).toFixed(3) + 
 	          '</td><td>' + parseFloat(100 * compute_probability(lr)).toFixed(3) + '% </td>');
-	      data.addRow([study_snp.dbsnp + '', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[window.App.user.population]]);
+	      data.addRow([study_snp.dbsnp + '', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[get_user().population]]);
 	      break;
       }
     }
@@ -125,7 +125,7 @@ window.DiabetesView = Backbone.View.extend({
 	  this.el.find('#confirm-submit-diabetes').dialog({modal: true, resizable: false, buttons: {
 	    'Okay': function() {
 	      $(this).dialog('close');
-	      var data = window.App.user.serialize();
+	      var data = get_user().serialize();
 	      var prior = parseFloat(self.el.find('#diabetes-table tr:eq(1) td:last').html()) / 100;
 	      var estimate = parseFloat(self.el.find('#diabetes-table tr:last td:last').html()) / 100;
 	      data = $.extend(data, {prior: prior, estimate: estimate, exercise: 'class_diabetes'});

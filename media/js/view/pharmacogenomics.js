@@ -21,7 +21,7 @@ window.PharmacogenomicsView = Backbone.View.extend({
 	  this.el.find('button').button();
 	  match_style(this.el);
     $('#common_rare').accordion();
-    this.el.find('#common-pgx-table').hide();
+    $('#common-pgx-table').hide();
 	  this.common_pgx_template = $('#common-pgx-template').html();
 	  this.rare_pgx_template = $('#rare-pgx-template').html();
     
@@ -37,12 +37,8 @@ window.PharmacogenomicsView = Backbone.View.extend({
   },
   
   clear_tables: function() {
-    this.el.find('#common-pgx-table tbody tr').remove();
-    this.el.find('#common-pgx-table').hide();
-    this.el.find('#rare-pgx-table tbody tr').remove();
-    this.el.find('#rare-pgx-table').hide();
-    $("#common-pgx-table").trigger("update");
-    $("#rare-pgx-table").trigger("update");
+    clear_table('common-pgx-table');
+    clear_table('rare-pgx-table');
   },
   
   click_rare_pgx: function(response) {
@@ -50,14 +46,15 @@ window.PharmacogenomicsView = Backbone.View.extend({
     if (window.App.check_all() == false) return;
     $('#looking-up').dialog('open');
     cutoff = parseFloat($("#frequency-cutoff-slider").slider("value"))/100.0;
-    $.get('/get_rare_variants/', {population: window.App.user.population, cutoff: cutoff}, this.got_rare_variants);
+    $.get('/get_rare_variants/', {population: get_user().population, cutoff: cutoff}, this.got_rare_variants);
   },
   
   got_rare_variants: function(response) {
     var self = this;
     rare_variants = {};
+    user = get_user();
     $.each(response, function(i, v) {
-      var dbsnp = window.App.user.lookup(v['rsid']);
+      var dbsnp = user.lookup(v['rsid']);
       if (dbsnp != undefined && count_genotype(dbsnp.genotype, v['otherallele']) > 0) {
         rare_variants[v['rsid']] = _.extend(v, dbsnp);
       }
@@ -83,20 +80,21 @@ window.PharmacogenomicsView = Backbone.View.extend({
       if (rare_variants_targets[v['dbSNP']] != undefined){
         output = _.extend(v, rare_variants_targets[v['dbSNP']]);
         output['dbsnp'] = v['dbSNP'];
-        self.el.find('#rare-pgx-table > tbody').append(_.template(self.rare_pgx_template, output));
+        $('#rare-pgx-table > tbody').append(_.template(self.rare_pgx_template, output));
       }
     });
-    self.el.find('#rare-pgx-table').show();
+    $('#rare-pgx-table').show();
     $("#rare-pgx-table").trigger("update");
   },
   
   got_common_pgx: function(response) {
     var self = this;
+    user = get_user();
     $.each(response, function(i, v) {
-      var dbsnp = window.App.user.lookup(v['dbsnp']);
+      var dbsnp = user.lookup(v['dbsnp']);
       if (dbsnp != undefined && v['genotype'] == dbsnp.genotype) {
         v['genotype'] = dbsnp.genotype;
-        self.el.find('#common-pgx-table > tbody').append(_.template(self.common_pgx_template, v));
+        $('#common-pgx-table > tbody').append(_.template(self.common_pgx_template, v));
       }
     });
     self.el.find('#common-pgx-table').show();

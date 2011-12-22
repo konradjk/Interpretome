@@ -86,13 +86,6 @@ window.ExploreView = Backbone.View.extend({
     var self = this;
     
     reader.onloadend = function(event) {
-      $('#loading-bar').progressbar('option', 'value', 100);
-      $('#genome label, #genome input').hide();
-      $('#advanced').show();
-      window.App.user.parse_genome(event.target.result.split('\n'));
-    }
-    
-    reader.onloadend = function(event) {
       window.App.custom_exercise.parse_exercise_snps(
         event.target.result.split('\n')
       )
@@ -152,7 +145,7 @@ window.ExploreView = Backbone.View.extend({
 	    $('#lookup-snps-table td.value'), 
 	    function(v) {return $(v).text();}
 	  );
-	  submission = window.App.user.serialize();
+	  submission = get_user().serialize();
 	  $.each(ks, function(i, v) {
 	    submission[v] = vs[i];
 	  });
@@ -189,13 +182,13 @@ window.ExploreView = Backbone.View.extend({
     if (window.Generic.start() != false){
       $.get('/lookup/exercise/', {
         'exercise': window.App.exercise,
-        'population': window.App.user.population
+        'population': get_user().population
       }, this.got_exercise_data);
     }
   },
   
   got_exercise_data: function(response) {
-    window.App.user.lookup_snps(
+    get_user().lookup_snps(
       window.Generic.display, response, _.keys(response['snps']), response
     );
   },
@@ -216,7 +209,7 @@ window.ExploreView = Backbone.View.extend({
           
           var submission = {'exercise': window.App.exercise};
           
-          submission = $.extend(submission, window.App.user.serialize());
+          submission = $.extend(submission, get_user().serialize());
           $.each(ks, function(i, v) {
             submission[v] = vs[i];
           });

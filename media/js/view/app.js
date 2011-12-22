@@ -3,8 +3,10 @@ window.AppView = Backbone.View.extend({
   el: $('body'),
   
   events: {
+    'click #add-genome': 'add_genome',
     'click #open-confirm-dialog': 'open_confirm_dialog',
     'click #open-load-genome-dialog': 'open_load_genome_dialog',
+    'change #genome-analysis': 'change_genome_to_analyze',
     'change #genome-file': 'change_genome',
     'click #clear-genome': 'clear_genome',
     'change #toolbar-population': 'change_population_from_toolbar',
@@ -21,7 +23,7 @@ window.AppView = Backbone.View.extend({
 	    'change_population_from_check',
       'select_module', 'change_module',
       'click_settings', 'set_remember_cookie',
-      'open_confirm_dialog'
+      'open_confirm_dialog', 'change_genome_to_analyze'
 	  );
   },
   
@@ -47,8 +49,9 @@ window.AppView = Backbone.View.extend({
     $('#advanced').hide();
     $('#clear-genome').button({ 
       icons: {primary: 'ui-icon-circle-close'} 
-    }).show();
-    $('#advanced-settings').button().show();
+    });
+    $('#advanced-settings').button();
+    $('#add-genome').button();
     
     var self = this;
     if (self.get_remember_cookie()) {
@@ -84,6 +87,15 @@ window.AppView = Backbone.View.extend({
     this.set_remember_cookie($('#terms-remembered').attr('checked'));
     $('#confirm-dialog').dialog('close');
     $('#load-genome-dialog').dialog('open');
+  },
+  add_genome: function() {
+    $('#load-genome-dialog').dialog('open');
+    $('#genome-name').val('');
+    $("#genome-file-wrap").replaceWith("<input id='genome-file' multiple type='file' name='file' />");
+  },
+  change_genome_to_analyze: function() {
+    user = get_user();
+    this.change_population(user.population);
   },
   
   click_settings: function() {
@@ -141,38 +153,48 @@ window.AppView = Backbone.View.extend({
   
   change_genome: function(event) {
     $('#loading-genome').dialog('open');
-    this.el.find('.progress-bar').progressbar({value: 0});
-    this.el.find('.progress-bar > div').css('background', get_secondary_color());
     
-    var reader = new FileReader();
-    reader.onprogress = function(event) {
-      if (event.lengthComputable) {
-        var percent = Math.round((event.loaded / event.total) * 100);
-        if (percent < 100) {
-          self.el.find('#loading-bar').progressbar('option', 'value', percent);
-        }
+    $.each(event.target.files, function(i, file){
+      filename = file.fileName.split('.')
+      base = filename[filename.length-2]
+      extension = filename[filename.length-1]
+      
+      var name = $('#genome-name').val();
+      if (name == '') {
+        name = base;
       }
-    };
-    
-    filename = event.target.files[0].fileName.split('.')
-    extension = filename[filename.length-1]
-
-    reader.onloadend = function(event) {
-      $('#loading-bar').progressbar('option', 'value', 100);
-      $('#genome label, #genome input').hide();
-      $('#open-confirm-dialog').hide();
-      $('#advanced').show();
-      window.App.user.parse_genome(event.target.result, extension);
-      // Should this be here?
-      $('#please-load-genome').dialog('close');
-      $('#load-genome-dialog').dialog('close');
-    }
-    
-    if (extension == 'txt') {
-      reader.readAsText(event.target.files[0]);
-    } else {
-      reader.readAsBinaryString(event.target.files[0]);
-    }
+      window.App.users[name] = new User(name);
+      $('.progress-bar').progressbar({value: 0});
+      $('.progress-bar > div').css('background', get_secondary_color());
+      
+      var reader = new FileReader();
+      reader.onprogress = function(event) {
+        if (event.lengthComputable) {
+          var percent = Math.round((event.loaded / event.total) * 100);
+          if (percent < 100) {
+            $('#loading-bar').progressbar('option', 'value', percent);
+          }
+        }
+      };
+      
+      reader.onloadend = function(event) {
+        $('#loading-bar').progressbar('option', 'value', 100);
+        $('#genome label, #genome input').hide();
+        $('#open-confirm-dialog').hide();
+        $('#advanced').show();
+        $('#genome-analysis').append($("<option />").val(name).text(name));
+        window.App.users[name].parse_genome(event.target.result, extension);
+        // Should this be here?
+        $('#please-load-genome').dialog('close');
+        $('#load-genome-dialog').dialog('close');
+      }
+      
+      if (true || extension == 'txt') {
+        reader.readAsText(file);
+      } else {
+        reader.readAsBinaryString(file);
+      }
+    });
   },
   
   clear_genome: function(event) {
@@ -183,7 +205,12 @@ window.AppView = Backbone.View.extend({
         },
         'Clear': function() {
           $(this).dialog('close');
-          window.location = '';
+          username = $('#genome-analysis option:selected').val();
+          $('#genome-analysis option[value="' + username + '"]').remove();
+          delete window.App.users[username];
+          if (_.isEmpty(window.App.users)) {
+            window.location = '';
+          }
         }
       }
     });
@@ -200,20 +227,21 @@ window.AppView = Backbone.View.extend({
   },
   
   change_population: function(population) {
-    this.user.population = population;
-    this.el.find('#please-select-population').dialog('close');
-    this.el.find('#toolbar-population option[id="dummy"]').remove();
-    this.el.find('#check-population option[id="dummy"]').remove();
-    this.el.find(
-      '#toolbar-population option[value="' + population + '"]'
-    ).attr('selected', true);
-    this.el.find(
-      '#check-population option[value="' + population + '"]'
-    ).attr('selected', true);
+    user = get_user();
+    user.population = population;
+    
+    $('#please-select-population').dialog('close');
+    $('#toolbar-population option[id="dummy-2"]').remove();
+    $('#check-population option[id="dummy"]').remove();
+    $('#toolbar-population option[value="' + population + '"]').attr('selected', true);
+    $('#check-population option[value="' + population + '"]').attr('selected', true);
+    $('#pre-population-selection').hide();
+    $('#post-population-selection').show();
   },
   
   check_any_genome: function(name) {
-    if (_.isEmpty(this[name].snps)) {
+    user = get_user();
+    if (_.isEmpty(window.App.users) || _.isEmpty(user.snps)) {
       this.el.find('#please-load-genome').dialog({
         modal: true, resizable: false, width: 400, buttons: {
           'Cancel': function() {$(this).dialog('close');}
@@ -229,7 +257,7 @@ window.AppView = Backbone.View.extend({
   },
   
   check_population: function() {
-    if (this.user.population == null) {
+    if (get_user().population == null) {
       this.el.find('#please-select-population').dialog({
         modal: true, resizable: false, buttons: {
           'Cancel': function() {$(this).dialog('close');}

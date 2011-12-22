@@ -29,7 +29,7 @@ window.GenericView = Backbone.View.extend({
 	  this.table_template = $(this.template_id).html();
 	  this.counts_table_template = $(this.counts_template_id).html();
 	  this.header_template = $(this.table_header_template_id).html();
-    window.App.user.lookup_snps(window.Generic.display, App.custom_exercise, _.keys(App.custom_exercise.snps), null);
+    get_user().lookup_snps(window.Generic.display, App.custom_exercise, _.keys(App.custom_exercise.snps), null);
   },
   
   start: function(response) {

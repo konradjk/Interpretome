@@ -178,6 +178,7 @@ window.PaintingView = Backbone.View.extend({
   calculate_painting: function(chrom, this_chrom, block_size, smoothing, bootstrap, prior, chrom_info, all_populations) {
     var self = this;
     this.update_counter(chrom);
+    user = get_user();
     
     var painting_m = [];
     var painting_f = [];
@@ -188,7 +189,7 @@ window.PaintingView = Backbone.View.extend({
       for (var j = 0; j < bootstrap; j += 1) {
         var probs = self.init_probs(this_chrom[0], prior);
         $.each(snps, function(i, v) {
-          var dbsnp = window.App.user.lookup(v['rsid']);
+          var dbsnp = user.lookup(v['rsid']);
           if (dbsnp != undefined) {
             allele = dbsnp.genotype[Math.floor(Math.random()*2)];
             var average = self.compute_weighted_average(v, probs);

@@ -47,63 +47,64 @@ window.GenericView = Backbone.View.extend({
     this.el.find('.required').hide();
     this.el.find('#height_table tr').slice(1).remove();
     this.el.find('#height_chart').empty();
-    window.App.user.sex = $('#sex label[aria-pressed="true"]').attr('for');
-    if (window.App.user.sex == undefined) {
+    user = get_user();
+    user.sex = $('#sex label[aria-pressed="true"]').attr('for');
+    if (user.sex == undefined) {
       this.el.find('#please-select-sex').show('slow');
       return false;
     }
     var raw_height = this.el.find('#mom-height-textarea').val();
     if ($('#mom_height_units label[aria-pressed="true"]').attr('for') == 'mom_height_units_in') {
-      window.App.user.mom_height = check_inches(raw_height);
+      user.mom_height = check_inches(raw_height);
     } else {
-      window.App.user.mom_height = check_float(raw_height);
+      user.mom_height = check_float(raw_height);
     }
     
     var raw_height = this.el.find('#dad-height-textarea').val();
     if ($('#dad_height_units label[aria-pressed="true"]').attr('for') == 'dad_height_units_in'){
-      window.App.user.dad_height = check_inches(raw_height);
+      user.dad_height = check_inches(raw_height);
     } else {
-      window.App.user.dad_height = check_float(raw_height);
+      user.dad_height = check_float(raw_height);
     }
     
     var raw_height = this.el.find('#height-textarea').val();
     if ($('#your_height_units label[aria-pressed="true"]').attr('for') == 'your_height_units_in'){
-      window.App.user.height = check_inches(raw_height);
+      user.height = check_inches(raw_height);
     } else {
-      window.App.user.height = check_float(raw_height);
+      user.height = check_float(raw_height);
     }
     
-    if (window.App.user.mom_height == null) {
+    if (user.mom_height == null) {
       this.el.find('#please-enter-mom-height').show('slow');
       return false;
     }
-    if (window.App.user.dad_height == null) {
+    if (user.dad_height == null) {
       this.el.find('#please-enter-dad-height').show('slow');
       return false;
     }
-    if (window.App.user.height == null) {
+    if (user.height == null) {
       this.el.find('#please-enter-height').show('slow');
       return false;
     }
     
-    if (!(window.App.user.population in this.priors)){
+    if (!(user.population in this.priors)){
       this.el.find('#pop-error-box').empty();
       this.el.find('#please-choose-another-population').show('slow');
-      this.el.find('#pop-error-box').append(window.App.user.population);
+      this.el.find('#pop-error-box').append(user.population);
       return false;
     }
     
-    var prior = this.priors[window.App.user.population][window.App.user.sex];
+    var prior = this.priors[user.population][user.sex];
     var family = this.get_family_height();
     var self = this;
     $.get(
       '/height/get_height_snps/', {
-        population: window.App.user.population
+        population: user.population
       }, function(response) {
-        return window.App.user.lookup_snps(
+        return user.lookup_snps(
           self.display, {
             prior: prior, family: family, 
-            actual: window.App.user.height, height_info: response
+            actual: user.height, height_info: response
           }, _.keys(response), {}
         );
       }
@@ -183,11 +184,11 @@ window.GenericView = Backbone.View.extend({
   
   get_family_height: function(){
     var family_prior = 
-      this.priors[window.App.user.population][window.App.user.sex];
-    var father_adjust = window.App.user.dad_height - 
-                        this.priors[window.App.user.population]['male'];
-    var mother_adjust = window.App.user.mom_height - 
-                        this.priors[window.App.user.population]['female'];
+      this.priors[user.population][user.sex];
+    var father_adjust = user.dad_height - 
+                        this.priors[user.population]['male'];
+    var mother_adjust = user.mom_height - 
+                        this.priors[user.population]['female'];
     return (family_prior + father_adjust + mother_adjust);
   },
   

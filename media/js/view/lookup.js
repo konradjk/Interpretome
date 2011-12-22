@@ -14,7 +14,6 @@ window.LookupView = Backbone.View.extend({
     'click #confirm-submit-snps': 'click_confirm_submit',
     'click #delete-snps': 'click_delete_snps',
     'click #toggle-unknown-genotypes': 'toggle_unknown_genotypes'
-    
   },
 
   initialize: function() {
@@ -41,9 +40,9 @@ window.LookupView = Backbone.View.extend({
 	  this.el.append(response);
     
 	  // Widget initialization.
-	  this.el.find('button').button();
-	  this.el.find('#table-options').hide();
-	  this.el.find('.description').hide();
+	  $('button').button();
+	  $('#table-options').hide();
+	  $('.description').hide();
 	  
 	  // Initialize general templates.
 	  this.lookup_snp_template = $('#lookup-snp-template').html();
@@ -58,20 +57,20 @@ window.LookupView = Backbone.View.extend({
         'Okay!': function() {$(this).dialog('close');}
       }
     });
+    $('#lookup-snps-table').tablesorter();
 	  
 	  this.has_loaded = true;
   },
   
   toggle_demo: function(event) {
-    this.el.find('#lookup-demo').next().toggle('normal');
+    $('#lookup-demo').next().toggle('normal');
   },
   
   toggle_bed: function(event) {
-    this.el.find('#lookup-bed').next().toggle('normal');
+    $('#lookup-bed').next().toggle('normal');
   },
   
   // Submission-related logic.
-  
   click_submit: function(event) {
     var self = this;
     $('#confirm-submit-exercise').dialog({
@@ -94,7 +93,7 @@ window.LookupView = Backbone.View.extend({
 	    $('#lookup-snps-table td.value'), 
 	    function(v) {return $(v).text();}
 	  );
-	  submission = window.App.user.serialize();
+	  submission = get_user.serialize();
 	  $.each(ks, function(i, v) {
 	    submission[v] = vs[i];
 	  });
@@ -128,15 +127,16 @@ window.LookupView = Backbone.View.extend({
       this.el.find('#delete-snps-textarea').val().split('\n')
     );
     var self = this;
+    user = get_user();
     $.each(dbsnps, function(i, v) {
-      if (window.App.user.lookup(v) != undefined){
-        var print_snp = window.App.user.blank_extended_snp(v);
+      if (user.lookup(v) != undefined){
+        var print_snp = user.blank_extended_snp(v);
         print_snp['imputed_from'] = 'DELETED';
-        print_snp['genotype'] = 'Was: ' + window.App.user.lookup(v).genotype;
+        print_snp['genotype'] = 'Was: ' + user.lookup(v).genotype;
         self.el.find('#lookup-snps-table').append(
           _.template(self.lookup_snp_template, print_snp)
         );
-        window.App.user.delete_snp(v);
+        user.delete_snp(v);
       }
     });
     this.el.find('#lookup-snps-table').show();
@@ -146,11 +146,10 @@ window.LookupView = Backbone.View.extend({
   // Clear general lookup table or exercise-specific one.
   click_clear_snps: function(event) {
     $('#table-options').hide();
-    this.el.find('#lookup-snps-table tr').slice(1).remove();
-    this.el.find('#lookup-snps-table').hide();
-    this.el.find('#bed-file-text').empty();
-    this.el.find('#bed-file-text').append('track name=myGenome description="Personal Genotype" visibility=3 itemRgb="On"\n');
-    this.el.find('.submit > div').hide();
+    clear_table('lookup-snps-table');
+    $('#bed-file-text').empty();
+    $('#bed-file-text').append('track name=myGenome description="Personal Genotype" visibility=3 itemRgb="On"\n');
+    $('.submit > div').hide();
   },
   
   click_lookup_snps: function(event) {
@@ -161,11 +160,11 @@ window.LookupView = Backbone.View.extend({
     var dbsnps = filter_identifiers(
       this.el.find('#lookup-snps-textarea').val().split('\n')
     );
-    window.App.user.lookup_snps(self.get_more_info, {}, dbsnps, {});
+    get_user().lookup_snps(self.get_more_info, {}, dbsnps, {});
   },
   
   get_more_info: function(args, all_dbsnps, extended_dbsnps) {
-    window.App.user.get_reference_alleles(this.print_snps, {}, all_dbsnps, extended_dbsnps);
+    get_user().get_reference_alleles(this.print_snps, {}, all_dbsnps, extended_dbsnps);
   },
   
   print_snps: function(args, all_dbsnps, snps_to_print) {
@@ -176,14 +175,14 @@ window.LookupView = Backbone.View.extend({
       if (output_snp['imputed_from'] != ''){
         output_snp['explain'] = self.explain_string();
       }
-      self.el.find('#lookup-snps-table').append(_.template(self.lookup_snp_template, output_snp));
-      self.el.find('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
+      $('#lookup-snps-table > tbody').append(_.template(self.lookup_snp_template, output_snp));
+      $('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
     });
     $('#looking-up').dialog('close');
     $('#imputing-lots').dialog('close');
     $('#table-options').show();
-    self.el.find('#lookup-snps-table').show();
-    //self.el.find('.details').hide();
+    $('#lookup-snps-table').show();
+    $('#lookup-snps-table').trigger('update');
   },
   
   explain_string: function() {

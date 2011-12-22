@@ -478,12 +478,21 @@ def get_individuals(request):
   numsnps = helpers.check_int(request.GET.get('numsnps', None))
   if numsnps is None:
     return http.HttpResponseBadRequest()
+  individuals = helpers.sanitize(request.GET.get('individuals', None)).split(',')
+  individual_select = set()
+  for individual in individuals:
+    if individual == '210-2011-staff':
+      individual_select.update(['Konrad', 'Nick', 'Noah', 'Rob', 'Stuart'])
+    else:
+      individual_select.add(individual)
+  if len(individual_select) == 0:
+    return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   query = '''
-    SELECT * FROM interpretome_ancestry.similarity LIMIT %s;
-  ''' % (numsnps)
+    SELECT dbsnp, %s FROM interpretome_ancestry.similarity LIMIT %s;
+  ''' % (",".join([str(i) for i in individual_select]), numsnps)
   cursor.execute(query)
-  output = cursor.fetchall()
+  output = helpers.create_snp_dict(cursor.fetchall())
   return http.HttpResponse(simplejson.dumps(output), mimetype = 'application/json')
   
 def index(request):

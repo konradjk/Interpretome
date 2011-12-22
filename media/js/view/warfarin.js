@@ -110,66 +110,67 @@ window.WarfarinView = Backbone.View.extend({
     var raw_enzyme = $('#enzyme label[aria-pressed="true"]').attr('for');
     var raw_amiodarone = $('#amiodarone label[aria-pressed="true"]').attr('for');
     
-    window.App.user.age = check_float(raw_age);
+    user = get_user();
+    user.age = check_float(raw_age);
       
     if ($('#height_units label[aria-pressed="true"]').attr('for') == 'in'){
-      window.App.user.height = check_inches(raw_height);
+      user.height = check_inches(raw_height);
     } else {
-      window.App.user.height = check_float(raw_height);
+      user.height = check_float(raw_height);
     }
     
-    window.App.user.weight = check_float(raw_weight);
+    user.weight = check_float(raw_weight);
     
     if (raw_race != undefined){
-      window.App.user.race = raw_race;
+      user.race = raw_race;
     }
     if (raw_enzyme != undefined){
-      window.App.user.enzyme = raw_enzyme;
+      user.enzyme = raw_enzyme;
     }
     if (raw_amiodarone != undefined){
-      window.App.user.amiodarone = raw_amiodarone;
+      user.amiodarone = raw_amiodarone;
     }
     
     if (this.check_warfarin() == false) return;
     
-    var decades = Math.floor(window.App.user.age/10);
+    var decades = Math.floor(user.age/10);
     
     if ($('#weight_units label[aria-pressed="true"]').attr('for') == 'lbs'){
-      window.App.user.weight = window.App.user.weight/2.2;
+      user.weight = user.weight/2.2;
     }
     var asian = 0;
     var black = 0;
     var other = 0;
-    if (window.App.user.race == 'race_asian'){
+    if (user.race == 'race_asian'){
       asian = 1;
-    }else if (window.App.user.race == 'race_black'){
+    }else if (user.race == 'race_black'){
       black = 1;
-    }else if (window.App.user.race == 'race_other'){
+    }else if (user.race == 'race_other'){
       other = 1;
     }
     
     var enzyme = 0;
     var amiodarone = 0;
-    if (window.App.user.enzyme == 'enzyme_yes'){
+    if (user.enzyme == 'enzyme_yes'){
       enzyme = 1;
     }
-    if (window.App.user.amiodarone == 'amiodarone_yes'){
+    if (user.amiodarone == 'amiodarone_yes'){
       amiodarone = 1;
     }
     var results = {};
     
-    var vkorc1 = window.App.user.lookup('9923231');
-    var cyp2c9_2 = window.App.user.lookup('1799853');
-    var cyp2c9_3 = window.App.user.lookup('1057910');
-    var cyp4f2 = window.App.user.lookup('2108622');
+    var vkorc1 = user.lookup('9923231');
+    var cyp2c9_2 = user.lookup('1799853');
+    var cyp2c9_3 = user.lookup('1057910');
+    var cyp4f2 = user.lookup('2108622');
     
     results['clinical_total'] = 4.0376;
     results['genetic_total'] = 5.6044;
     
     this.el.find('#warfarin-table').show();
     results = this.calculate_and_print_factor('Age (in decades)', results, -0.2546, -0.2614, decades);
-    results = this.calculate_and_print_factor('Height (in cm)', results, 0.0118, 0.0087, window.App.user.height);
-    results = this.calculate_and_print_factor('Weight (in kg)', results, 0.0134, 0.0128, window.App.user.weight);
+    results = this.calculate_and_print_factor('Height (in cm)', results, 0.0118, 0.0087, user.height);
+    results = this.calculate_and_print_factor('Weight (in kg)', results, 0.0134, 0.0128, user.weight);
     results = this.calculate_and_print_factor('Asian', results, -0.6752, -0.1092, asian);
     results = this.calculate_and_print_factor('Black', results, 0.406, -0.276, black);
     results = this.calculate_and_print_factor('Other/Mixed', results, 0.0443, -0.1032, other);
@@ -272,32 +273,33 @@ window.WarfarinView = Backbone.View.extend({
   check_warfarin: function(){
     this.el.find('.required').hide();
     if (window.App.check_genome() == false) return false;
-    if (window.App.user.age == null) {
+    user = get_user();
+    var works = true;
+    if (user.age == null) {
       this.el.find('#please-enter-age').show('slow');
-      return false;
+      works = false;
     }
-    if (window.App.user.height == null) {
+    if (user.height == null) {
       this.el.find('#please-enter-height').show('slow');
-      return false;
+      works = false;
     }
-    if (window.App.user.weight == null) {
+    if (user.weight == null) {
       this.el.find('#please-enter-weight').show('slow');
-      return false;
+      works = false;
     }
-    if (window.App.user.race == null) {
+    if (user.race == null) {
       this.el.find('#please-select-race').show('slow');
-      return false;
+      works = false;
     }
-    if (window.App.user.enzyme == null) {
+    if (user.enzyme == null) {
       this.el.find('#please-select-enzyme').show('slow');
-      return false;
+      works = false;
     }
-    if (window.App.user.amiodarone == null) {
+    if (user.amiodarone == null) {
       this.el.find('#please-select-amiodarone').show('slow');
-      return false;
+      works = false;
     }
-    
-    return true;
+    return works;
   }
   
   });

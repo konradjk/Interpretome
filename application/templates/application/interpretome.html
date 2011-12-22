@@ -28,6 +28,8 @@
     </script>
     <script type="text/javascript" src='/media/js/jquery/theme_switcher_tool.js'>
     </script>
+    <script type="text/javascript" src='/media/js/figue-read-only/figue.js'>
+    </script>
     <!-- Models. -->
     <script type='text/javascript' src='/media/js/model/user.js'>
     </script>
@@ -122,7 +124,7 @@
               Please load your genome first.
               <br>
               <br>
-              <input id='genome-file' type='file' name='file' />
+              <input id='genome-file' multiple type='file' name='file' />
             </div>
             <div class='setting'>
               <span id='genome' class='stack'>
@@ -134,44 +136,52 @@
                 <button id='advanced-settings' type='submit' class='small-button hidden'>
                   Advanced Settings
                 </button>
+                <button id='add-genome' type='submit' class='small-button'>
+                  Add add'l genome
+                </button>
                 <br/>
                 <br/>
-                <label for='toolbar-population' class='setting-label'>
-                 Select genome
-               </label>
+                <label for='genome-analysis' class='setting-label'>
+                  Genome:
+                </label>
                <select id='genome-analysis' name='genome-analysis'>
                </select>
                 <button id='clear-genome' class='small-button hidden'>
                   Clear this genome
                 </button>
+              <br/>
+              <br/>
+                <div id='population-setter'>
+                 <label for='toolbar-population' class='setting-label'>
+                  <span id='pre-population-selection'>
+                    Select your population:
+                  </span>
+                  <span id='post-population-selection' class='hidden'>
+                    Population:
+                  </span>
+                 </label>
+                 <select id='toolbar-population' name='population'>
+                   <!--
+                   I don't like having to copy and paste,
+                   but these should always be the same as above.
+                   -->
+    
+                   <option id='dummy-2' value="null">Select a population</option>
+                   <option value="CEU">European</option>
+                   <option value="YRI">African</option>
+                   <option value="CHB">Chinese</option>
+                   <option value="JPT">Japanese</option>
+                   <option value="null">--------</option>
+                   <option value="ASW">African-American (Southwest)</option>
+                   <option value="CHD">Chinese (Denver)</option>
+                   <option value="GIH">Guajarti Indian (Houston)</option>
+                   <option value="LWK">Lukya (Kenya)</option>
+                   <option value="MEX">Mexican (Los Angeles)</option>
+                   <option value="MKK">Maasai (Kenya)</option>
+                   <option value="TSI">Toscans (Italy)</option>
+                 </select>
+                </div>
               </span>
-              <br/>
-              <br/>
-              <div id='population-setter'>
-               <label for='toolbar-population' class='setting-label'>
-                 Select your population
-               </label>
-               <select id='toolbar-population' name='population'>
-                 <!--
-                 I don't like having to copy and paste,
-                 but these should always be the same as above.
-                 -->
-  
-                 <option id='dummy-2' value="null">Select a population</option>
-                 <option value="CEU">European</option>
-                 <option value="YRI">African</option>
-                 <option value="CHB">Chinese</option>
-                 <option value="JPT">Japanese</option>
-                 <option value="null">--------</option>
-                 <option value="ASW">African-American (Southwest)</option>
-                 <option value="CHD">Chinese (Denver)</option>
-                 <option value="GIH">Guajarti Indian (Houston)</option>
-                 <option value="LWK">Lukya (Kenya)</option>
-                 <option value="MEX">Mexican (Los Angeles)</option>
-                 <option value="MKK">Maasai (Kenya)</option>
-                 <option value="TSI">Toscans (Italy)</option>
-               </select>
-              </div>
               <div id='confirm-dialog' title='Confirm Terms' class='dialog hidden'>
                 <h3>Interpretome is intended for <i>educational and research purposes only</i>.</h3>
                 <p>
@@ -210,9 +220,24 @@
                 <h3>Please load your genotype file</h3>
                 For genotype files, please load an unzipped .txt file.
                 <br/>
-                At this time, only 23andme and Lumigenix are supported natively.
+                At this time, only raw files from 23andme and Lumigenix are supported natively.
                 <br/>
                 <br/>
+                <div class='left_short'>
+                File type:
+                <br/>
+                Name this genome:
+                <br/>
+                File:
+                <br/>
+                <span style='font-size: medium' class='link' onclick='$("#terms").dialog({
+                  modal: true, width: "80%", buttons: {
+                    "Close": function() {$(this).dialog("close");}
+                  }});'>
+                  Terms and Conditions
+                </span>
+                </div>
+                <div class='right_long'>
                 <select id='file-format' name='file-format'>
                   <option value="genotype">Genotype</option>
                   <option value="exome">Full Exome (coming soon!)</option>
@@ -221,15 +246,15 @@
                 <!--For full exome or genome files, please load a VCF file (experimental).-->
                 <!--<br/>-->
                 <!--<br/>-->
-                <input id='genome-file' type='file' name='file' />
                 <br/>
+                <textarea id='genome-name' rows='1' cols='16'></textarea>
+                <i>(optional)</i> (useful for analysis of multiple genomes)
                 <br/>
-                <span style='font-size: medium' class='link' onclick='$("#terms").dialog({
-                  modal: true, width: "80%", buttons: {
-                    "Close": function() {$(this).dialog("close");}
-                  }});'>
-                  Terms and Conditions
+                <span id='genome-file-wrap'>
+                  <input id='genome-file' type='file' multiple name='file' />
                 </span>
+                </div>
+                <br/>
               </div>
             </div>
             <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
@@ -356,7 +381,7 @@
             LD cutoff: r
             <sup>
               2
-            </sup> &#x2265; <span id='amount'></span>
+            </sup> &#x2265; <span id='ld-cutoff-amount'></span>
             <br/>
             <br/>
             Select a theme:

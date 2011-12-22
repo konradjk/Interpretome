@@ -15,32 +15,35 @@ window.DiseaseView = Backbone.View.extend({
     
   loaded: function(response) {
 	  this.el.append(response);
-	  this.el.find('button').button();
-    this.el.find('#disease-table').hide();
+	  $('button').button();
+    $('#disease-table').hide();
 	  this.disease_template = $('#disease-template').html();
 	  match_style(this.el);
+    $('#disease-table').tablesorter();
     this.has_loaded = true;
   },
   
   got_diseases: function(response) {
     var self = this;
+    user = get_user();
     $.each(response, function(i, v) {
-      var dbsnp = window.App.user.lookup(filter_identifier(v['strongest_snp']));
+      var dbsnp = user.lookup(filter_identifier(v['strongest_snp']));
       if (dbsnp != undefined){
         v['genotype'] = dbsnp.genotype;
-        self.el.find('#disease-table').append(_.template(self.disease_template, v));
+        $('#disease-table > tbody').append(_.template(self.disease_template, v));
       }
     });
-    self.el.find('#disease-table').show();
+    $('#disease-table').show();
+    $('#disease-table').trigger('update');
+    $('#looking-up').dialog('close');
   },
   
   click_disease: function(event) {
-    this.el.find('#disease-table tr').slice(1).remove();
-    this.el.find('#disease-table').hide();
+    clear_table('disease-table');
     
-    if (window.App.check_genome() == false) return;
-    
-    $.get('/disease/get_gwas_catalog', {population: window.App.user.population}, this.got_diseases);
+    if (window.App.check_all() == false) return;
+    $('#looking-up').dialog('open');
+    $.get('/disease/get_gwas_catalog', {population: get_user().population}, this.got_diseases);
   }
   });
 });
