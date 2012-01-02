@@ -116,9 +116,10 @@ window.ExploreView = Backbone.View.extend({
 
   click_fb_submit: function(event) {
     fb_text = window.Generic.fb_text;
-    if( fb_text == undefined && fb_text == null) {
+    if( fb_text == undefined || fb_text == null) {
       fb_text = 'I just completed the ' + window.Generic.name + ' exercise on Interpretome!';
     }
+    console.log(fb_text);
     FB.ui(
     {
       method: 'feed',

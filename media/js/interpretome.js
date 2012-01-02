@@ -16,6 +16,7 @@ $(function() {
   
   window.App = new AppView();
   window.App.custom_exercise = new CustomExercise();
+  window.App.user_db = window.openDatabase("interpretome-genomes", "1.0", "Genomes", 100000000);
   window.App.users = {};
   
   window.App.render();

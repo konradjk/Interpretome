@@ -17,13 +17,14 @@ window.AppView = Backbone.View.extend({
 
   initialize: function() {
     _.bindAll(this, 
-      'change_genome', 'clear_genome',
+      'change_genome', 'clear_genome', 'add_genome_file',
       'check_genome', 'check_any_genome',
 	    'change_population', 'change_population_from_toolbar',
 	    'change_population_from_check', 'update_genome_lists',
       'select_module', 'change_module',
       'click_settings', 'set_remember_cookie',
-      'open_confirm_dialog', 'change_genome_to_analyze'
+      'open_confirm_dialog', 'change_genome_to_analyze',
+      'dragenter', 'dragover', 'drop_genome'
 	  );
   },
   
@@ -72,6 +73,32 @@ window.AppView = Backbone.View.extend({
     var route = this.reverse_routes[loc];
     $(".module_selection label[for='module_" + route + "']").click();
     this.change_module(route);
+    
+    dropbox = document.getElementById("dropbox");
+    dropbox.addEventListener("dragenter", this.dragenter, false);
+    dropbox.addEventListener("dragover", this.dragover, false);
+    dropbox.addEventListener("drop", this.drop_genome, false);
+  },
+  
+    
+  dragenter: function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+  },
+    
+  dragover: function(e) {
+    e.stopPropagation();
+    e.preventDefault();
+  },
+  drop_genome: function(e) {
+    $('#loading-genome').dialog('open');
+    e.stopPropagation();
+    e.preventDefault();
+    var self = this;
+    var dt = e.dataTransfer;
+    $.each(dt.files, function(i, file) {
+      self.add_genome_file(file);
+    });
   },
   
   open_confirm_dialog: function() {
@@ -154,47 +181,52 @@ window.AppView = Backbone.View.extend({
     var self = this;
     
     $.each(event.target.files, function(i, file){
-      filename = file.fileName.split('.')
-      base = filename[filename.length-2]
-      extension = filename[filename.length-1]
-      
-      var name = $('#genome-name').val();
-      if (name == '') {
-        name = base;
-      }
-      window.App.users[name] = new User(name);
-      $('.progress-bar').progressbar({value: 0});
-      $('.progress-bar > div').css('background', get_secondary_color());
-      
-      var reader = new FileReader();
-      reader.onprogress = function(event) {
-        if (event.lengthComputable) {
-          var percent = Math.round((event.loaded / event.total) * 100);
-          if (percent < 100) {
-            $('#loading-bar').progressbar('option', 'value', percent);
-          }
-        }
-      };
-      
-      reader.onloadend = function(event) {
-        $('#loading-bar').progressbar('option', 'value', 100);
-        $('#genome label, #genome input').hide();
-        $('#open-confirm-dialog').hide();
-        $('#advanced').show();
-        $('#genome-analysis').append($("<option />").val(name).text(name));
-        self.update_genome_lists();
-        window.App.users[name].parse_genome(event.target.result, extension);
-        // Should this be here?
-        $('#please-load-genome').dialog('close');
-        $('#load-genome-dialog').dialog('close');
-      }
-      
-      if (true || extension == 'txt') {
-        reader.readAsText(file);
-      } else {
-        reader.readAsBinaryString(file);
-      }
+      self.add_genome_file(file);
     });
+  },
+  
+  add_genome_file: function(file) {
+    var self = this;
+    filename = file.name.split('.')
+    base = filename[filename.length-2]
+    extension = filename[filename.length-1]
+    
+    var name = $('#genome-name').val();
+    if (name == '') {
+      name = base;
+    }
+    window.App.users[name] = new User(name);
+    $('.progress-bar').progressbar({value: 0});
+    $('.progress-bar > div').css('background', get_secondary_color());
+    
+    var reader = new FileReader();
+    reader.onprogress = function(event) {
+      if (event.lengthComputable) {
+        var percent = Math.round((event.loaded / event.total) * 100);
+        if (percent < 100) {
+          $('#loading-bar').progressbar('option', 'value', percent);
+        }
+      }
+    };
+    
+    reader.onloadend = function(event) {
+      $('#loading-bar').progressbar('option', 'value', 100);
+      $('#genome label, #genome input').hide();
+      $('#open-confirm-dialog').hide();
+      $('#advanced').show();
+      $('#genome-analysis').append($("<option />").val(name).text(name));
+      self.update_genome_lists();
+      window.App.users[name].parse_genome(event.target.result, extension);
+      // Should this be here?
+      $('#please-load-genome').dialog('close');
+      $('#load-genome-dialog').dialog('close');
+    }
+    
+    if (true || extension == 'txt') {
+      reader.readAsText(file);
+    } else {
+      reader.readAsBinaryString(file);
+    }
   },
   
   update_genome_lists: function() {

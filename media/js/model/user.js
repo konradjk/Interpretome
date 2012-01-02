@@ -1,8 +1,6 @@
 function User(username) {
   this.username = username;
 	this.population = null;
-	this.dbsnps = [];
-	this.chromosomes = {};
 	this.snps = {};
   
   this.age = null;
@@ -23,6 +21,7 @@ function User(username) {
   initialize = function() {
     _.bindAll(this,
       'add_genotype_snps', 'add_vcf_snps',
+      'add_genotype_snps_sql',// 'add_vcf_snps_sql',
       'parse_genome'
     );
   }
@@ -43,7 +42,26 @@ function User(username) {
       var tokens = _.map(line.split(/\s+/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
-      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: tokens[3]};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.add_genotype_snps_sql = function(lines, user, percent, snps) {
+    user.set_counter(percent, snps);
+    var regex = new RegExp(/^rs/);
+    for (i in lines){
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split(/\s+/), $.trim);
+      var dbsnp = parseInt(tokens[0].replace(regex, ''));
+      
+      window.App.user_db.transaction(function(tx) {
+        
+      });
       user.snps[dbsnp] = {genotype: tokens[3]};
     }
     if (percent == 100){
@@ -61,7 +79,6 @@ function User(username) {
       var tokens = _.map(line.split(/\s/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
-      user.dbsnps.push(dbsnp);
       user.snps[dbsnp] = {genotype: tokens[1] + tokens[2]};
     }
     if (percent == 100){
@@ -83,7 +100,6 @@ function User(username) {
       raw_genotypes = tokens[9].split(':')[0].split(/[\|\\\/]/);
       genotype = options[raw_genotypes[0]] + options[raw_genotypes[1]];
       
-      user.dbsnps.push(dbsnp);
       user.snps[dbsnp] = {genotype: genotype};
     }
     if (percent == 100){
@@ -95,11 +111,13 @@ function User(username) {
     lines = file_blob.split('\n');
     var chunks = 100;
     var chunk_size = lines.length/chunks;
+    
     for (var j=0; j<=chunks; j++) {
       snps = add_commas(parseInt(j*chunk_size));
       output = lines.slice(chunk_size*(j), chunk_size*(j+1))
       if ($('#file-format option:selected').val() == 'genotype') {
         setTimeout(this.add_genotype_snps, 0, output, this, j, snps);
+        //setTimeout(this.add_genotype_snps_sql, 0, output, this, j, snps);
       } else {
         setTimeout(this.add_vcf_snps, 0, output, this, j, snps);
       }
