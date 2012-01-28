@@ -3,22 +3,27 @@
   <i>Under Development.</i>
   <br/>
 	<div>
-    Select the size of your family:
-    <select id='family-size'>
-      <option value="2">2</option>
-      <option value="3">3</option>
-      <!--<option value="4">4</option>-->
-    </select>
-    <br/><br/>
-	  <button id='set_inheritance' type='submit'>
-	    Load Parents
+	  <button id='refresh-boxes' type='submit'>
+	    Refresh Boxes
 	  </button>
     <br/><br/>
-    <div id='parent_init'>
-    </div>
-    <br/>
-	  <button id='compute_inheritance' type='submit'>
-	    Compute Inheritance
+    Select mother:
+    <select id='mother-select'>
+      <option value="null">Not selected</option>
+    </select>
+    <br/><br/>
+    Select father:
+    <select id='father-select'>
+      <option value="null">Not selected</option>
+    </select>
+    <br/><br/>
+    Select child:
+    <select id='child-select'>
+      <option value="null">Not selected</option>
+    </select>
+    <br/><br/>
+	  <button id='compute_mie' type='submit'>
+	    Compute Mendelian Inheritance Errors
 	  </button>
     <br/><br/>
     <div id='mie_results'></div>

@@ -1,4 +1,6 @@
+<div id='selection_chart'></div>
 <table id='selection_table' class='results-table hidden'>
+  <thead>
   <tr>
     <th class='dbsnp'>dbSNP</th>
     <th class='dbsnp'>Genotype</th>
@@ -8,6 +10,8 @@
     <th class='imputed'>Imputed from</th>
     <th class='rsq'>R<sup>2</sup></th>
   </tr>
+  </thead>
+  <tbody>
   <script id='selection_template' type='text/template'>
     <tr>
       <td><%= dbsnp %></td>
@@ -19,4 +23,5 @@
       <td class='rsq'><%= r_squared %></td>
     </tr>
   </script>
+  </tbody>
 </table>

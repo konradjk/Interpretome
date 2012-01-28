@@ -178,6 +178,7 @@ window.PaintingView = Backbone.View.extend({
   calculate_painting: function(chrom, this_chrom, block_size, smoothing, bootstrap, prior, chrom_info, all_populations) {
     var self = this;
     this.update_counter(chrom);
+    user = get_user();
     
     var painting_m = [];
     var painting_f = [];
@@ -188,7 +189,7 @@ window.PaintingView = Backbone.View.extend({
       for (var j = 0; j < bootstrap; j += 1) {
         var probs = self.init_probs(this_chrom[0], prior);
         $.each(snps, function(i, v) {
-          var dbsnp = window.App.user.lookup(v['rsid']);
+          var dbsnp = user.lookup(v['rsid']);
           if (dbsnp != undefined) {
             allele = dbsnp.genotype[Math.floor(Math.random()*2)];
             var average = self.compute_weighted_average(v, probs);
@@ -274,6 +275,7 @@ window.PaintingView = Backbone.View.extend({
     
     var canvas = document.getElementById('canvas');
     canvas.width = canvas.width; // clear the canvas
+    var large = 1; // for hi-res, switch to 5
     for (j = 0; j < all_painting_m.length; j++) {
       var painting_m = all_painting_m[j];
       var painting_f = all_painting_f[j];
@@ -287,7 +289,7 @@ window.PaintingView = Backbone.View.extend({
       //});
       //var centromere_relpos = chrom_info[j][1]; // relative to size of chromosome
       var centromere_relpos = 1.0-chrom_info[j][1]; // relative to size of chromosome
-      var chrom_length = 400*chrom_info[j][0]; // relative size of chromosome
+      var chrom_length = 400*large*chrom_info[j][0]; // relative size of chromosome
       var m = chrom_info[j][2]/chrom_length; // how to convert chrom pos to canvas position
       var centromere_pos = centromere_relpos*(chrom_length);
       var long_arm = centromere_pos;
@@ -326,7 +328,7 @@ window.PaintingView = Backbone.View.extend({
       	this.paint_legend([1, 1], paint_coordinates, all_populations);
       }
       
-      this.paint_chromosome([1, j*40+all_populations.length*16+10], 30, [long_arm, short_arm], paint_coordinates, all_populations);      
+      this.paint_chromosome([1, j*40*large+all_populations.length*16+10], 30*large, [long_arm, short_arm], paint_coordinates, all_populations);      
     }
   },
   

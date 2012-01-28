@@ -89,7 +89,7 @@ window.GwasView = Backbone.View.extend({
     var dbsnps = filter_identifiers(
       this.el.find('#gwas-snps-textarea').val().split('\n')
     );
-    return window.App.user.lookup_snps(this.show_table, {}, dbsnps, {});
+    return get_user().lookup_snps(this.show_table, {}, dbsnps, {});
   },
   
   show_table: function(args, dbsnps, info){

@@ -19,14 +19,13 @@ def dict_cursor(self):
 base.DatabaseWrapper.dict_cursor = dict_cursor
 
 def linked(request):
-  dbsnp_request = request.REQUEST.get('dbsnps', None)
-  population = request.REQUEST.get('population', None)
-  ld_cutoff = request.REQUEST.get('ld_cutoff', None)
-  if None in (dbsnp_request, population, ld_cutoff):
+  dbsnps = helpers.check_dbsnp_array(request.REQUEST.get('dbsnps', None))
+  population = helpers.check_population(request.REQUEST.get('population', None))
+  ld_cutoff = helpers.check_float(request.REQUEST.get('ld_cutoff', None))
+  
+  if None in (dbsnps, population, ld_cutoff):
     return http.HttpResponseBadRequest()
   
-  ld_cutoff = float(ld_cutoff)
-  dbsnps = [int(element) for element in dbsnp_request.split(',')]
   cursor = connections['default'].dict_cursor()
   
   results = {}
@@ -72,24 +71,20 @@ def linked(request):
       
     results[dbsnp] = result
   
-  return http.HttpResponse(
-    simplejson.dumps(results),
-    mimetype = 'application/json'
-  )
+  return http.HttpResponse(simplejson.dumps(results), mimetype = 'application/json')
   
 def impute(request):
   '''Impute one or more SNPs.
   
   dbsnp will be one or more dbSNP identifiers (only rsIDs), separated by commas.
   '''
-  dbsnp_request = request.REQUEST.get('dbsnps', None)
-  user_dbsnp_request = request.REQUEST.get('user_dbsnps', None)
-  population = request.REQUEST.get('population', None)
+  dbsnps = helpers.check_dbsnp_array(request.REQUEST.get('dbsnps', None))
+  user_dbsnps = helpers.check_dbsnp_array(request.REQUEST.get('user_dbsnps', None))
+  population = helpers.check_population(request.REQUEST.get('population', None))
   
-  if None in (dbsnp_request, population, user_dbsnp_request):
+  if None in (dbsnps, population, user_dbsnps):
     return http.HttpResponseBadRequest()
-  dbsnps = [int(element) for element in dbsnp_request.split(',')]
-  user_dbsnps = [int(element) for element in user_dbsnp_request.split(',')]
+  
   cursor = connections['default'].dict_cursor()
   phases = {}
   for index, dbsnp in enumerate(dbsnps):
@@ -99,20 +94,19 @@ def impute(request):
     phase['user_snp'] = user_dbsnps[index]
     phases[dbsnp] = phase
   
-  helpers.printlog('made it')
   return http.HttpResponse(simplejson.dumps(phases), mimetype = "application/json")
   
 def get_random_color():
   return 'rgba(%s,%s,%s,.5)' % (random.randint(1,254), random.randint(1,254), random.randint(1,254))
 
 def get_pca_parameters(request):
-  numsnps_request = request.GET.get('numsnps', None)
-  source_request = request.GET.get('source', None)
-  level_request = request.GET.get('level', None)
-  x_request = request.GET.get('axis1', None)
-  y_request = request.GET.get('axis2', None)
+  numsnps_request = helpers.check_int(request.GET.get('numsnps', None))
+  source_request = helpers.check_pca_source(request.GET.get('source', None))
+  level_request = helpers.check_int(request.GET.get('level', None))
+  x_request = helpers.check_int(request.GET.get('axis1', None))
+  y_request = helpers.check_int(request.GET.get('axis2', None))
   
-  if (numsnps_request not in ['1000', '10000', '100000', '43000', '74000', 'full', '55000'] or None in (source_request, level_request, x_request, y_request)):
+  if None in (numsnps_request, source_request, level_request, x_request, y_request):
     return http.HttpResponseBadRequest()
   numsnps = numsnps_request
   source = source_request
@@ -122,7 +116,7 @@ def get_pca_parameters(request):
   lab_pc2 = str(y_request)
   
   query = '''
-    SELECT rsid, pc%(pc1)s, pc%(pc2)s FROM pca.loadings
+    SELECT rsid, pc%(pc1)s, pc%(pc2)s FROM interpretome_ancestry.loadings
     WHERE listcode="%(numsnps)s" AND pop="%(source)s"
   ''' % {"pc1": lab_pc1, "pc2": lab_pc2, "source":source, "numsnps": numsnps}
   cursor.execute(query)
@@ -137,8 +131,8 @@ def get_pca_parameters(request):
     level = level_request
   
   query = '''
-    SELECT sample_id, pcp%(pc1)s, pcp%(pc2)s, Level%(level)s_label AS population, Level2_label AS population_2 FROM pca.projections
-    JOIN pca.%(main_source)s_poplabels ON (pca.projections.sample_id = pca.%(main_source)s_poplabels.id)
+    SELECT sample_id, pcp%(pc1)s, pcp%(pc2)s, Level%(level)s_label AS population, Level2_label AS population_2 FROM interpretome_ancestry.projections
+    JOIN interpretome_ancestry.%(main_source)s_poplabels ON (interpretome_ancestry.projections.sample_id = interpretome_ancestry.%(main_source)s_poplabels.id)
     WHERE listcode = "%(numsnps)s" and pop = "%(source)s"
     ORDER BY population
   ''' % {"pc1": lab_pc1, "pc2": lab_pc2, "source": source, "numsnps": numsnps, "main_source": main_source, "level": level}
@@ -146,14 +140,14 @@ def get_pca_parameters(request):
   projections = cursor.fetchall()
   
   query = '''
-    SELECT rsid, ref FROM pca.%(main_source)s_snplist
+    SELECT rsid, ref FROM interpretome_ancestry.%(main_source)s_snplist
     WHERE listcode = "%(numsnps)s"
   ''' % {"main_source": main_source, "numsnps": numsnps}
   cursor.execute(query)
   refs = cursor.fetchall()
   
   query = '''
-    SELECT pc%(pc1)s, pc%(pc2)s FROM pca.explained_vars
+    SELECT pc%(pc1)s, pc%(pc2)s FROM interpretome_ancestry.explained_vars
     WHERE pop = '%(source)s' AND listcode = "%(numsnps)s"
   ''' % {"pc1": lab_pc1, "pc2": lab_pc2, "source": source, "numsnps": numsnps}
   
@@ -162,12 +156,12 @@ def get_pca_parameters(request):
   
   if source.split('_')[1] == 'all':
     query = '''
-      SELECT DISTINCT Level%(level)s_label FROM pca.%(main_source)s_poplabels
+      SELECT DISTINCT Level%(level)s_label FROM interpretome_ancestry.%(main_source)s_poplabels
       ORDER BY Level%(level)s_label
     ''' % {"level": level, "main_source": main_source}
   else:
     query = '''
-      SELECT DISTINCT Level%(level)s_label, Level2_label FROM pca.%(main_source)s_poplabels
+      SELECT DISTINCT Level%(level)s_label, Level2_label FROM interpretome_ancestry.%(main_source)s_poplabels
       WHERE Level1_label LIKE '%%%(sub_source)s%%'
       ORDER BY Level%(level)s_label
     ''' % {"main_source": main_source, "level":level, "sub_source": sub_source}
@@ -215,8 +209,32 @@ def get_pca_parameters(request):
   
   return http.HttpResponse(simplejson.dumps(params), mimetype = "application/json")
 
+def get_polyphen_scores(request):
+  cursor = connections['default'].dict_cursor()
+  query = 'select dbSNP, prediction, pph2_prob from interpretome_clinical.polyphen_dbSNP'
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
+def get_rare_variants(request):
+  population = helpers.check_population(request.GET.get('population', None))
+  cutoff = helpers.check_float(request.GET.get('cutoff', None))
+  if None in (population, cutoff):
+    return http.HttpResponseBadRequest()
+  query = '''SELECT rsid, refallele, otherallele, otherallele_freq
+  FROM var_hapmap.snp_frequencies_%s
+  WHERE otherallele_freq <= %s''' % (population.lower(), cutoff)
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
+def get_drug_targets(request):
+  cursor = connections['default'].dict_cursor()
+  query = 'select dbSNP, gene_name, name, drug_name from interpretome_clinical.drug_targets_snps'
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
+
 def get_pharmacogenomics_snps(request):
-  query = 'select * from exercises.pharmaco'
+  query = 'select * from interpretome_clinical.pharmaco'
   cursor = connections['default'].dict_cursor()
   cursor.execute(query)
   return http.HttpResponse(simplejson.dumps(cursor.fetchall()), mimetype = "application/json")
@@ -231,7 +249,7 @@ def get_possible_studies(population):
   return possible_studies[population]
 
 def get_gwas_catalog(request):
-  population = request.GET.get('population', None)
+  population = helpers.check_population(request.GET.get('population', None))
   if population is None:
     return http.HttpResponseBadRequest()
   studies = get_possible_studies(population)
@@ -239,7 +257,7 @@ def get_gwas_catalog(request):
   query = '''
     SELECT pubmedid, link, disease_trait, initial_sample_size, reported_genes,
     or_or_beta, strongest_snp, risk_allele, p_value
-    FROM exercises.gwas_catalog
+    FROM interpretome_clinical.gwas_catalog
     WHERE initial_sample_size LIKE '%%%s%%'
     ORDER BY disease_trait
   ''' % like_string
@@ -250,7 +268,7 @@ def get_gwas_catalog(request):
 
 def get_height_snps(request):
   query = '''
-    SELECT rsid, min(p_value), risk_allele, effect_size_cm FROM exercises.height
+    SELECT rsid, min(p_value), risk_allele, effect_size_cm FROM interpretome_exercises.height
     GROUP BY rsid
     ORDER BY p_value ASC
   '''
@@ -262,16 +280,16 @@ def get_height_snps(request):
   return http.HttpResponse(simplejson.dumps(output), mimetype = "application/json")
 
 def get_painting_params(request):
-  source = request.GET.get('source', None)
-  resolution = request.GET.get('resolution', None)
-  chisq_cutoff = request.GET.get('chisq', None)
+  source = helpers.check_source(request.GET.get('source', None))
+  resolution = helpers.check_resolution(request.GET.get('resolution', None))
+  chisq_cutoff = helpers.check_float(request.GET.get('chisq', None))
   if None in (source, resolution, chisq_cutoff):
     return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   
   info = {}
   query = '''
-    SELECT * FROM pca.%s_%s_frequencies
+    SELECT * FROM interpretome_ancestry.%s_%s_frequencies
     WHERE chisq > %s
     ORDER BY chromosome, position ASC
   ''' % (source, resolution, chisq_cutoff)
@@ -284,7 +302,7 @@ def get_painting_params(request):
   
   query = '''
     SELECT chromosome, rel_length, rel_centromere, length
-    FROM pca.chrom_info
+    FROM interpretome_ancestry.chrom_info
     ORDER BY chromosome;
   '''
   cursor.execute(query)
@@ -297,9 +315,10 @@ def get_painting_params(request):
   return http.HttpResponse(simplejson.dumps(response), mimetype = "application/json")
 
 def get_allele_frequencies(request):
-  dbsnp_request = request.GET.get('snps', None)
-  population = request.GET.get('population', None)
-  dbsnps = dbsnp_request.split(',')
+  dbsnps = helpers.check_dbsnp_array(request.GET.get('snps', None))
+  population = helpers.check_population(request.GET.get('population', None))
+  if None in (population, dbsnps):
+    return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   frequencies = {}
   for dbsnp in dbsnps:
@@ -313,11 +332,10 @@ def get_allele_frequencies(request):
   return http.HttpResponse(simplejson.dumps(frequencies), mimetype = "application/json")
 
 def get_reference_alleles(request):
-  dbsnp_request = request.GET.get('snps', None)
+  dbsnps = helpers.check_dbsnp_array(request.GET.get('snps', None))
   references = {}
-  if dbsnp_request in (None, ""):
+  if dbsnps is None:
     return http.HttpResponseBadRequest()
-  dbsnps = dbsnp_request.split(',')
   
   for dbsnp in dbsnps:
     query = '''
@@ -332,8 +350,9 @@ def get_reference_alleles(request):
   return http.HttpResponse(simplejson.dumps(references), mimetype = "application/json")
 
 def get_chrom_pos(request):
-  dbsnp_request = request.GET.get('snps', None)
-  dbsnps = dbsnp_request.split(',')
+  dbsnps = helpers.check_dbsnp_array(request.GET.get('snps', None))
+  if dbsnps is None:
+    return http.HttpResponseBadRequest()
   info = {}
   for dbsnp in dbsnps:
     query = '''
@@ -346,40 +365,7 @@ def get_chrom_pos(request):
     info[dbsnp] = data
   return http.HttpResponse(simplejson.dumps(info), mimetype = "application/json")
 
-def submit_snps(request):
-  request_copy = request.GET.copy()
-  population = request_copy.pop('population', '')
-  if type(population) == list:
-    population = population[0] 
-  statement = []
   
-  # There is a smarter way.
-  cursor = connections['default'].dict_cursor()
-  cursor.execute('SELECT MAX(sid) FROM exercises.unified;')
-  sid = cursor.fetchone().values()[0] + 1
-  
-  for k, v in request_copy.items():
-    statement.append('''('%s', '%s', '%s', %d)''' % (k, v, population, sid))
-    
-  statement = '''
-    INSERT INTO exercises.general (dbsnp, genotype, population, sid)
-    VALUES %s;''' % ','.join(statement)
-  cursor.execute(statement)
-  return http.HttpResponse()
-  
-def submit_gwas_snps(request):
-  
-  if None in request.GET.values() or "" in request.GET.values():
-    return http.HttpResponse(simplejson.dumps(request.GET), mimetype = "application/json")
-  
-  cursor = connections['default'].dict_cursor()
-  query = '''
-    INSERT INTO exercises.class_gwas (submit_time, `%s`) VALUES (NOW(), '%s')
-  ''' % ('`,`'.join(request.GET.keys()), "','".join(request.GET.values()))
-  
-  cursor.execute(query)
-  return http.HttpResponse(simplejson.dumps(query), mimetype = "application/json")
-
 def submit(request):
   request_dict = request.GET.copy()
   try:
@@ -388,51 +374,48 @@ def submit(request):
     return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   
-  if exercise not in (
+  if exercise in (
     'butte_diabetes', 'selection', 'assimes_cad', 'neandertal', 'eqtl',
-    'snyder_binding'
+    'snyder_binding', 'mignot_narcolepsy', 'longevity', 'kim_aging'
   ):
-	  query = '''
-	    INSERT INTO exercises.%s (submit_time, `%s`) VALUES (NOW(), '%s')
-	  ''' % (exercise, '`,`'.join(request_dict.keys()), "','".join(request_dict.values()))
-  else:
-    population = request_dict.pop('population')[0]
-    cursor.execute('SELECT MAX(sid) FROM exercises.unified;')
+    population = helpers.check_population(request_dict.pop('population')[0])
+    cursor.execute('SELECT MAX(sid) FROM interpretome_exercises.unified;')
     sid = cursor.fetchone().values()[0] + 1
     statements = []
     for k, v in request_dict.items():
-      statements.append("('%s', '%s', '%s', '%s', %d)" % (k, v, population, exercise, int(sid)))
+      string = "('%s', '%s', '%s', '%s', %d)" % (helpers.sanitize(k), helpers.sanitize(v), population, exercise, int(sid))
+      statements.append(string)
     query = '''
-      INSERT INTO exercises.unified (`key`, `value`, population, exercise, sid)
+      INSERT INTO interpretome_exercises.unified (`key`, `value`, population, exercise, sid)
       VALUES %s;''' % ', '.join(statements)
-  cursor.execute(query)
+    cursor.execute(query)
   return http.HttpResponse()
   
-def submit_doses(request):
-  dose_request = request.GET.get('doses', None)
+#def submit_doses(request):
+#  dose_request = request.GET.get('doses', None)
+#  
+#  if dose_request is None or dose_request == '':
+#    return http.HttpResponse(simplejson.dumps(None), mimetype = "application/json")
+#  
+#  cursor = connections['default'].dict_cursor()
+#  query = '''
+#    INSERT INTO interpretome_exercises.class_warfarin (submit_time, clinical, genetic, extended) VALUES (NOW(), %s)
+#  ''' % (dose_request)
+#  cursor.execute(query)
   
-  if dose_request is None or dose_request == '':
-    return http.HttpResponse(simplejson.dumps(None), mimetype = "application/json")
-  
-  cursor = connections['default'].dict_cursor()
-  query = '''
-    INSERT INTO exercises.class_warfarin (submit_time, clinical, genetic, extended) VALUES (NOW(), %s)
-  ''' % (dose_request)
-  cursor.execute(query)
-  
-def submit_coordinates(request):
-  coordinate_request = request.GET.get('coordinates', None)
-  
-  if coordinate_request is None or coordinate_request == '':
-    return http.HttpResponse(simplejson.dumps(None), mimetype = "application/json")
-  
-  cursor = connections['default'].dict_cursor()
-  query = '''
-    INSERT INTO exercises.class_pca (submit_time, pc1, pc2) VALUES (NOW(), %s)
-  ''' % (coordinate_request)
-  cursor.execute(query)
-  
-  return http.HttpResponse(simplejson.dumps(coordinate_request), mimetype = "application/json")
+#def submit_coordinates(request):
+#  coordinate_request = request.GET.get('coordinates', None)
+#  
+#  if coordinate_request is None or coordinate_request == '':
+#    return http.HttpResponse(simplejson.dumps(None), mimetype = "application/json")
+#  
+#  cursor = connections['default'].dict_cursor()
+#  query = '''
+#    INSERT INTO interpretome_exercises.class_pca (submit_time, pc1, pc2) VALUES (NOW(), %s)
+#  ''' % (coordinate_request)
+#  cursor.execute(query)
+#  
+#  return http.HttpResponse(simplejson.dumps(coordinate_request), mimetype = "application/json")
 
 def exercise(request):
   '''Get SNP data for an exercise.'''
@@ -441,13 +424,13 @@ def exercise(request):
   # Defaults
   fields = '*'
   where_clause = ''
-  db = 'exercises'
+  db = 'interpretome_exercises'
   table = exercise
   
   # Supported exercises
   exercises = ['ashley_cad', 'tang_ancestry', 'altman_pgx', 'butte_diabetes',
                'assimes_cad', 'snyder_binding', 'class_writeups',
-               'mignot_narcolepsy', 'kim_aging'
+               'mignot_narcolepsy', 'kim_aging',
                'eqtl', 'longevity', 'selection', 'neandertal']
   if exercise not in exercises:
     return http.HttpResponseBadRequest()
@@ -477,13 +460,11 @@ def exercise(request):
   if exercise == 'longevity':
     snps['sorted_dbsnps'] = [e['dbsnp'] for e in result]
   
-  return http.HttpResponse(
-    simplejson.dumps(snps), mimetype = 'application/json'
-  )
+  return http.HttpResponse(simplejson.dumps(snps), mimetype = 'application/json')
 
 def diabetes(request):
   cursor = connections['default'].dict_cursor()
-  query = 'SELECT * FROM exercises.diabetes_old_with_sizes ORDER BY study_size DESC;'
+  query = 'SELECT * FROM interpretome_clinical.diabetes_old_with_sizes ORDER BY study_size DESC;'
   cursor.execute(query)
   all_snps = cursor.fetchall()
   snps = helpers.create_multi_snp_dict(all_snps)
@@ -491,29 +472,27 @@ def diabetes(request):
   for snp in all_snps:
     order_snps.append(snp['dbsnp'])
   output = {'snps': snps, 'dbsnps': order_snps}
-  return http.HttpResponse(
-    simplejson.dumps(output), mimetype = 'application/json'
-  )
-
-def get_neandertal_snps(request):
-  cursor = connections['default'].dict_cursor()
-  query = 'SELECT rsid, derived_allele, ancestral_allele, out_of_africa_allele FROM exercises.neandertal_snps'
-  cursor.execute(query)
-  snps = cursor.fetchall()
-  return http.HttpResponse(
-    simplejson.dumps(snps), mimetype = 'application/json'
-  )
+  return http.HttpResponse(simplejson.dumps(output), mimetype = 'application/json')
   
 def get_individuals(request):
-  numsnps = request.GET.get('numsnps', None)
+  numsnps = helpers.check_int(request.GET.get('numsnps', None))
   if numsnps is None:
+    return http.HttpResponseBadRequest()
+  individuals = helpers.sanitize(request.GET.get('individuals', None)).split(',')
+  individual_select = set()
+  for individual in individuals:
+    if individual == '210-2011-staff':
+      individual_select.update(['Konrad', 'Nick', 'Noah', 'Rob', 'Stuart'])
+    else:
+      individual_select.add(individual)
+  if len(individual_select) == 0:
     return http.HttpResponseBadRequest()
   cursor = connections['default'].dict_cursor()
   query = '''
-    SELECT * FROM public_genomes.similarity_rsids LIMIT %s;
-  ''' % (numsnps)
+    SELECT dbsnp, %s FROM interpretome_ancestry.similarity LIMIT %s;
+  ''' % (",".join([str(i) for i in individual_select]), numsnps)
   cursor.execute(query)
-  output = cursor.fetchall()
+  output = helpers.create_snp_dict(cursor.fetchall())
   return http.HttpResponse(simplejson.dumps(output), mimetype = 'application/json')
   
 def index(request):

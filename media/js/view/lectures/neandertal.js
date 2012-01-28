@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name: 'Neandertal similarity', 
   table_id: '#neandertal_table',
   template_id: '#neandertal_template',
   url: '/media/template/lectures/neandertal.html',
@@ -41,19 +41,32 @@ window.GenericView = Backbone.View.extend({
         total_index += count;
         v['count'] = count;
         v['genotype'] = snp.genotype;
-        self.el.find(self.table_id).append(_.template(self.table_template, v));
+        self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
         total += 2;
       }
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(total_index, total);
   },
   
   finish: function(total_index, total) {
-    $('#neandertal_count').html(total_index);
-    $('#neandertal_total').html(total);
+    data = new google.visualization.DataTable();
+    
+    data.addColumn('string', 'Label');
+    data.addColumn('number', 'Value');
+    data.addRows(1);
+    data.setValue(0, 0, 'Neandertal');
+    data.setValue(0, 1, total_index);
+    this.fb_text = "My Neandertal index is " + total_index + " what's yours?"; 
+    var chart = new google.visualization.Gauge(document.getElementById('neandertal_chart'));
+    var options = {width: 900, height: 300, redFrom: total/4, redTo: 84,
+        min: 0, max: total,
+        yellowFrom:total/8, yellowTo: total/4, minorTicks: 5};
+    chart.draw(data, options);
+    
     this.el.find('#neandertal_chart').show();
   }
 });

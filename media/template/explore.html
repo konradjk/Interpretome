@@ -1,53 +1,70 @@
 <div class='main'>
-  <h2>Explore</h2>
-  <br/>
-  <br>
-  <div id='default-exercises'> 
-    Choose an exercise to explore your genome.
-    <br />
-    <div id='exercises'>
+  <h2>Explore your genome</h2>
+  <br />
+  <div id='exercises'> 
+    <h3><a href='#'>Choose an existing exercise</a></h3>
+    <div id='default-exercises'>
       <select id='toolbar-exercise' name='exercise'>
-        <option id='dummy-2' value="null">Select an exercise</option>
-        <option value="null">-----------------</option>
-        <option value="eqtl">eQTLs</option>
-        <option value="selection">Selection</option>
-        <option value="neandertal">Neandertal</option>
-        <option value="longevity">Exceptional Longevity</option>
-        <option value="height">Height</option>
-        <option value="null">-----------------</option>
-        <option value="ashley_cad">CAD SNPs (4/6, Euan Ashley)</option>
-        <option value="tang_ancestry">Ancestry SNPs (4/13, Hua Tang)</option>
-        <option value="altman_pgx">Pharmacogenomic SNPs (4/20, Russ Altman)</option>
-        <option value="butte_diabetes">Diabetes SNPs (5/4, Atul Butte)</option>
-        <option value="assimes_cad">MI and CAD SNPs (5/11, Themistocles Assimes)</option>
-        <option value="snyder_binding">Binding SNPs (5/18, Mike Snyder)</option>
-        <option value="class_writeups">Class SNPs (5/23)</option>
-        <option value="mignot_narcolepsy">Narcolepsy SNPs (5/25, Emmanuel Mignot)</option>
-        <!--<option value="kim_aging">Aging SNPs (6/1, Stuart Kim)</option>-->
+        <option id='dummy-2' value='null'>Select an exercise</option>
+        <option value='null'>-----------------</option>
+        <option value='eqtl'>eQTLs</option>
+        <option value='selection'>Selection</option>
+        <option value='neandertal'>Neandertal</option>
+        <option value='longevity'>Exceptional Longevity</option>
+        <option value='height'>Height</option>
+        <option value='null'>-----------------</option>
+        <option value='ashley_cad'>CAD SNPs (4/6, Euan Ashley)</option>
+        <option value='tang_ancestry'>Ancestry SNPs (4/13, Hua Tang)</option>
+        <option value='altman_pgx'>Pharmacogenomic SNPs (4/20, Russ Altman)</option>
+        <option value='butte_diabetes'>Diabetes SNPs (5/4, Atul Butte)</option>
+        <option value='assimes_cad'>MI and CAD SNPs (5/11, Themistocles Assimes)</option>
+        <option value='snyder_binding'>Binding SNPs (5/18, Mike Snyder)</option>
+        <option value='class_writeups'>Class SNPs (5/23)</option>
+        <option value='mignot_narcolepsy'>Narcolepsy SNPs (5/25, Emmanuel Mignot)</option>
+        <option value='kim_aging'>Aging SNPs (6/1, Stuart Kim)</option>
       </select>
+      <br />
+      <br />
+	    <button id='lookup-exercise' type='submit' class='small-button'>
+	      Lookup Exercise
+	    </button>
     </div>
-    </div>
-    <br/>
-    <br/>
+    
+	  <h3><a href='#'>Load your own SNP annotations</a></h3>
     <div id='custom-exercise'>
-      <div id='custom-load'>
-        <h3> Load your own SNP annotations </h3>
-        <input id='exercise-file' type='file' name='file'/>
-      </div>
+      <i><a href='#explore' id='annotation-file-help'>Example annotation file</a></i>
+      <br />
+      <br />
+	    <input id='exercise-file' type='file' name='file' />
+      <br/>
+      <div id='annotation-file-help-dialog' class='dialog hidden'>
+	      <p>
+	        Custom annotation files must be <strong>tab delimited</strong>, 
+	        have a header row, and the first column must be the SNP rsid. 
+	        For example,
+	      </p>
+		    <br />
+        <pre style='font-size: 0.9em'>
+   # This line is ignored
+   # Actually, any line that starts with a hash...
+   rsid        Disease/Trait   count(Risk Alelle)   Comments   
+   rs3094315   RLS             A             This is a SNP
+   rs3934834   Earwax          G             G = wet earwax
+   rs9442372   High IQ         C             Not an association
+			      <p>
+			        Surrounding a column header with count(*) as with the "Risk Allele" column in the example above
+			        indicates that the user's genotype will be compared against the column and a summary
+			        of total counts will be displayed with the results.
+			      </p>
+	        </pre>
+	    </div>
+      <br />
+	    <button id='lookup-custom' class='small-button'>
+	      Lookup custom exercise
+	    </button>
     </div>
-    <strong> or </strong>
-    <br/>
-    <br />
-    <button id='toggle-custom' class='small-button'>Custom Exercise</button>
-    <button id='toggle-default' class='small-button'>Default Exercises</button>
-    <br/>
-    <br />
-    <button id='lookup-exercise' type='submit' class='small-button'>
-      Lookup SNPs for exercise
-    </button>
   </div> <!-- Exercise. -->
-  
-  <br/>
+  <br />
   <!-- Submission buttons. -->
   <div id='table-options'>
 		<button id='submit-exercise' class='small-button'>Submit my information</button>
@@ -55,23 +72,23 @@
 		  Are you sure you want to submit your information?
 		</div>
     <button id='clear-snps' type='submit' class='small-button'>
-      Clear Table
+      Clear table
     </button>
     <button id='toggle-unknown-genotypes' type='submit' class='small-button'>
       Hide unknown genotypes
     </button>
+    <button id='fb-submit-exercise' class='small-button'>Share <img width='20px' height='20px' src='http://aux.iconpedia.net/uploads/1728669589.png'/></button>
   </div>
   
   <div id='too-many-snps' title='Too Many' class='dialog hidden'>
     You have entered too many SNPs. Your browser will not be able to display this many SNPs.
   </div>
-  
+  <br class='clear'>
 	<br /><br/>
   <div id='exercise-content'>
   </div>
   
 </div>
-
 <div class='help'>
   <div id='help-explore-help'>
     <h2>Exploration</h2>

@@ -1,63 +1,41 @@
 // Later, we can load these on-demand if we CustomExercise.
 $(function() {
-  try{
-    window.Start = new StartView();
-  }catch(err){}
-
-  try{
+  window.Start = new StartView();
   window.Lookup = new LookupView();
-  }catch(err){}
-
-  try{
   window.Explore = new ExploreView();
-  }catch(err){}
-
-  try{
-  window.Terms = new TermsView();
-  }catch(err){}
-  
-  try{
-  window.Diabetes = new DiabetesView();
-  }catch(err){}
-
-  try{
+ 
+  window.Diabetes = new DiabetesView(); 
   window.Disease = new DiseaseView();
-  }catch(err){}
-
-  try{
   window.Warfarin = new WarfarinView();
-  }catch(err){}
-
-  try{
   window.Pharmacogenomics = new PharmacogenomicsView();
-  }catch(err){}
-
-  try{
+  
   window.Similarity = new SimilarityView();
-  }catch(err){}
-
-  try{
   window.PCA = new PCAView();
-  }catch(err){}
-
-  try{
   window.Painting = new PaintingView();
-  }catch(err){}
-
-  try{
   window.Family = new FamilyView();
-  }catch(err){}
-
   
   window.App = new AppView();
-  window.App.user = new User();
   window.App.custom_exercise = new CustomExercise();
+  //window.App.user_db = window.openDatabase("interpretome-genomes-2", "1.0", "Genomes", 100000000);
+  window.App.users = {};
   
   window.App.render();
   window.Start.render();
   
   window.Controller = new AppController();
   Backbone.history.start();
+  
+  $('#open-confirm-dialog').button();
+  $('#open-load-genome-dialog').button();
+  
+  $('#confirm-dialog').dialog({modal: true, resizable: false, autoOpen: false,
+                              width: "60%", buttons: {
+                                "Close": function() {$(this).dialog("close");}
+                              }});
+  $('#load-genome-dialog').dialog({modal: true, resizable: false, autoOpen: false,
+                              width: "60%", buttons: {
+                                "Close": function() {$(this).dialog("close");}
+                              }});
   
   $('#loading-genome').dialog({modal: true, resizable: false, autoOpen: false});
   
@@ -82,28 +60,18 @@ $(function() {
     range: 'min',
     min: 0.3, max: 1.0, step: 0.05, value: 0.7,
     slide: function(event, ui) { 
-      document.getElementById('amount').innerText = ui.value; 
+      document.getElementById('ld-cutoff-amount').innerText = ui.value; 
     }
   });
   $('#login-link').click(function() {
      $('#login-dialog').dialog("open");
    });
   
-  document.getElementById('amount').innerText = $("#ld-slider").slider("value");
+  $('#ld-cutoff-amount').html($("#ld-slider").slider("value"));
   
   $('#ThemeRoller').themeswitcher();
+  $(".results-table").addClass("tablesorter");
   
-  var isCtrl = false;
-  $(document).keyup(function (e) {
-    if(e.which == 17) isCtrl=false;
-    }).keydown(function (e) {
-      if(e.which == 17) isCtrl=true;
-      if(e.which == 76 && isCtrl == true) {
-        $("#genome-file").trigger('click');
-        alert('w00t');
-        return false;
-     }
-  });
   var isCtrl = false;
   $(document).keyup(function (e) {
     if(e.which == 17) isCtrl=false;
@@ -114,36 +82,17 @@ $(function() {
       return false;
      }
   });
-  var isCtrl = false;
-  $(document).keyup(function (e) {
-    if(e.which == 17) isCtrl=false;
-    }).keydown(function (e) {
-      if(e.which == 17) isCtrl=true;
-      if(e.which == 69 && isCtrl == true) {
-        //window.Controller.PCA();
-      return false;
-     }
-  });
 });
-
-
-function print_text(text_to_print) {
-  //console.log(text_to_print);
-  var win = window.open();
-  self.focus();
-  win.document.open();
-  win.document.write("<html><head><link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'></head><body>");
-  win.document.write("<h2>Analyze Me - Results</h2>");
-  win.document.write(text_to_print);
-  win.document.write('</body></html>');
-  win.document.close();
-  win.print();
-  win.close();
-}
 
 function count_genotype(value, allele) {
   if (_.isString(value)) value = value.split('');
   return _.select(value, function(v) {return v == allele;}).length;
+}
+
+function clear_table(table_name) {
+  $('#' + table_name + ' tbody tr').remove();
+  $('#' + table_name).hide();
+  $("#" + table_name).trigger("update");
 }
 
 function check_float(value) {
@@ -169,6 +118,14 @@ function add_commas(nStr) {
 		x1 = x1.replace(rgx, '$1' + ',' + '$2');
 	}
 	return x1 + x2;
+}
+
+function raw_string_to_buffer(str) {
+  var idx, len = str.length, arr = new Array( len );
+  for (idx = 0 ; idx<len ; ++idx) {
+      arr[idx] = str.charCodeAt(idx) & 0xFF;
+  }
+  return new Uint8Array(arr).buffer;
 }
 
 function check_inches(value) {
@@ -210,7 +167,7 @@ function filter_identifiers(ids) {
 var filter_identifier = filter_identifiers;
 
 function get_secondary_color() {
-  return $('#clear-snps .ui-button-text').css('color');
+  return $('#clear-genome .ui-button-text').css('color');
 }
 
 function sort_genotype(genotype) {
@@ -251,4 +208,10 @@ function flip_genotype(genotype) {
   return _.map(genotype.split(''), function(v) {return base_map[v]}).join('');
 }
 
+function get_user() {
+  return window.App.users[$('#genome-analysis option:selected').val()];
+}
 
+function get_ld_cutoff() {
+  return check_float($("#ld-slider").slider("value"));
+}

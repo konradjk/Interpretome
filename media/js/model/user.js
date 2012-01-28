@@ -1,7 +1,6 @@
-function User() {
+function User(username) {
+  this.username = username;
 	this.population = null;
-	this.dbsnps = [];
-	this.chromosomes = {};
 	this.snps = {};
   
   this.age = null;
@@ -12,7 +11,7 @@ function User() {
   this.amiodarone = null;
   
   this.sex = null;
-  
+
   this.full_genome = false;
   
   this.no_genotype_string = '??';
@@ -22,6 +21,7 @@ function User() {
   initialize = function() {
     _.bindAll(this,
       'add_genotype_snps', 'add_vcf_snps',
+      'add_genotype_snps_sql',// 'add_vcf_snps_sql',
       'parse_genome'
     );
   }
@@ -39,10 +39,30 @@ function User() {
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line == '') continue;
       
-      var tokens = _.map(line.split('\t'), $.trim);
+      var tokens = _.map(line.split(/\s+/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
-      user.dbsnps.push(dbsnp);
+      user.snps[dbsnp] = {genotype: tokens[3]};
+    }
+    if (percent == 100){
+      $('#loading-genome').dialog('close');
+    }
+  }
+  
+  this.add_genotype_snps_sql = function(lines, user, percent, snps) {
+    var self = this;
+    user.set_counter(percent, snps);
+    var regex = new RegExp(/^rs/);
+    for (i in lines){
+      line = $.trim(lines[i]);
+      if (line.indexOf('#') == 0 || line == '') continue;
+      
+      var tokens = _.map(line.split(/\s+/), $.trim);
+      var dbsnp = parseInt(tokens[0].replace(regex, ''));
+      
+      window.App.user_db.transaction(function(tx) {
+        tx.executeSql("INSERT INTO ? (?, ?);", [self.username, dbsnp, tokens[3]]);
+      });
       user.snps[dbsnp] = {genotype: tokens[3]};
     }
     if (percent == 100){
@@ -57,10 +77,9 @@ function User() {
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
       
-      var tokens = _.map(line.split('\t'), $.trim);
+      var tokens = _.map(line.split(/\s/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
-      user.dbsnps.push(dbsnp);
       user.snps[dbsnp] = {genotype: tokens[1] + tokens[2]};
     }
     if (percent == 100){
@@ -69,20 +88,19 @@ function User() {
   }
   
   this.add_vcf_snps = function(lines, user, percent, snps) {
-    user.set_counter(percent);
+    user.set_counter(percent, snps);
     var regex = new RegExp(/^rs/);
     for (i in lines) {
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line.indexOf('>') == 0 || line == '') continue;
       
-      var tokens = _.map(line.split('\t'), $.trim);
+      var tokens = _.map(line.split(/\s+/), $.trim);
       var dbsnp = parseInt(tokens[2].replace(regex, ''));
       
       options = {'0': tokens[3], '1' : tokens[4]};
       raw_genotypes = tokens[9].split(':')[0].split(/[\|\\\/]/);
       genotype = options[raw_genotypes[0]] + options[raw_genotypes[1]];
       
-      user.dbsnps.push(dbsnp);
       user.snps[dbsnp] = {genotype: genotype};
     }
     if (percent == 100){
@@ -90,17 +108,20 @@ function User() {
     }
   }
   
-  this.parse_genome = function(lines) {
+  this.parse_genome = function(file_blob, extension) {
+    lines = file_blob.split('\n');
     var chunks = 100;
     var chunk_size = lines.length/chunks;
+    
     for (var j=0; j<=chunks; j++) {
       snps = add_commas(parseInt(j*chunk_size));
       output = lines.slice(chunk_size*(j), chunk_size*(j+1))
-      //if (!$('#full-genome').attr('checked')) {
-      setTimeout(this.add_genotype_snps, 0, output, this, j, snps);
-      //} else {
-      //  setTimeout(this.add_vcf_snps, 0, output, this, j, snps);
-      //}
+      if ($('#file-format option:selected').val() == 'genotype') {
+        setTimeout(this.add_genotype_snps, 0, output, this, j, snps);
+        //setTimeout(this.add_genotype_snps_sql, 0, output, this, j, snps);
+      } else {
+        setTimeout(this.add_vcf_snps, 0, output, this, j, snps);
+      }
     }
   }
   
@@ -114,9 +135,7 @@ function User() {
     return this.snps[dbsnp];
   }
   
-  this.lookup_snps = function(callback, args, all_dbsnps, comments) {
-    window.App.user.ld_cutoff = check_float($("#ld-slider").slider("value"));
-    
+  this.lookup_snps = function(callback, args, all_dbsnps, comments) {    
     $('#looking-up').dialog('open');
     var lookup_dbsnps = [];
     var extended_snps = {};
@@ -127,23 +146,22 @@ function User() {
         self.set_comments(extended_snps[v], comments[v]);
       }
       
-      if (window.App.user.lookup(v) == undefined) {
+      if (self.lookup(v) == undefined) {
         self.set_no_genotype(extended_snps[v]);
         if (!self.full_genome){
           lookup_dbsnps.push(v);
         }
       } else {
-        self.set_genotype(extended_snps[v], window.App.user.lookup(v).genotype);
+        self.set_genotype(extended_snps[v], self.lookup(v).genotype);
       }
     });
     if (lookup_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
-    //$('#imputing-lots').dialog('open');
     var self = this;
     $.post(
       '/lookup/linked/', {
-        population: window.App.user.population, 
+        population: self.population, 
         dbsnps: lookup_dbsnps.join(','),
-        ld_cutoff: window.App.user.ld_cutoff
+        ld_cutoff: get_ld_cutoff()
       }, function(response) {
         return self.got_linked(callback, args, all_dbsnps, extended_snps, response);
       }
@@ -162,8 +180,8 @@ function User() {
         if (parseInt(v) != linked_snp.dbSNP1) var linked_dbsnp = linked_snp.dbSNP1; 
         else var linked_dbsnp = linked_snp.dbSNP2;
         
-        if (window.App.user.lookup(linked_dbsnp) != undefined) {
-          self.set_imputed_snp(extended_snps[v], linked_dbsnp + ' (' + window.App.user.lookup(linked_dbsnp).genotype + ')', linked_snp['R_square']);
+        if (self.lookup(linked_dbsnp) != undefined) {
+          self.set_imputed_snp(extended_snps[v], linked_dbsnp + ' (' + self.lookup(linked_dbsnp).genotype + ')', linked_snp['R_square']);
           request_dbsnps.push(parseInt(v));
           user_dbsnps.push(linked_dbsnp);
           any = true;
@@ -176,7 +194,7 @@ function User() {
     var self = this;
     $.post(
       '/lookup/impute/', {
-        population: window.App.user.population,
+        population: self.population,
         dbsnps: request_dbsnps.join(','), user_dbsnps: user_dbsnps.join(',')
       }, function(response) {
         return self.got_phases(callback, args, all_dbsnps, extended_snps, response);
@@ -190,7 +208,7 @@ function User() {
     imputable_genotypes = {};
     if (response != undefined){
       $.each(response, function(request_snp, info) {
-        var user_snp = window.App.user.lookup(info.user_snp);
+        var user_snp = self.lookup(info.user_snp);
         gt1 = info[user_snp.genotype[0]];
         gt2 = info[user_snp.genotype[1]];
         if (gt1 == undefined){
@@ -201,10 +219,8 @@ function User() {
         self.set_genotype(extended_snps[request_snp], gt1 + gt2);
       });
     }
-    //$('#imputing-lots').dialog('close');
     $('#looking-up').dialog('close');
     return callback(args, all_dbsnps, extended_snps);
-    //return self.get_reference_alleles(callback, args, all_dbsnps, extended_snps);
   },
   
   this.get_reference_alleles = function(callback, args, all_dbsnps, extended_snps) {
@@ -232,7 +248,7 @@ function User() {
     $.get(
       '/lookup/get_allele_frequencies/', {
         snps: all_dbsnps.join(','),
-        population: window.App.user.population
+        population: self.population
       }, function(response){
         $.each(response, function(i, v){
           if (v != null) self.set_allele_frequencies(extended_snps[i], v['refallele_freq'], v['otherallele'], v['otherallele_freq']);

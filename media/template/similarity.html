@@ -2,52 +2,92 @@
   <h2>Similarity (Identity By State)</h2>
   <br/>
   <div>
+    <h3>Individuals</h3>
+    <div class='description'>
+      <div id='help-similarity-help'>
+        Select individuals to compare.
+        <span class='link' onclick="$('#similarity-comparison').find(':checkbox').attr('checked', 'checked');">Select all</span>,
+        <span class='link' onclick="$('#similarity-comparison').find(':checkbox').removeAttr('checked');">Select none</span>
+      </div>
+    </div>
+    <br/>
+    <div id='similarity-comparison' class='setting'>
+      <h4>Preset comparisons</h4> <span id='please-select-similarity' class='required hidden'>Please select at least one comparison</span>
+      <div id='standard-comparisons'>
+        <input id='210-2011-staff-similarity' value='210-2011-staff' type='checkbox' checked='checked'> Teaching Staff of Gene 210, Spring 2011
+        <br/>
+        <input id='church-similarity' value='Church' type='checkbox' checked='checked'> George Church
+      </div>
+      <h4>Custom comparisons</h4>
+      <div id='other-comparisons'>
+        <small>(Load additional genotypes to compare other individuals)</small>
+      </div>
+    </div>
+    <br/>
     <h3>Resolution</h3>
     <div class='description'>
       <div id='help-similarity-help'>
-        Number of SNPs to be used in the comparison. A higher number takes longer, but could be more accurate.
+        Limit the number of SNPs to be used in the comparison. A higher number takes longer, but could be more accurate.
       </div>
     </div>
-    <textarea id='numsnps-textarea' rows='1' cols='8'>1000</textarea>
     <br/>
-    <div>
-      <br/>
-      <button id='similarity-snps' type='submit' class='small-button'>
-        Compare!
+    <div id='similarity-resolution' class='setting'>
+      <input type='radio' id='sim_1000' name='similarity-resolution' checked/>
+      <label for='sim_1000'>1,000</label>
+      <input type='radio' id='sim_10000' name='similarity-resolution' />
+      <label for='sim_10000'>10,000</label>
+      <input type='radio' id='sim_100000' name='similarity-resolution' />
+      <label for='sim_100000'>100,000</label>
+    </div>
+    <br/>
+    <h4>Cluster Multiple Individuals</h4>
+    <input id='cluster-similarity' type='checkbox'> Compare all individuals to each other (Warning: may take some time)
+    <br/>
+    Choose a linkage criterion:
+    <select id='cluster-linkage' name='cluster-linkage'>
+      <option value="single-linkage">Single Linkage</option>
+      <option value="complete-linkage">Complete Linkage</option>
+      <option value="average-linkage">Average Linkage</option>
+    </select>
+    <br/>
+    <br/>
+    <button id='similarity-snps' type='submit'>
+      Compare!
+    </button>
+    <br/>
+    <br/>
+    <div id='table-options'>
+      <button id='clear-snps' type='submit'>
+        Clear Table
       </button>
+      <!--<button id='submit-snps' type='submit'>-->
+      <!--  Submit my Similarities-->
+      <!--</button>-->
     </div>
   </div>
   <div id='looking-up' title='Loading' class='dialog hidden'>
     Please be patient. This may take a few moments. <br/> <br/>
   </div>
   <br/>
-	<button id='clear-snps' type='submit' class='small-button'>
-    Clear Table
-  </button>
+  <div id='similarity-number-of-snps'>
+  </div>
   <br/>
-	<table id='similarity-snps-table' class='results-table hidden'>
+	<table id='similarity-snps-table' class='results-table hidden tablesorter'>
+    <thead>
 	  <tr>
 	    <th>Individual</th><th>Similarity</th>
 	  </tr>
+    </thead>
+    <tbody>
 	  <script id='similarity-snp-template' type='text/template'>
 		  <tr>
 		    <td><%= indiv %></td>
 		    <td><%= sim %></td>
 		  </tr>
 		</script>
+    </tbody>
 	</table>
-  <br>
-  <div class='submit'>
-    <div>
-      
-    </div>
-    <br/>
-    <div id='submit-button'>
-      <button id='submit-snps' type='submit'>
-        Submit my Similarities
-      </button>
-    </div>
-  </div>
+  <pre id="dendrogram"></pre>
 </div>
 
 <div class='help'>

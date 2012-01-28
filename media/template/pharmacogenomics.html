@@ -1,17 +1,36 @@
 <div class='main'>
   <h2>Pharmacogenomics</h2>
   <br/>
-  <div>
-    Click to explore your pharmacogenomic profile (courtesy of <a href='http://www.pharmgkb.org'>PharmGKB</a>).
-    <br/>
-    <button id='get-pharmacogenomics' type='submit'>
-      Show my Pharmacogenomics Variants
-    </button>
+  <div id='common_rare'>
+    <h3><a href='#'>Common Pharmacogenomic Variants</a></h3>
+    <div id='common_pgx'>
+      Click to explore your common pharmacogenomic variants.
+      These are variants that have been highly curated and annotated, courtesy of <a href='http://www.pharmgkb.org'>PharmGKB</a>.
+      <br/>
+      <br />
+      <button id='get-common-pgx' type='submit'>
+        Show my Common PGx Variants
+      </button>
+    </div>
+    <h3><a href='#'>Rare Pharmacogenomic Variants</a></h3>
+    <div id='rare_pgx'>
+      Click to explore your rare pharmacogenomic variants.
+      These variants do not necessarily have direct evidence of altering pharmacogenomic response.
+      <br/>
+      Warning: This requires up to a ~50 MB download and may take some time.
+      <br/><br/>
+      Frequency Threshold: <strong><span id='frequency-cutoff-threshold'></span>%</strong> <span id='frequency-cutoff-slider' style='width: 400px; float: right'></span>
+      <br/><br/>
+      <button id='get-rare-pgx' type='submit'>
+        Show my Rare PGx Variants
+      </button>
+    </div>
   </div>
   
   <br />
   
-  <table id='pharmacogenomics-table' class='results-table hidden'>
+  <table id='common-pgx-table' class='results-table hidden'>
+    <thead>
     <tr>
       <th>dbSNP</th>
       <th>Genotype</th>
@@ -19,7 +38,9 @@
       <th>Gene</th>
       <th>Interpretation</th>
     </tr>
-    <script id='pharmacogenomics-template' type='text/template'>
+    </thead>
+    <tbody>
+    <script id='common-pgx-template' type='text/template'>
       <tr>
         <td class='key'><%= dbsnp %></td>
         <td class='value'><%= genotype %></td>
@@ -28,6 +49,34 @@
         <td><%= interpretation %></td>
       </tr>
     </script>
+    </tbody>
+  </table>
+  
+  <table id='rare-pgx-table' class='results-table hidden tablesorter'>
+    <thead>
+    <tr>
+      <th>dbSNP</th>
+      <th>Genotype</th>
+      <th>Minor Allele Frequency</th>
+      <th>Gene Name</th>
+      <th>Drug Name</th>
+      <th>PolyPhen Class</th>
+      <th>PolyPhen Score</th>
+    </tr>
+    </thead>
+    <tbody>
+    <script id='rare-pgx-template' type='text/template'>
+      <tr>
+        <td class='key'><%= dbsnp %></td>
+        <td class='value'><%= genotype %></td>
+        <td><%= otherallele_freq %></td>
+        <td><%= gene_name %></td>
+        <td><%= drug_name %></td>
+        <td><%= prediction %></td>
+        <td><%= pph2_prob %></td>
+      </tr>
+    </script>
+    </tbody>
   </table>
 </div>
 
@@ -38,13 +87,17 @@
     Traditional GWAS methods can be used to discover these variants, searching for associations between genotypes and efficacy of drugs.
     <br/><br/>
     In this exercise, you can explore variants that may alter your response to prescription drugs.
-    These annotations are courtesy of Michelle Carillo and the PharmGKB team.
-    The description provided is specific to your genotype at each locus.
-    The "evidence level" is a measure of confidence in the annotation, based on evidence from the literature
+    <br/><br/>
+    In the "common" pharmacogenomic variant section, you can intersect your genetic profile with
+    curated pharmacogenomic annotations, courtesy of Michelle Carillo and the PharmGKB team.
+    The description provided is specific to your genotype at each locus
+    and the "evidence level" is a measure of confidence in the annotation, based on evidence from the literature
     (and corresponds to the evidence level at PharmGKB).
     Additional annotations can be found at <a href='http://www.pharmgkb.org'>PharmGKB</a>.
     <br/><br/>
-    Note that these annotations are not intended as diagnoses.
+    In the "rare" variant section, you can
+    <br/><br/>
+    Note that these annotations (curated or predicted) are not intended as diagnoses.
     They are based on published scientific evidence, but have not been evaluated by the FDA for clinical decision making.
     While variants may alter your probability for a reaction to a drug (intended or adverse event),
     no single variant or combination of variants can definitively predict your pharmacogenomic response.

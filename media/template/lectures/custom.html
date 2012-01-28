@@ -1,9 +1,23 @@
+<div id='custom_counts' class='hidden'>
+  <h3>Results</h3>
+  <table id='custom_count_table' class='results-table'>
+    <script id='custom_count_template' type='text/template'>
+    <strong><%= colname %></strong>: <%= colcount %><br/>
+    </script>
+  </table>
+</div>
+<br>
+<br>
 <table id='custom_table' class='results-table hidden'>
+  <thead>
   <tr id='custom_header'>
   </tr>
+  </thead>
+  <tbody>
   <script id='custom_template' type='text/template'>
     <tr>
       <% _.each(row, function(item) { %> <td><%= item %></td>\n <% }); %>
     </tr>
   </script>
+  </tbody>
 </table>

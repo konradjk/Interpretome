@@ -5,6 +5,9 @@
     <button id='compute-diabetes' type='submit'>
       Compute my Type 2 Diabetes Risk
     </button>
+    <div id='please-choose-another-population' title='Please Select Another Population' class='required hidden'>
+      This exercise is not implemented for population: <span id='pop-error-box'></span>. Please choose another population.
+    </div>
   </div>
   
   <br />
@@ -15,6 +18,7 @@
   <br />
   
   <table id='diabetes-table' class='results-table hidden'>
+    <thead>
     <tr>
       <th>dbSNP</th>
       <th>Genotype</th>
@@ -25,6 +29,8 @@
       <th>Running LR</th>
       <th>Probability</th>
     </tr>
+    </thead>
+    <tbody>
     <script id='diabetes-snp-template' type='text/template'>
       <tr>
         <td class='key'><%= dbsnp %></td>
@@ -34,6 +40,7 @@
         <td><%= r_squared %></td>
       </tr>
     </script>
+    </tbody>
   </table>
   
   <div class='hidden'>

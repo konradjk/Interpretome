@@ -1,8 +1,14 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" lang='en'>
   <head>
-    <title>Analyze Me</title>
+    <title>Interpretome</title>
     <meta charset='utf-8'/>
+    <meta property="og:title" content="Interpretome" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://www.interpretome.com" />
+    <meta property="og:image" content="" />
+    <meta property="og:site_name" content="Interpretome" />
+    <meta property="fb:admins" content="678649016" />
 
     <link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'>
 
@@ -15,11 +21,14 @@
     </script>
     <script type='text/javascript' src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'>
     </script>
+    <script type="text/javascript" src="/media/js/jquery/jquery.tablesorter.min.js"></script>
     <script type='text/javascript' src='http://documentcloud.github.com/underscore/underscore-min.js'>
     </script>
     <script type='text/javascript' src='http://documentcloud.github.com/backbone/backbone.js'>
     </script>
-    <script type="text/javascript" src="http://jqueryui.com/themeroller/themeswitchertool/">
+    <script type="text/javascript" src='/media/js/jquery/theme_switcher_tool.js'>
+    </script>
+    <script type="text/javascript" src='/media/js/figue-read-only/figue.js'>
     </script>
     <!-- Models. -->
     <script type='text/javascript' src='/media/js/model/user.js'>
@@ -34,13 +43,10 @@
     </script>
     <script type='text/javascript' src='/media/js/view/start.js'>
     </script>
-    <script type='text/javascript' src='/media/js/view/terms.js'>
-    </script>
     <script type='text/javascript' src='/media/js/view/lookup.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/explore.js'>
     </script>
-    
     <script type='text/javascript' src='/media/js/view/disease.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/diabetes.js'>
@@ -49,7 +55,6 @@
     </script>
     <script type='text/javascript' src='/media/js/view/pharmacogenomics.js'>
     </script>
-    
     <script type='text/javascript' src='/media/js/view/similarity.js'>
     </script>
     <script type='text/javascript' src='/media/js/view/pca.js'>
@@ -58,7 +63,6 @@
     </script>
     <script type='text/javascript' src='/media/js/view/family.js'>
     </script>
-    
     <script type='text/javascript' src='/media/js/interpretome.js'>
     </script>
     <script type='text/javascript' src='/media/js/sylvester.js'>
@@ -68,9 +72,7 @@
     <script type="text/javascript" src="https://www.google.com/jsapi">
     </script>
     <script type="text/javascript">
-
-      // Load the Visualization API and the piechart package.
-      google.load('visualization', '1', {'packages': ['corechart']});
+      google.load('visualization', '1', {'packages': ['corechart', 'gauge']});
     </script>
     <script type='text/javascript'>
       var _gaq = _gaq || [];
@@ -86,17 +88,27 @@
         s.parentNode.insertBefore(ga, s);
       })();
     </script>
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+    <div id="fb-root"></div>
+    <script>
+        FB.init({
+          appId  : '202447703131966',
+          status : true, // check login status
+          cookie : true, // enable cookies to allow the server to access the session
+          xfbml  : true  // parse XFBML
+        });
+    </script>
   </head>
   <body>
     <div id='wrap'>
       <div id='header'>
+        <br/>
         <div id='title'>
           Interpretome
         </div>
         <div id='global-settings'>
-
           <div id='user-settings' class='stack'>
-            <div id='loading-dialog' title='Loading' class='dialog hidden'>
+            <div id='loading-genome' title='Loading' class='dialog hidden'>
               Please be patient. This may take a few moments.
               <br/>
               <br/>
@@ -112,26 +124,142 @@
               Please load your genome first.
               <br>
               <br>
-              <input id='genome-file' type='file' name='file' />
+              <input id='genome-file' multiple type='file' name='file' />
             </div>
             <div class='setting'>
               <span id='genome' class='stack'>
-              <label for='genome-file' class='setting-label'>
-                Load your genome
-              </label>
-              <input id='genome-file' type='file' name='file' />
+                <button id='open-confirm-dialog' class='setting-label'>
+                  Begin exploring!
+                </button>
               </span>
               <span id='advanced'>
-                <!--<span id='full-genome-bar'>-->
-                <!--  <input type='checkbox' id='full-genome'><label for="full-genome">Full Genome</label>-->
-                <!--</span>-->
                 <button id='advanced-settings' type='submit' class='small-button hidden'>
                   Advanced Settings
                 </button>
-                <button id='clear-genome' class='small-button hidden'>
-                  Clear my information
+                <button id='add-genome' type='submit' class='small-button'>
+                  Add add'l genome
                 </button>
+                <br/>
+                <br/>
+                <label for='genome-analysis' class='setting-label'>
+                  Genome:
+                </label>
+               <select id='genome-analysis' name='genome-analysis'>
+               </select>
+                <button id='clear-genome' class='small-button hidden'>
+                  Clear this genome
+                </button>
+              <br/>
+              <br/>
+                <div id='population-setter'>
+                 <label for='toolbar-population' class='setting-label'>
+                  <span id='pre-population-selection'>
+                    Select your population:
+                  </span>
+                  <span id='post-population-selection' class='hidden'>
+                    Population:
+                  </span>
+                 </label>
+                 <select id='toolbar-population' name='population'>
+                   <!--
+                   I don't like having to copy and paste,
+                   but these should always be the same as above.
+                   -->
+    
+                   <option id='dummy-2' value="null">Select a population</option>
+                   <option value="CEU">European</option>
+                   <option value="YRI">African</option>
+                   <option value="CHB">Chinese</option>
+                   <option value="JPT">Japanese</option>
+                   <option value="null">--------</option>
+                   <option value="ASW">African-American (Southwest)</option>
+                   <option value="CHD">Chinese (Denver)</option>
+                   <option value="GIH">Guajarti Indian (Houston)</option>
+                   <option value="LWK">Lukya (Kenya)</option>
+                   <option value="MEX">Mexican (Los Angeles)</option>
+                   <option value="MKK">Maasai (Kenya)</option>
+                   <option value="TSI">Toscans (Italy)</option>
+                 </select>
+                </div>
               </span>
+              <div id='confirm-dialog' title='Confirm Terms' class='dialog hidden'>
+                <h3>Interpretome is intended for <i>educational and research purposes only</i>.</h3>
+                <p>
+                  No information should be considered diagnostic and as with any genetic testing service, the interpretation is not regulated by the FDA.
+                  We assume no responsibility for any injury or damage to persons or property arising out of or related to any use of interpretome annotations
+                  or for any errors or omissions: consult your physician with any medical concerns.
+                  We retain copyright to the materials herein.
+                  By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
+                </p>
+                <br/>
+                <h3>How is my data kept private?</h3>
+                <p>
+                  Your genome will not be sent to any server, it remains on your computer.
+                  This website will make requests to a database that only contain "rsid" (without genotypes) and "population" (self-reported in the top-right) information.
+                  At no point will any genotypes be sent across the wires (all computation will be done in the browser).
+                </p>
+                <br>
+                <p>
+                  Some exercises may have an option to submit personal information, including genotypes or results of analyses.
+                  Entry of your data is not required and all information will be anonymously stored on a secure server.
+                  However, there is a theoretical possibility that this information can be intercepted and misused.
+                  If you are accessing this site on an unecrypted WiFi network, any party may observe the data sent over the connection.
+                </p>
+                <br/>
+                Please feel free to <a href='mailto:help@interpretome.com'>email us</a> with questions, comments, or concerns.
+                <br/>
+                <br/>
+                <input id='terms-remembered' type='checkbox'> Remember me (will not prompt for Terms again for 30 days)
+                <br/>
+                <br/>
+                <button id='open-load-genome-dialog' class='setting-label'>
+                  Begin exploring!
+                </button>
+              </div>
+              <div id='load-genome-dialog' title='Load your Genome' class='dialog'>
+                <h3>Please load your genotype file</h3>
+                For genotype files, please load an unzipped .txt file.
+                <br/>
+                At this time, only raw files from 23andme and Lumigenix are supported natively.
+                <br/>
+                <br/>
+                <div class='left_short'>
+                File type:
+                <br/>
+                Name this genome:
+                <br/>
+                File:
+                <br/>
+                <span style='font-size: medium' class='link' onclick='$("#terms").dialog({
+                  modal: true, width: "80%", buttons: {
+                    "Close": function() {$(this).dialog("close");}
+                  }});'>
+                  Terms and Conditions
+                </span>
+                </div>
+                <div class='right_long'>
+                <select id='file-format' name='file-format'>
+                  <option value="genotype">Genotype</option>
+                  <option value="exome">Full Exome (coming soon!)</option>
+                  <!--<option value="genome">Full Genome (coming soon!)</option>-->
+                </select>
+                <!--For full exome or genome files, please load a VCF file (experimental).-->
+                <!--<br/>-->
+                <!--<br/>-->
+                <br/>
+                <textarea id='genome-name' rows='1' cols='16'></textarea>
+                <i>(optional)</i> (useful for analysis of multiple genomes)
+                <br/>
+                <span id='genome-file-wrap'>
+                  <input id='genome-file' type='file' multiple name='file' />
+                </span>
+                <br/><br/>
+                <div id='dropbox' class='box'>
+                  Or drag your file here.
+                </div>
+                </div>
+                <br/>
+              </div>
             </div>
             <div id='confirm-clear-genome' title='Clear your genome?' class='hidden'>
               Are you sure you want to end your session?
@@ -156,42 +284,18 @@
                 <option value="TSI">Toscans (Italy)</option>
               </select>
             </div>
-            <form>
-              <label for='toolbar-population' class='setting-label'>
-                Select your population
-              </label>
-              <select id='toolbar-population' name='population'>
-                <!--
-                I don't like having to copy and paste,
-                but these should always be the same as above.
-                -->
-
-                <option id='dummy-2' value="null">Select a population</option>
-                <option value="CEU">European</option>
-                <option value="YRI">African</option>
-                <option value="CHB">Chinese</option>
-                <option value="JPT">Japanese</option>
-                <option value="null">--------</option>
-                <option value="ASW">African-American (Southwest)</option>
-                <option value="CHD">Chinese (Denver)</option>
-                <option value="GIH">Guajarti Indian (Houston)</option>
-                <option value="LWK">Lukya (Kenya)</option>
-                <option value="MEX">Mexican (Los Angeles)</option>
-                <option value="MKK">Maasai (Kenya)</option>
-                <option value="TSI">Toscans (Italy)</option>
-              </select>
-            </form>
           </div>
         </div>
-        
-
       </div>
       <br class='clear' />
-        <span class='tooltip hidden' id='full-genome-tooltip'>
-          Check here if your file is a full genome
-          <br/>
-          (sites not indicated will be assumed "reference").
-        </span>
+        <div class="addthis_toolbox addthis_default_style ">
+          <a class="addthis_button_facebook"></a>
+          <a class="addthis_button_twitter"></a>
+          <a class="addthis_button_email"></a>
+          <a class="addthis_counter addthis_bubble_style"></a>
+        </div>
+        <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-4e0588ec6e728d54"></script>
+
       <div id='tabs'>
         <ul>
           <span style='float:left' class='module_selection' class='setting'>
@@ -226,20 +330,18 @@
           <li class='explore'>
             <a href='#explore'>Explore</a>
           </li>
-          
           <li class='clinical'>
             <a href='#diabetes'>Diabetes</a>
           </li>
           <li class='clinical'>
             <a href='#disease'>Disease</a>
           </li>
-	        <li class='clinical'>
+          <li class='clinical'>
             <a href='#warfarin'>Warfarin</a>
           </li>
-	        <li class='clinical'>
+          <li class='clinical'>
             <a href='#pharmacogenomics'>Pharmacogenomics</a>
           </li>
-          
           <li class='ancestry'>
             <a href='#similarity'>Similarity</a>
           </li>
@@ -252,15 +354,6 @@
           <!--<li class='ancestry'>-->
           <!--  <a href='#family'>Family</a>-->
           <!--</li>-->
-          <span style='float: right' class='module_selection setting'>
-          <input type='radio' id='module_terms' name='module_selection'/>
-            <label for='module_terms'>
-              Terms
-            </label>
-          </span>
-          <li class='terms'>
-            <a href='#terms'>Terms and Conditions</a>
-          </li>
         </ul>
         <div id='start'>
         </div>
@@ -284,32 +377,37 @@
         </div>
         <div id='family'>
         </div>
-        
-        <div id='terms'>
-        </div>
       </div>
       <div id='settings' title='Advanced Settings' class='dialog hidden'>
-        
+
         <div class='advanced-setting'>
-	        <div class='label left'>
-	          LD cutoff: r<sup>2</sup> &#x2265 <span id='amount'></span>
+          <div class='label left'>
+            LD cutoff: r
+            <sup>
+              2
+            </sup> &#x2265; <span id='ld-cutoff-amount'></span>
             <br/>
             <br/>
             Select a theme:
-	        </div>
-	        
-	        <div class='right'>
-		        <div id='ld-slider'></div>
+            <br/><br/>
+            <div id="fb_buttons">
+              <fb:login-button size="small">Login</fb:login-button>
+            </div>
+            <div id="fb_like">
+              <fb:like href="http://www.interpretome.com" send="true" layout="button_count" width="450" show_faces="true" font=""></fb:like>
+            </div>
+          </div>
+          <div class='right'>
+            <div id='ld-slider'>
+            </div>
             <br/>
             <br/>
-            <div id="ThemeRoller"></div>
-		      </div>
-          
-			    <br class='clear' />
-		    </div>
+            <div id='ThemeRoller'>
+            </div>
+          </div>
+          <br class='clear' />
+        </div>
       </div>
-      
-      
       <div id='looking-up' title='Loading' class='dialog hidden'>
         Please be patient. This may take a few moments.
         <br/>
@@ -334,8 +432,41 @@
         Nothing was submitted.
       </div>
       <div id='footer'>
-        &copy; 2011 Karczewski, Tatonetti, Tirrell and Zimmerman
-      </div>
+        &copy; 2011 Karczewski, Tirrell, Kim, and the Interpreteam
+        <br />
+        <span class='link' onclick='$("#terms").dialog({
+          modal: true, width: "80%", buttons: {
+            "Close": function() {$(this).dialog("close");}
+          }});'>
+          Terms and Conditions
+        </span>
+	      <div id='terms' title='Terms and Conditions' class='dialog hidden'>
+	        <h3>Interpretome is intended for <i>educational and research purposes only</i>.</h3>
+	        <p>
+	          No information should be considered diagnostic and as with any genetic testing service, the interpretation is not regulated by the FDA.
+	          We assume no responsibility for any injury or damage to persons or property arising out of or related to any use of interpretome annotations
+	          or for any errors or omissions: consult your physician with any medical concerns.
+	          We retain copyright to the materials herein.
+	          By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
+	        </p>
+	        <br/>
+	        <h3>How are my data kept private?</h3>
+	        <p>
+	          Your genome will not be sent to any server, it remains on your computer.
+	          This website will make requests to a database that only contain "rsid" (without genotypes) and "population" (self-reported in the top-right) information.
+	          At no point will any genotypes be sent across the wires (all computation will be done in the browser).
+	        </p>
+	        <br>
+	        <p>
+	          Some exercises may have an option to submit personal information, including genotypes or results of analyses.
+	          Entry of your data is not required and all information will be anonymously stored on a secure server.
+	          However, there is a theoretical possibility that this information can be intercepted and misused.
+	          If you are accessing this site on an unecrypted WiFi network, any party may observe the data sent over the connection.
+	        </p>
+	        <br/>
+	        Please feel free to <a href='mailto:help@interpretome.com'>email us</a> with questions, comments, or concerns.
+	      </div>
+	    </div>
     </div>
   </body>
 </html>

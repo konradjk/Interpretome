@@ -79,3 +79,73 @@ def create_multi_snp_dict(snps):
 
 def create_snp_dict(snps):
 	return dict((str(snp['dbsnp']).replace('rs', ''), snp) for snp in snps)
+
+def check_float(input_float):
+  try:
+    return float(input_float)
+  except Exception:
+    return None
+  
+def check_int(input_int):
+  try:
+    return int(input_int)
+  except Exception:
+    return None
+
+def sanitize(string):
+  return string.replace("'","").replace('"',"").replace(";","").replace(')',"").replace("(","")
+
+def check_dbsnp_array(dbsnp_array):
+  try:
+    return [int(element) for element in dbsnp_array.split(',')]
+  except Exception:
+    return None
+
+def check_population(population):
+  if population in (
+    'CEU', 'YRI', 'CHB', 'JPT',
+    'ASW', 'CHD', 'GIH',
+    'LWK', 'MKK', 'MEX', 'TSI'
+    ):
+    return population
+  else:
+    return None
+
+def check_source(source):
+  if source in (
+    'hapmap2', 'hapmap3',
+    'refpops'
+  ):
+    return source
+  else:
+    return None
+  
+def check_resolution(input):
+  if input in ('v2', 'v3'):
+    return input
+  else:
+    return None
+  
+
+def check_pc(pc):
+  options = ['PC' + str(opt) for opt in range(1,11)]
+  if pc in options:
+    return pc
+  else:
+    return None
+  
+def check_pca_source(source):
+  if source in (
+    'popres_all',
+    'hgdp_asian',
+    'hgdp_european',
+    'hgdp_african',
+    'hgdp_all',
+    'hapmap_all',
+    'khoisan_all',
+    'behar_all',
+    'refpops_all'
+  ):
+    return source
+  else:
+    return None

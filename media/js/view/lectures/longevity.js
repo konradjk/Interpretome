@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  nam:'Longevity',  
   table_id: '#longevity_table',
   template_id: '#longevity_template',
   url: '/media/template/lectures/longevity.html',
@@ -26,7 +26,10 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-
+    $.get('/media/help/longevity.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
+    return true;
   },
   
   display: function(response, all_dbsnps, extended_dbsnps) {
@@ -38,7 +41,7 @@ window.GenericView = Backbone.View.extend({
     
     data = new google.visualization.DataTable();
     data.addColumn('string', 'SNP');
-    data.addColumn('number', 'Running probability');
+    data.addColumn('number', 'Running Probability');
     
     _.each(response.sorted_dbsnps, function(v) {
       var found = false;
@@ -81,6 +84,7 @@ window.GenericView = Backbone.View.extend({
   
   finish: function(el_probabilities, el_alleles, dbsnps, extended_dbsnps) {
     
+    var self = this;
     var el_running_odds = [1];
     var el_running_probability = [50]; 
     $.each(el_probabilities, function(i, v) {
@@ -88,14 +92,14 @@ window.GenericView = Backbone.View.extend({
       el_odds = v[0] / v[1];
       el_running_odds.push(el_running_odds[i] * el_odds);
 	    el_running_probability.push(100 * (el_running_odds[i + 1] / (1 + el_running_odds[i + 1])));
-      data.addRow([dbsnp, el_running_probability[i + 1]]);
+      data.addRow([dbsnp, Math.round(el_running_probability[i + 1]*100)/100]);
       var template_data = {
         dbsnp: dbsnp, alleles: el_alleles[i], genotype: extended_dbsnps[dbsnp].genotype,
         imputed_from: extended_dbsnps[dbsnp].imputed_from, 
         r_squared: extended_dbsnps[dbsnp].r_squared,
         or: el_odds, ror: el_running_odds[i + 1], rp: el_running_probability[i + 1]
       };
-      $('#longevity_table').append('<tr><td>' + 
+      self.el.find('#longevity_table').append('<tr><td>' + 
         _.map(
           ['dbsnp', 'alleles', 'genotype', 'imputed_from', 'r_squared', 'or', 'ror', 'rp'], 
           function(v) {
@@ -105,6 +109,13 @@ window.GenericView = Backbone.View.extend({
         ).join('</td><td>') + '</td></tr>'
       );
     });
+    this.el.find('#longevity_table').append(
+      '<tr>' + 
+      '<td class="key"><strong>Probability of extreme longevity:</strong>' +
+      '</td><td></td><td></td><td></td><td></td><td></td><td></td>' +
+      '<td class="value">' + 
+      self.el.find('#longevity_table tr:last td:last').text() + '</td></tr>'
+    );
     var chart = new google.visualization.LineChart(
       document.getElementById('longevity_chart')
     );
@@ -112,11 +123,11 @@ window.GenericView = Backbone.View.extend({
     chart.draw(data, {
       width: 0.9 * this.el.find('.main').width(), 
       height: 400, 
-      title: 'Probability of extreme longevity',
+      title: 'Probability of Extreme Longevity',
       fontSize: 14, vAxis: {
-        title: 'Probability'
+        title: 'Probability (%)'
       }, hAxis: {
-        title: 'SNP index (ordered by informativeness)'
+        title: 'SNP (Ordered by Informativeness)'
       }
     });      
     

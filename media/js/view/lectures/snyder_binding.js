@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name:'Binding-Snyder',  
   table_id: '#snyder_binding_table',
   template_id: '#snyder_binding_template',
   url: '/media/template/lectures/snyder_binding.html',
@@ -24,7 +24,10 @@ window.GenericView = Backbone.View.extend({
   },
   
   start: function(response) {
-
+    $.get('/media/help/snyder_binding.html', {}, function(response) {
+      $('#help-exercise-help').html(response);
+    });
+    return true;
   },
   
   display: function(response, all_dbsnps, extended_dbsnps) {
@@ -34,11 +37,12 @@ window.GenericView = Backbone.View.extend({
       $.each(array, function(i, v) {
         if (snp != undefined && v['genotype'] == snp['genotype']) {
           _.extend(v, snp);
-          self.el.find(self.table_id).append(_.template(self.table_template, v));
+          self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
         }
       });
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
     this.finish(all_dbsnps, extended_dbsnps);

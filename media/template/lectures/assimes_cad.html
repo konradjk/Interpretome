@@ -1,4 +1,10 @@
+<div id='assimes_cad_chart'>
+  You have <strong><span id='assimes_cad_count'></span></strong> out of <span id='assimes_cad_total'></span> Coronary Artery Disease risk alleles.
+</div>
+<br/>
+<br/>
 <table id='assimes_cad_table' class='results-table hidden'>
+  <thead>
   <tr>
     <th class='dbsnp'>dbSNP</th>
     <th class='dbsnp'>Genotype</th>
@@ -9,6 +15,8 @@
     <th class='imputed'>Imputed From</th>
     <th class='rsq'>R<sup>2</sup></th>
   </tr>
+  </thead>
+  <tbody>
   <script id='assimes_cad_template' type='text/template'>
     <tr>
       <td class='key'><%= dbsnp %></td>
@@ -21,4 +29,5 @@
       <td class='rsq'><%= r_squared %></td>
     </tr>
   </script>
+  </tbody>
 </table>

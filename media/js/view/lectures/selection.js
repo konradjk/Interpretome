@@ -1,7 +1,7 @@
 $(function() {
 window.GenericView = Backbone.View.extend({
   el: $('#exercise-content'),
-  
+  name:'Selection',  
   table_id: '#selection_table',
   template_id: '#selection_template',
   url: '/media/template/lectures/selection.html',
@@ -34,50 +34,49 @@ window.GenericView = Backbone.View.extend({
   display: function(response, all_dbsnps, extended_dbsnps) {
     var self = this;
     
+    var n_selected = 0;
+    var n_derived = 0;
+    var total = 0;
+    
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id).append(_.template(self.table_template, v))
+      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+      
+      if (v['genotype'] != '??'){
+        var count = count_genotype(v['genotype'], v['ancestral']);
+        n_derived += (2 - count);
+        var count = count_genotype(v['genotype'], v['selected']);      
+        n_selected += count;
+        total += 2;
+      }
     });
     this.el.find(this.table_id).show();
+    $(this.table_id).tablesorter();
     $('#table-options').show();
     
-    this.finish(all_dbsnps, extended_dbsnps);
+    this.finish(n_selected, n_derived, total);
   },
   
-  finish: function(all_dbsnps, extended_dbsnps) {
-    var self = this;
-    var n_selected = 0;
-    var n_not_selected = 0;
-    var n_derived = 0;
-    var n_ancestral = 0;
-    var rows = this.el.find('.results-table:visible tr').slice(1);
-    $.each(rows, function(i, v) {
-      var genotype = $(v).find('td:nth-child(2)').text();
-      if (genotype == '??') return;
-      
-      var ancestral = $(v).find('td:nth-child(3)').text();
-      var count = count_genotype(genotype, ancestral);
-      n_ancestral += count;
-      n_derived += (2 - count);
-      
-      var selected = $(v).find('td:nth-child(4)').text();
-      var count = count_genotype(genotype, selected);      
-      n_selected += count;
-      n_not_selected += (2 - count);
-      
-    });
-    this.el.find('.results-table:visible tr:last').
-      after('<tr><td class="key"><strong>Total ancestral:</strong></td><td class="value">' + 
-        n_ancestral + '</td></tr>');
-    this.el.find('.results-table:visible tr:last').
-      append('<td class="key"><strong>Total selected:</strong></td><td class="value">' + 
-        n_selected + '</td>');
-    this.el.find('.results-table:visible tr:last').
-      after('<tr><td class="key"><strong>Total derived:</strong></td><td class="value">' + 
-        n_derived + '</td></tr>');
-    this.el.find('.results-table:visible tr:last').
-      append('<td class="key"><strong>Total not selected:</strong></td><td class="value">' + 
-        n_not_selected + '</td>');
+  finish: function(n_selected, n_derived, total) {
+    
+    data = new google.visualization.DataTable();
+    
+    data.addColumn('string', 'Label');
+    data.addColumn('number', 'Value');
+    data.addRows(2);
+    data.setValue(0, 0, 'Derived');
+    data.setValue(0, 1, n_derived);
+    data.setValue(1, 0, 'Selected');
+    data.setValue(1, 1, n_selected);
+    
+    var chart = new google.visualization.Gauge(document.getElementById('selection_chart'));
+    var options = {width: 900, height: 300, redFrom: total/2, redTo: total,
+        min: 0, max: total,
+        yellowFrom:total/4, yellowTo: total/2, minorTicks: 5};
+    chart.draw(data, options);
+    
+    this.el.find('#selection_chart').show();
+    
   }
 });
 });

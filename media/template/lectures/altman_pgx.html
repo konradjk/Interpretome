@@ -1,4 +1,5 @@
 <table id='altman_pgx_table' class='results-table hidden'>
+  <thead>
   <tr>
     <th class='dbsnp'>dbSNP</th>
     <th class='dbsnp'>Genotype</th>
@@ -6,6 +7,8 @@
           <th class='imputed'>Imputed From</th>
      <th class='rsq'>R<sup>2</sup></th>
   </tr>
+  </thead>
+  <tbody>
   <script id='altman_pgx_template' type='text/template'>
     <tr>
       <td class='key'><%= dbsnp %></td>
@@ -15,4 +18,5 @@
       <td class='rsq'><%= r_squared %></td>
     </tr>
   </script>
+  </tbody>
 </table>

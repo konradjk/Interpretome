@@ -1,3 +1,7 @@
+pre {
+  font-family: 'lucida console';
+  color: '#006600';
+}
 * {
   font-family: 'myriad pro', helvetica;
   margin: 0;
@@ -5,6 +9,12 @@
 }
 body {
   background-color: white;
+}
+div.box {
+  width:220px;
+  padding:10px;
+  border:2px solid gray;
+  margin:0px;
 }
 div#wrap {
   -moz-box-shadow: 0px 0px 5px #888;
@@ -20,7 +30,6 @@ div#wrap {
 .required {
   color: red;
 }
-
 div#header {
   height: 100px;
   padding: 5px;
@@ -31,26 +40,30 @@ div#title {
   width: 20%;
   font-size: 2.5em;
   padding-left: 1%;
-  line-height: 100px;
+  line-height: 40px;
 }
-
+div#fb_buttons {
+  float:left;
+  width:50%;
+}
+div#fb_like {
+  float:right;
+  width:50%;
+}
 div#global-settings {
   float: right;
   text-align: right;
   width: 60%;
   padding: 1%;
 }
-
 div#global-settings div.stack {
-  line-height: 50px;
-  height: 50px;
+  line-height: 20px;
+  height: 40px;
 }
-
 .setting-label {
   font-weight: bold;
   padding-right: 10px;
 }
-
 div#global-settings div.setting {
   float: right;
   width: 70%;
@@ -59,76 +72,85 @@ div.main {
   float: left;
   width: 60%;
 }
-
 .left {
   float: left;
-  width: 50%;
+  width: 49%;
 }
-
+.left_short {
+  float: left;
+  width: 35%;
+}
+.right_long {
+  float: right;
+  width: 64%;
+}
 .right {
   float: right;
-  width: 50%;
+  width: 49%;
 }
-
+.left_third {
+  float: left;
+  width: 30%;
+}
+.middle_third {
+  float: none;
+  display: inline-block;
+  width: 40%;
+}
+.right_third {
+  float: right;
+  width: 25%;
+}
 .advanced-setting {
   margin-top: 2.5%;
 }
-
+.goog-gauge {
+  display: inline-block;
+}
 #settings .left {
   width: 30%;
   float: left;
   font-weight: bold;
 }
-
 #settings .right {
   float: right
   width: 70%;
 }
-
 #settings .right #ld-slider {
   margin-top: 3px;
 }
-
 div.help {
   float: left;
   width: 35%;
   padding-left: 2%;
 }
-
 div.description {
   font-size: 0.9em;
 }
-
-
 div#footer {
   margin: auto;
   background-color: white;
   padding: 2%;
   font-size: 0.8em;
 }
-
 /* Miscellaneous classes. */
 .link {
   text-decoration: underline;
   cursor: pointer;
 }
-
 /* I don't think actually works. */
 .dialog {
   width: 400px;
   height: 500px;
 }
-
 .hidden {
   display: none;
 }
-
 .note {
   font-style: italic;
   font-size: 0.8em;
   color: #111;
 }
-
 .clear {
   clear: both;
 }
@@ -138,11 +160,9 @@ div#footer {
 .clear-right {
   clear: right;
 }
-
 table.details {
   display: none;
 }
-
 table.results-table th {
   border-style: double;
   border-width: 0 0 4px 0;
@@ -150,107 +170,64 @@ table.results-table th {
   vertical-align: bottom;
   text-align: left;
 }
-
 table.results-table {
   border-collapse: collapse;
-  // CSS3 only.
+  /* CSS3 only.*/
 }
-
-table.results-table th,
-table.results-table td {
+table.results-table th, table.results-table td {
   padding: 3px 7px;
   white-space: pre-wrap; /* CSS3. */
 }
-
 .ui-button-text {
-   font-size: inherit !important;
-} 
-
-.small-button {
-   font-size: .9em !important;
+  font-size: inherit !important;
 }
-
+.small-button {
+  font-size: .9em !important;
+}
 /* Allow accordion to compute dimensions,
-   even when initially drawn offscreen. */
+even when initially drawn offscreen. */
 .ui-tabs .ui-tabs-hide {
   position: absolute;
   left: -10000px;
 }
-  
-/* I don't actually work. */
-.ui-progressbar-value, .ui-progressbar { 
-  color: blue;
-  background-color: blue;
-}
-
-.progress_bar {
-  background: blue;
-  /*opacity: 0;*/
-  /*-moz-transition: opacity 1s linear;*/
-  /*-o-transition: opacity 1s linear;*/
-  /*-webkit-transition: opacity 1s linear;*/
-}
-
-.progress_bars .loading {
-  opacity: 1.0;
-}
-.progress_bars #percent {
-  background-color: #99ccff;
-  height: auto;
-  width: 0;
-}
-.progress_bars #percent_parsed {
-  background-color: #99ccff;
-  height: auto;
-  width: 0;
-}
-
 .large {
   font-size: 1.75em;
   line-height: 1.75em;
 }
-
 .bold {
   font-weight: bold;
 }
-
 #ld-slider {
   width: 400px;
   float: right;
 }
-
 #tabs ul li {
   display: none;
 }
-
 #module-arrow {
   font-weight: bold;
   font-size: 1em;
   line-height: 1.2em;
 }
-
-.tooltip{
-position:absolute;
-left:-2000px;
-background-color:#dedede;
-padding:5px;
-border:1px solid #fff;
-width:350px;
+.tooltip {
+  position:absolute;
+  left:-2000px;
+  background-color:#dedede;
+  padding:5px;
+  border:1px solid #fff;
+  width:350px;
 }
-
-.tooltip p{
-margin:0;
-padding:0;
-color:#fff;
-background-color:#222;
-padding:2px 7px;
+.tooltip p {
+  margin:0;
+  padding:0;
+  color:#fff;
+  background-color:#222;
+  padding:2px 7px;
 }
-
-.customize_module_list{
-margin:5px;
-list-style:none;
+.customize_module_list {
+  margin:5px;
+  list-style:none;
 }
-
-.customize_module_listitem li{
-padding:5px;
+.customize_module_listitem li {
+  padding:5px;
 }

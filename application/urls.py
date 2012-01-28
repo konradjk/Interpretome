@@ -17,13 +17,15 @@ urlpatterns = patterns('interpretome.application.views',
   (r'pca/get_pca_parameters/$', 'get_pca_parameters'),
   (r'diabetes/get_diabetes_snps/$', 'get_diabetes_snps'),
   (r'height/get_height_snps/$', 'get_height_snps'),
-  (r'submit/submit_snps/$', 'submit_snps'),
-  (r'submit/submit_gwas_snps/$', 'submit_gwas_snps'),
-  (r'submit/submit_doses/$', 'submit_doses'),
-  (r'submit/submit_coordinates/$', 'submit_coordinates'),
+  #(r'submit/submit_doses/$', 'submit_doses'),
+  #(r'submit/submit_coordinates/$', 'submit_coordinates'),
   
   (r'disease/get_gwas_catalog/$', 'get_gwas_catalog'),
   (r'^diabetes/$', 'diabetes'),
   (r'^get_pharmacogenomics_snps/$', 'get_pharmacogenomics_snps'),
-  (r'^get_painting_params/$', 'get_painting_params')
+  (r'^get_painting_params/$', 'get_painting_params'),
+  
+  (r'^get_rare_variants/$', 'get_rare_variants'),
+  (r'^get_drug_targets/$', 'get_drug_targets'),
+  (r'^get_polyphen_scores/$', 'get_polyphen_scores')
 )

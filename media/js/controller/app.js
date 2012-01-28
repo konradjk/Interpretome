@@ -1,4 +1,4 @@
-window.AppController = Backbone.Controller.extend({
+window.AppController = Backbone.Router.extend({
   
   routes: {
     'start': 'start',

@@ -1,4 +1,5 @@
 <table id='class_writeups_table' class='results-table hidden'>
+  <thead>
   <tr>
     <th>SNPedia Link</th>
     <th>Genotype</th>
@@ -8,6 +9,8 @@
     <th>Imputed From</th>
     <th>R<sup>2</sup></th>
   </tr>
+  </thead>
+  <tbody>
   <script id='class_writeups_template' type='text/template'>
     <tr>
       <td><a href="http://snpedia.com/index.php/Rs<%= dbsnp %>">rs<%= dbsnp %></a></td>
@@ -19,4 +22,5 @@
       <td><%= r_squared %></td>
     </tr>
   </script>
+  </tbody>
 </table>

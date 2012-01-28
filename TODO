@@ -1,13 +1,23 @@
-- Refresh frontpage issue
-- Descriptions on some explore sites
-- Terms page sometimes doesn't load
+Top priorities:
+- Beef up terms/conditions
+- Ethnicity descriptions for explore exercises
+- Finish rare PGx writeup
+- Finish IBS writeup
 
-* Advertise to labs
+Medium priority:
+- Ancestry painting percentages
+- eQTL table too large
+- Bug with: v2 chip, painting hapmap3, firefox
+- Chromosome-specific PCA
+- Chooser for ancestry painting populations
 
-- Fix theming
-- Y/MT Haplogroups (anyone have a source?)
+Low:
+- Share on Facebook button for Neandertal is too large - icon needs vertical adjustment.
+- Check for "cosmopolitan" regions in Neandertal
+- Remove mislabeled samples: Biaka Pygmy sample (HGDP00980) who is likely European and a Japanese sample (HGDP00770) who is likely Native American
+- Remove related samples: PI_HAT > 0.5 in PLINK
 
-* Blag
-* Release to public
-
-* Paper
+Huge projects:
+- Y/MT Haplogroups
+- Family
+- Exomez/Genomez
