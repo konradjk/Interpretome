@@ -16,7 +16,7 @@ $(function() {
   
   window.App = new AppView();
   window.App.custom_exercise = new CustomExercise();
-  window.App.user_db = window.openDatabase("interpretome-genomes", "1.0", "Genomes", 100000000);
+  //window.App.user_db = window.openDatabase("interpretome-genomes-2", "1.0", "Genomes", 100000000);
   window.App.users = {};
   
   window.App.render();
@@ -60,7 +60,7 @@ $(function() {
     range: 'min',
     min: 0.3, max: 1.0, step: 0.05, value: 0.7,
     slide: function(event, ui) { 
-      document.getElementById('amount').innerText = ui.value; 
+      document.getElementById('ld-cutoff-amount').innerText = ui.value; 
     }
   });
   $('#login-link').click(function() {

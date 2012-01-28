@@ -217,6 +217,10 @@ window.AppView = Backbone.View.extend({
       $('#genome-analysis').append($("<option />").val(name).text(name));
       self.update_genome_lists();
       window.App.users[name].parse_genome(event.target.result, extension);
+      //window.App.user_db.transaction( function(tx) {
+      //  tx.executeSql("DROP TABLE IF EXISTS ?", [name]);
+      //  tx.executeSql("CREATE TABLE ? (rsid VARCHAR(20) PRIMARY KEY, genotype VARCHAR(2));", [name]);
+      //});
       // Should this be here?
       $('#please-load-genome').dialog('close');
       $('#load-genome-dialog').dialog('close');

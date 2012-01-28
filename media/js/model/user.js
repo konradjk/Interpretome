@@ -50,6 +50,7 @@ function User(username) {
   }
   
   this.add_genotype_snps_sql = function(lines, user, percent, snps) {
+    var self = this;
     user.set_counter(percent, snps);
     var regex = new RegExp(/^rs/);
     for (i in lines){
@@ -60,7 +61,7 @@ function User(username) {
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
       
       window.App.user_db.transaction(function(tx) {
-        
+        tx.executeSql("INSERT INTO ? (?, ?);", [self.username, dbsnp, tokens[3]]);
       });
       user.snps[dbsnp] = {genotype: tokens[3]};
     }

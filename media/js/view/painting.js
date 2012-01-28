@@ -275,6 +275,7 @@ window.PaintingView = Backbone.View.extend({
     
     var canvas = document.getElementById('canvas');
     canvas.width = canvas.width; // clear the canvas
+    var large = 1; // for hi-res, switch to 5
     for (j = 0; j < all_painting_m.length; j++) {
       var painting_m = all_painting_m[j];
       var painting_f = all_painting_f[j];
@@ -288,7 +289,7 @@ window.PaintingView = Backbone.View.extend({
       //});
       //var centromere_relpos = chrom_info[j][1]; // relative to size of chromosome
       var centromere_relpos = 1.0-chrom_info[j][1]; // relative to size of chromosome
-      var chrom_length = 400*chrom_info[j][0]; // relative size of chromosome
+      var chrom_length = 400*large*chrom_info[j][0]; // relative size of chromosome
       var m = chrom_info[j][2]/chrom_length; // how to convert chrom pos to canvas position
       var centromere_pos = centromere_relpos*(chrom_length);
       var long_arm = centromere_pos;
@@ -327,7 +328,7 @@ window.PaintingView = Backbone.View.extend({
       	this.paint_legend([1, 1], paint_coordinates, all_populations);
       }
       
-      this.paint_chromosome([1, j*40+all_populations.length*16+10], 30, [long_arm, short_arm], paint_coordinates, all_populations);      
+      this.paint_chromosome([1, j*40*large+all_populations.length*16+10], 30*large, [long_arm, short_arm], paint_coordinates, all_populations);      
     }
   },
   
