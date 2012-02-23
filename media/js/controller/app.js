@@ -62,7 +62,7 @@ window.AppController = Backbone.Router.extend({
 
   render_or_show: function(controller) {
     if (controller.has_loaded) {
-      $('#tabs').tabs('select', '#' + controller.el.attr('id'));
+      $('#tabs').tabs('select', '#' + $(controller.el).attr('id'));
     } else {
       controller.render();
     }

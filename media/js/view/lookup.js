@@ -8,6 +8,7 @@ window.LookupView = Backbone.View.extend({
     'click #lookup-snps': 'click_lookup_snps',
     'click #clear-snps': 'click_clear_snps',
     'click .explain-snp': 'click_explain',
+    'click .map-snp': 'click_map',
     'click #lookup-demo': 'toggle_demo',
     'click #lookup-bed': 'toggle_bed',
     'click #submit-snps': 'click_submit',
@@ -20,12 +21,12 @@ window.LookupView = Backbone.View.extend({
     _.bindAll(this,  
       'click_lookup_snps', 'click_clear_snps', 
       'click_submit', 'click_confirm_submit', 'click_explain', 
-      
-      'get_more_info', 
+      'click_map',
+      'get_more_info', 'load_map',
       'loaded',
-      
+      'create_pie_chart',
       'toggle_demo', 'toggle_bed',
-      
+      'get_map_strings',
       'toggle_unknown_genotypes',
       'print_snps'
     );
@@ -37,7 +38,7 @@ window.LookupView = Backbone.View.extend({
     
   loaded: function(response) {
     $('#tabs').tabs('select', '#lookup');
-	  this.el.append(response);
+	  $(this.el).append(response);
     
 	  // Widget initialization.
 	  $('button').button();
@@ -113,18 +114,99 @@ window.LookupView = Backbone.View.extend({
     output_2['imp_1'] = imputed[1].substr(2,1);
     
     var self = this;
-    this.el.find('#explain-lookup-top').empty();
-    this.el.find('#explain-lookup-bottom').empty();
-    this.el.find('.description > div').hide().show('normal');
-    this.el.find('#explain-lookup-top').append(_.template(self.explain_snp_top_template, output));
-    this.el.find('#explain-lookup-bottom').append(_.template(self.explain_snp_bottom_template, output_2));
+    $('#explain-lookup-top').empty();
+    $('#explain-lookup-bottom').empty();
+    $('.description > div').hide().show('normal');
+    $('#explain-lookup-top').append(_.template(self.explain_snp_top_template, output));
+    $('#explain-lookup-bottom').append(_.template(self.explain_snp_bottom_template, output_2));
+  },
+  
+  click_map: function(event) {
+    var self = this;
+    $('#google-map').hide();
+    var table = event.target.parentElement.parentElement.parentElement;
+    output = {};
+    output['dbsnp'] = table.getElementsByClassName('dbsnp')[0].innerHTML;
+    output['reference'] = table.getElementsByClassName('reference')[0].innerHTML;
+    output['alternate'] = table.getElementsByClassName('other')[0].innerHTML;
+    ref_color = '<font color="071871">';
+    alt_color = '<font color="A30008">';
+    
+    genotype_string = '';
+    genotype_1 = table.getElementsByClassName('genotype')[0].innerHTML[0];
+    if (genotype_1 == output['alternate']) {
+      genotype_string += alt_color + genotype_1 + '</font>';
+    } else {
+      genotype_string += ref_color + genotype_1 + '</font>';
+    }
+    genotype_2 = table.getElementsByClassName('genotype')[0].innerHTML[0];
+    if (genotype_2 == output['alternate']) {
+      genotype_string += alt_color + genotype_2 + '</font>';
+    } else {
+      genotype_string += ref_color + genotype_2 + '</font>';
+    }
+    
+    $('#google-map-intro').html('rs' + output['dbsnp']
+                                + '<br/>Your genotype: ' + genotype_string
+                                + '<br/>' + ref_color + 'Reference: ' + output['reference'] + '</font>'
+                                + '<br/>' + alt_color + 'Alternate: ' + output['alternate'] + '</font>');
+    $.get('/get_hgdp_allele_frequencies/', output, function(response) {
+      google.load('maps', '2', {"callback" : function(inner_response) {
+        self.load_map(inner_response, response)
+      }, other_params: "sensor=false"})
+    });
+  },
+  
+  load_map: function(inner_response, response) {
+    var self = this;
+    $('#google-map').show();
+    var map = new GMap2(document.getElementById("google-map"));
+    map.setUIToDefault();
+    map.setCenter(new GLatLng(20, 0), 2);
+    map.setMapType(G_SATELLITE_MAP);
+    $.each(response, function(i, v) {
+      minlon = parseInt(v['minlon'].slice(0,-1));
+      minlat = parseInt(v['minlat'].slice(0,-1));
+      if (v['minlon'].slice(-1) == 'W') { minlon *= -1; }
+      if (v['minlat'].slice(-1) == 'S') { minlat *= -1; }
+      maxlon = parseInt(v['maxlon'].slice(0,-1));
+      maxlat = parseInt(v['maxlat'].slice(0,-1));
+      if (v['maxlon'].slice(-1) == 'W') { maxlon *= -1; }
+      if (v['maxlat'].slice(-1) == 'S') { maxlat *= -1; }
+      if (maxlon - minlon < 180) {
+        lon = (maxlon + minlon) / 2.0;
+      } else {
+        lon = (maxlon - minlon) / 2.0;
+      }
+      if (maxlat - minlat < 180) {
+        lat = (maxlat + minlat) / 2.0;
+      } else {
+        lat = (maxlat - minlat) / 2.0;
+      }
+      point = self.create_pie_chart(new GLatLng(lat, lon), v['frequency'], v['pop_name']);
+      map.addOverlay(point);
+    });
+  },
+  
+  create_pie_chart: function(marker_loc, frequency, pop_name) {
+    pie_chart = new GIcon(G_DEFAULT_ICON);
+    other_freq = 1.0 - frequency;
+    pie_chart.iconSize = new GSize(30, 30);
+    pie_chart.shadowSize = new GSize(0, 0);
+    pie_chart.image = 'https://chart.googleapis.com/chart?cht=p&chd=t:' + frequency + ',' + other_freq + '&chs=100x100&chco=071871|A30008&chf=bg,s,00000000'
+    var marker = new GMarker(marker_loc, { icon:pie_chart });
+  
+    GEvent.addListener(marker, "click", function() {
+      marker.openInfoWindowHtml(pop_name);
+    });
+    return marker;
   },
   
   click_delete_snps: function(event) {
     if (window.App.check_all() == false) return;
     
     var dbsnps = filter_identifiers(
-      this.el.find('#delete-snps-textarea').val().split('\n')
+      $('#delete-snps-textarea').val().split('\n')
     );
     var self = this;
     user = get_user();
@@ -133,14 +215,14 @@ window.LookupView = Backbone.View.extend({
         var print_snp = user.blank_extended_snp(v);
         print_snp['imputed_from'] = 'DELETED';
         print_snp['genotype'] = 'Was: ' + user.lookup(v).genotype;
-        self.el.find('#lookup-snps-table').append(
+        $('#lookup-snps-table').append(
           _.template(self.lookup_snp_template, print_snp)
         );
         user.delete_snp(v);
       }
     });
-    this.el.find('#lookup-snps-table').show();
-    this.el.find('.submit > div').show();
+    $('#lookup-snps-table').show();
+    $('.submit > div').show();
   },
   
   // Clear general lookup table or exercise-specific one.
@@ -158,13 +240,27 @@ window.LookupView = Backbone.View.extend({
     $('#table-options').show();
     var self = this;
     var dbsnps = filter_identifiers(
-      this.el.find('#lookup-snps-textarea').val().split('\n')
+      $('#lookup-snps-textarea').val().split('\n')
     );
     get_user().lookup_snps(self.get_more_info, {}, dbsnps, {});
   },
   
   get_more_info: function(args, all_dbsnps, extended_dbsnps) {
-    get_user().get_reference_alleles(this.print_snps, {}, all_dbsnps, extended_dbsnps);
+    get_user().get_reference_alleles(this.get_map_strings, {}, all_dbsnps, extended_dbsnps);
+  },
+  
+  get_map_strings: function(args, all_dbsnps, extended_dbsnps) {
+    var self = this;
+    $.get(
+      '/get_snps_on_map/', {
+        dbsnps: all_dbsnps.join(',')
+      }, function(response){
+        $.each(response, function(i, v){
+          extended_dbsnps[i]['map'] = (v != 0) ? "<button class='map-snp' type='submit'>Map</button>" : '';
+        });
+        return self.print_snps(args, all_dbsnps, extended_dbsnps);
+      }
+    );
   },
   
   print_snps: function(args, all_dbsnps, snps_to_print) {
@@ -178,6 +274,7 @@ window.LookupView = Backbone.View.extend({
       $('#lookup-snps-table > tbody').append(_.template(self.lookup_snp_template, output_snp));
       $('#bed-file-text').append(_.template(self.bed_file_template, output_snp));
     });
+    $('.map-snp').button();
     $('#looking-up').dialog('close');
     $('#imputing-lots').dialog('close');
     $('#table-options').show();
@@ -190,11 +287,11 @@ window.LookupView = Backbone.View.extend({
   },
   
   toggle_unknown_genotypes: function() {
-    this.el.find('.results-table:visible td:nth-child(2):contains("??")').parent().toggle();
-    if (this.el.find('.results-table:visible tr:hidden').length != 0)
-      this.el.find('#toggle-unknown-genotypes').button('option', 'label', 'Show unknown genotypes');
+    $('.results-table:visible td:nth-child(2):contains("??")').parent().toggle();
+    if ($('.results-table:visible tr:hidden').length != 0)
+      $('#toggle-unknown-genotypes').button('option', 'label', 'Show unknown genotypes');
     else 
-      this.el.find('#toggle-unknown-genotypes').button('option', 'label', 'Hide unknown genotypes');
+      $('#toggle-unknown-genotypes').button('option', 'label', 'Hide unknown genotypes');
   }
   
   });

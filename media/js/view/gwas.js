@@ -24,21 +24,21 @@ window.GwasView = Backbone.View.extend({
     
   loaded: function(response) {
     $('#tabs').tabs('select', '#gwas');
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  
 	  // Widget initialization.
-	  this.el.find('button').button();
-	  this.el.find('.help-button').button({
+	  $('button').button();
+	  $('.help-button').button({
       icons: {primary: 'ui-icon-help'}	    
 	  });
-    this.el.find('#earwax').buttonset();
-    this.el.find('#eyes').buttonset();
-    this.el.find('#asparagus').buttonset();
-    this.el.find('#bitter').buttonset();
-    this.el.find('#lactose').buttonset();
-	  this.el.find('.help > div').show();
-	  this.el.find('.description > div').hide();
-	  this.el.find('.submit > div').hide();
+    $('#earwax').buttonset();
+    $('#eyes').buttonset();
+    $('#asparagus').buttonset();
+    $('#bitter').buttonset();
+    $('#lactose').buttonset();
+	  $('.help > div').show();
+	  $('.description > div').hide();
+	  $('.submit > div').hide();
 	  
 	  // Template initialization.
 	  this.gwas_snp_template = $('#gwas-snp-template').html();
@@ -62,7 +62,7 @@ window.GwasView = Backbone.View.extend({
   click_confirm_submit: function(event) {
     var output = {};
     var self = this;
-    this.el.find('#gwas-snps-table tr').each( function() {
+    $('#gwas-snps-table tr').each( function() {
       dbsnp = $(this).find('.dbsnp').html();
       genotype = $(this).find('.genotype').html();
       if (dbsnp != null && genotype != 'Cannot Impute'){
@@ -78,16 +78,16 @@ window.GwasView = Backbone.View.extend({
   },
   
   click_clear_snps: function(event) {
-    this.el.find('#gwas-snps-table tr').slice(1).remove();
-    this.el.find('#gwas-snps-table').hide();
-    this.el.find('.submit > div').hide();
+    $('#gwas-snps-table tr').slice(1).remove();
+    $('#gwas-snps-table').hide();
+    $('.submit > div').hide();
   },
   
   click_gwas_snps: function(event) {
     if (window.App.check_all() == false) return;
     
     var dbsnps = filter_identifiers(
-      this.el.find('#gwas-snps-textarea').val().split('\n')
+      $('#gwas-snps-textarea').val().split('\n')
     );
     return get_user().lookup_snps(this.show_table, {}, dbsnps, {});
   },
@@ -95,10 +95,10 @@ window.GwasView = Backbone.View.extend({
   show_table: function(args, dbsnps, info){
     var self = this;
     $.each(dbsnps, function(i, v) {
-      self.el.find('#gwas-snps-table').append(_.template(self.gwas_snp_template, info[v]));
+      $('#gwas-snps-table').append(_.template(self.gwas_snp_template, info[v]));
     });
-    self.el.find('#gwas-snps-table').show();
-    self.el.find('.submit > div').show();
+    $('#gwas-snps-table').show();
+    $('.submit > div').show();
   }
   });
 });

@@ -19,7 +19,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -41,9 +41,9 @@ window.GenericView = Backbone.View.extend({
         diabetes_count += count_genotype(v['genotype'], v['risk']);
         total += 2;
       }
-      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+      $(self.table_id + " > tbody").append(_.template(self.table_template, v));
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     
@@ -53,7 +53,7 @@ window.GenericView = Backbone.View.extend({
   finish: function(diabetes_count, total) {
     $('#butte_diabetes_count').html(diabetes_count);
     $('#butte_diabetes_total').html(total);
-    this.el.find('#butte_diabetes_chart').show();
+    $('#butte_diabetes_chart').show();
   }
 });
 });

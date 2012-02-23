@@ -101,6 +101,15 @@ def check_dbsnp_array(dbsnp_array):
   except Exception:
     return None
 
+def check_base(base):
+  if base in ('A', 'T', 'C', 'G'):
+    return base
+  else:
+    return None
+
+def check_dbsnp(dbsnp):
+  return int(str(dbsnp).lstrip('rs'))
+
 def check_population(population):
   if population in (
     'CEU', 'YRI', 'CHB', 'JPT',

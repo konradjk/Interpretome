@@ -15,7 +15,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.generic_template = $('#generic_template').html();
   },
   
@@ -27,9 +27,10 @@ window.GenericView = Backbone.View.extend({
     var self = this;
     
     $.each(extended_dbsnps, function(i, v) {
-      self.el.find(table_id).append(_.generic_template(template, v))
+      //_.extend(v, extended_dbsnps[i]);
+      $(table_id).append(_.generic_template(template, v))
     });
-    this.el.find('#generic_table').show();
+    $('#generic_table').show();
     $('#table-options').show();
     
     this.finish(all_dbsnps, extended_dbsnps);

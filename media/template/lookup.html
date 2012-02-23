@@ -30,7 +30,9 @@
   </div>
   
 	<br />
-	
+	<div id='google-map-intro'></div>
+	<div id='google-map' style="width: 950px; height: 550px; border:1px solid black; display: none"></div>
+  <br/>
 	<!-- General lookup template. -->
 	<table id='lookup-snps-table' class='results-table hidden tablesorter'>
     <thead>
@@ -40,6 +42,7 @@
       <th class='other details'>Alternate<br/>Allele</th><th class='otherallele_freq details'>Alternate<br/>Frequency</th>
       <th class='chrom details'>Chrom.</th><th class='position details'>Position</th>
       <th class='imputed'>Imputed From</th><th class='rsq'>R<sup>2</sup></th>
+      <th class='map'>Map</sup></th>
 	  </tr>
     </thead>
     <tbody>
@@ -55,6 +58,7 @@
         <td class='position details'><%= end %></td>
         <td class='imputed'><%= imputed_from %> </td>
         <td class='rsq'><%= r_squared %></td>
+        <td class='map'><%= map %></td>
 		  </tr>
 		</script>
     </tbody>
@@ -131,6 +135,9 @@
     <br/><br/>
     The Hapmap project has determined the "phase" of these SNPs, which means a correspondence can be determined between alleles.
     Thus, the presence of one allele at the first SNP indicates the presence of the allele with the same phase of the other SNP.
+    <br/><br/>
+    In the table, the allele frequencies from the <a href="http://hapmap.ncbi.nlm.nih.gov/">Hapmap Project</a> are shown for the population selected.
+    Click the "map" button (if available) to view the allele frequencies from across the globe (data from the HGDP, courtesy of the <a href="http://alfred.med.yale.edu/">Alfred</a> database).
     <br/><br/>
     Click the "explain" button on an imputed SNP to see an example.
     If "??" is displayed, the SNP could not be imputed with the data given and population selected.

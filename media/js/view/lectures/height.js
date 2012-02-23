@@ -24,12 +24,12 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
-    this.el.find('#predict_height').button();
-    this.el.find('#sex').buttonset();
-    this.el.find('#your_height_units').buttonset();
-    this.el.find('#mom_height_units').buttonset();
-    this.el.find('#dad_height_units').buttonset();
+	  $(this.el).append(response);
+    $('#predict_height').button();
+    $('#sex').buttonset();
+    $('#your_height_units').buttonset();
+    $('#mom_height_units').buttonset();
+    $('#dad_height_units').buttonset();
     this.priors = { "CEU" : {"male" : 178.9, "female" : 164.8 },
         "YRI" : {"male" : 178, "female" : 163.2 },
         "MEX" : {"male" : 170.6, "female" : 158.7 },
@@ -44,30 +44,30 @@ window.GenericView = Backbone.View.extend({
     $.get('/media/help/height.html', {}, function(response) {
       $('#help-exercise-help').html(response);
     });
-    this.el.find('.required').hide();
-    this.el.find('#height_table tr').slice(1).remove();
-    this.el.find('#height_chart').empty();
+    $('.required').hide();
+    $('#height_table tr').slice(1).remove();
+    $('#height_chart').empty();
     user = get_user();
     user.sex = $('#sex label[aria-pressed="true"]').attr('for');
     if (user.sex == undefined) {
-      this.el.find('#please-select-sex').show('slow');
+      $('#please-select-sex').show('slow');
       return false;
     }
-    var raw_height = this.el.find('#mom-height-textarea').val();
+    var raw_height = $('#mom-height-textarea').val();
     if ($('#mom_height_units label[aria-pressed="true"]').attr('for') == 'mom_height_units_in') {
       user.mom_height = check_inches(raw_height);
     } else {
       user.mom_height = check_float(raw_height);
     }
     
-    var raw_height = this.el.find('#dad-height-textarea').val();
+    var raw_height = $('#dad-height-textarea').val();
     if ($('#dad_height_units label[aria-pressed="true"]').attr('for') == 'dad_height_units_in'){
       user.dad_height = check_inches(raw_height);
     } else {
       user.dad_height = check_float(raw_height);
     }
     
-    var raw_height = this.el.find('#height-textarea').val();
+    var raw_height = $('#height-textarea').val();
     if ($('#your_height_units label[aria-pressed="true"]').attr('for') == 'your_height_units_in'){
       user.height = check_inches(raw_height);
     } else {
@@ -75,22 +75,22 @@ window.GenericView = Backbone.View.extend({
     }
     
     if (user.mom_height == null) {
-      this.el.find('#please-enter-mom-height').show('slow');
+      $('#please-enter-mom-height').show('slow');
       return false;
     }
     if (user.dad_height == null) {
-      this.el.find('#please-enter-dad-height').show('slow');
+      $('#please-enter-dad-height').show('slow');
       return false;
     }
     if (user.height == null) {
-      this.el.find('#please-enter-height').show('slow');
+      $('#please-enter-height').show('slow');
       return false;
     }
     
     if (!(user.population in this.priors)){
-      this.el.find('#pop-error-box').empty();
-      this.el.find('#please-choose-another-population').show('slow');
-      this.el.find('#pop-error-box').append(user.population);
+      $('#pop-error-box').empty();
+      $('#please-choose-another-population').show('slow');
+      $('#pop-error-box').append(user.population);
       return false;
     }
     
@@ -153,7 +153,7 @@ window.GenericView = Backbone.View.extend({
       document.getElementById('height_chart')
     );
     chart.draw(data, {
-      width: 0.9 * this.el.find('.main').width(), 
+      width: 0.9 * $('.main').width(), 
       height: 400, 
       title: 'Predicted Heights',// (Genetic Prediction ' + Math.round(genetic * 100) / 100 + 'cm)',
       fontSize: 14, vAxis: {
@@ -163,15 +163,15 @@ window.GenericView = Backbone.View.extend({
       }
     });
     
-    this.el.find('#height_table').append(_.template(this.table_template, values));
-    this.el.find('#height_table').show();
+    $('#height_table').append(_.template(this.table_template, values));
+    $('#height_table').show();
     
     return;
     
     //$.each(extended_dbsnps, function(i, v) {
-    //  self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v))
+    //  $(self.table_id + " > tbody").append(_.template(self.table_template, v))
     //});
-    //this.el.find(this.table_id).show();
+    //$(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     

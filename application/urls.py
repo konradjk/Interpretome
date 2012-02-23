@@ -13,6 +13,9 @@ urlpatterns = patterns('interpretome.application.views',
   (r'lookup/get_allele_frequencies/$', 'get_allele_frequencies'),
   (r'lookup/get_chrom_pos/$', 'get_chrom_pos'),
   
+  (r'^get_snps_on_map/$', 'get_snps_on_map'),
+  (r'^get_hgdp_allele_frequencies/$', 'get_hgdp_allele_frequencies'),
+  
   (r'similarity/get_individuals/$', 'get_individuals'),
   (r'pca/get_pca_parameters/$', 'get_pca_parameters'),
   (r'diabetes/get_diabetes_snps/$', 'get_diabetes_snps'),

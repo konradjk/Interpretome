@@ -38,16 +38,16 @@ window.ExploreView = Backbone.View.extend({
     
   loaded: function(response) {
     $('#tabs').tabs('select', '#explore');
-	  this.el.append(response);
+	  $(this.el).append(response);
     
 	  // Widget initialization.
-	  this.el.find('button').button();
-	  this.el.find('#table-options').hide();
-	  this.el.find('.submit').hide();
+	  $('button').button();
+	  $('#table-options').hide();
+	  $('.submit').hide();
 	  
-	  this.el.find('#exercises').accordion();
-	  //this.el.find('#exercises label').css('width', '50%');
-	  //this.el.find('#default-exercises').show();
+	  $('#exercises').accordion();
+	  //$('#exercises label').css('width', '50%');
+	  //$('#default-exercises').show();
     
     $('#too-many-snps').dialog({
       modal: true, resizable: false, autoOpen: false, buttons: {
@@ -156,10 +156,10 @@ window.ExploreView = Backbone.View.extend({
   
   // Clear general lookup table or exercise-specific one.
   click_clear_snps: function(event) {
-    var table = this.el.find('.results-table:visible');
+    var table = $('.results-table:visible');
     $(table).find('tr').slice(1).remove();
     $(table).hide();
-	  this.el.find('#table-options').hide();
+	  $('#table-options').hide();
 	  $('#help-exercise-help').empty();
     $('#exercise-content').empty();
     
@@ -227,11 +227,11 @@ window.ExploreView = Backbone.View.extend({
   },
  
   toggle_unknown_genotypes: function() {
-    this.el.find('.results-table:visible td:nth-child(2):contains("??")').parent().toggle();
-    if (this.el.find('.results-table:visible tr:hidden').length != 0)
-      this.el.find('#toggle-unknown-genotypes').button('option', 'label', 'Show unknown genotypes');
+    $('.results-table:visible td:nth-child(2):contains("??")').parent().toggle();
+    if ($('.results-table:visible tr:hidden').length != 0)
+      $('#toggle-unknown-genotypes').button('option', 'label', 'Show unknown genotypes');
     else 
-      this.el.find('#toggle-unknown-genotypes').button('option', 'label', 'Hide unknown genotypes');
+      $('#toggle-unknown-genotypes').button('option', 'label', 'Hide unknown genotypes');
   }
   
   });

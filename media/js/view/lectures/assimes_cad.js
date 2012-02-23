@@ -19,7 +19,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -36,13 +36,13 @@ window.GenericView = Backbone.View.extend({
     var total = 0;
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+      $(self.table_id + " > tbody").append(_.template(self.table_template, v));
       if (v['genotype'] != '??') {
         cad_count += count_genotype(v['genotype'], v['risk_allele']);
         total += 2;
       }
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     
@@ -52,7 +52,7 @@ window.GenericView = Backbone.View.extend({
   finish: function(cad_count, total) {
     $('#assimes_cad_count').html(cad_count);
     $('#assimes_cad_total').html(total);
-    this.el.find('#assimes_cad_chart').show();
+    $('#assimes_cad_chart').show();
   }
 });
 });

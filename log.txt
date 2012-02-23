@@ -27,3 +27,23 @@ yep
 None
 yep
 test
+select pop_name, minlon, minlat, frequency from
+  (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="C") a
+  join interpretome_ancestry.alfred_populations using (pop_uid)
+
+    select pop_name, minlon, minlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+{'strand': u'-'}
+
+    select pop_name, minlon, minlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+-
+
+    select pop_name, minlon, minlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="G") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  

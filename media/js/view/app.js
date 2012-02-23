@@ -260,12 +260,12 @@ window.AppView = Backbone.View.extend({
   },
   
   change_population_from_toolbar: function(event) {
-    var population = this.el.find('#toolbar-population option:selected').val();
+    var population = $('#toolbar-population option:selected').val();
     this.change_population(population);
   },
   
   change_population_from_check: function(event) {
-    var population = this.el.find('#check-population option:selected').val();
+    var population = $('#check-population option:selected').val();
     this.change_population(population);
   },
   
@@ -285,7 +285,7 @@ window.AppView = Backbone.View.extend({
   check_any_genome: function(name) {
     user = get_user();
     if (_.isEmpty(window.App.users) || _.isEmpty(user.snps)) {
-      this.el.find('#please-load-genome').dialog({
+      $('#please-load-genome').dialog({
         modal: true, resizable: false, width: 400, buttons: {
           'Cancel': function() {$(this).dialog('close');}
         }
@@ -301,7 +301,7 @@ window.AppView = Backbone.View.extend({
   
   check_population: function() {
     if (get_user().population == null) {
-      this.el.find('#please-select-population').dialog({
+      $('#please-select-population').dialog({
         modal: true, resizable: false, buttons: {
           'Cancel': function() {$(this).dialog('close');}
         }

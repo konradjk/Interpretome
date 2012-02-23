@@ -34,7 +34,7 @@ window.PCAView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  
 	  $('button').button();
 	  $('.help > div').show();

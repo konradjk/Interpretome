@@ -30,28 +30,28 @@ window.DiabetesView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  
-	  this.el.find('button').button();
+	  $('button').button();
 	  match_style(this.el);
 	  
-	  this.diabetes_snp_template = this.el.find('#diabetes-snp-template').html();
+	  this.diabetes_snp_template = $('#diabetes-snp-template').html();
 	  
     this.has_loaded = true;
   },
   
   click_compute_diabetes: function(event) {
-    this.el.find('.required').hide();
+    $('.required').hide();
     if (window.App.check_all() == false) return;
     $('#diabetes-chart').empty();
     
-    this.el.find('#diabetes-table tr').slice(1).remove();
-    this.el.find('#diabetes-table').hide();
+    $('#diabetes-table tr').slice(1).remove();
+    $('#diabetes-table').hide();
     
     if (!(get_user().population in this.priors)) {
-      this.el.find('#pop-error-box').empty();
-      this.el.find('#please-choose-another-population').show('slow');
-      this.el.find('#pop-error-box').append(get_user().population);
+      $('#pop-error-box').empty();
+      $('#please-choose-another-population').show('slow');
+      $('#pop-error-box').append(get_user().population);
       return;
     }
     
@@ -76,10 +76,10 @@ window.DiabetesView = Backbone.View.extend({
     data.addColumn('number', 'Prior');
     data.addRow(['Prior', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[get_user().population]]);
     
-    self.el.find('#diabetes-table').append(
+    $('#diabetes-table').append(
       '<tr><td><strong>Prior</td><td></td><td></td><td></td><td></td></tr>'
     );
-    self.el.find('#diabetes-table tr:last').
+    $('#diabetes-table tr:last').
           append('<td>' + parseFloat(lr).toFixed(3) + '</td><td>' + parseFloat(lr).toFixed(3) +
                  '</td><td>' + parseFloat(100*compute_probability(lr)).toFixed(3) + '% </td>');
     for (var i = 0; all_dbsnps[i]; i++) {
@@ -90,16 +90,16 @@ window.DiabetesView = Backbone.View.extend({
         if (!compare_arrays(user_snp.genotype.split(''), study_snp.genotype.split(''))) continue;
         user_snp.study_size = study_snp.study_size;
         user_snp.LR = study_snp.LR;
-        self.el.find('#diabetes-table').append(_.template(self.diabetes_snp_template, user_snp));
+        $('#diabetes-table').append(_.template(self.diabetes_snp_template, user_snp));
 	      lr = lr * study_snp.LR;
-	      self.el.find('#diabetes-table tr:last').
+	      $('#diabetes-table tr:last').
 	        append('<td>' + study_snp.LR.toFixed(3) + '</td><td>' + parseFloat(lr).toFixed(3) + 
 	          '</td><td>' + parseFloat(100 * compute_probability(lr)).toFixed(3) + '% </td>');
 	      data.addRow([study_snp.dbsnp + '', Math.round(compute_probability(lr)*1000)/10, 100 * this.priors[get_user().population]]);
 	      break;
       }
     }
-    this.el.find('#diabetes-table').show();
+    $('#diabetes-table').show();
     $("#diabetes-table").tablesorter();
     
     var chart = new google.visualization.LineChart(
@@ -107,7 +107,7 @@ window.DiabetesView = Backbone.View.extend({
     );
     
     chart.draw(data, {
-      width: 0.9 * this.el.find('.main').width(), 
+      width: 800, 
       height: 400, 
       title: 'Running Total (By Likelihood Ratios)',
       fontSize: 14, vAxis: {
@@ -116,18 +116,18 @@ window.DiabetesView = Backbone.View.extend({
         title: 'SNP Index (Ordered By Study Size)'
       }
     });
-    this.el.find('#diabetes-chart').show();
-    this.el.find('#submit-diabetes').parent().show();
+    $('#diabetes-chart').show();
+    $('#submit-diabetes').parent().show();
 	},
 	
 	click_submit_diabetes: function() {
 	  var self = this;
-	  this.el.find('#confirm-submit-diabetes').dialog({modal: true, resizable: false, buttons: {
+	  $('#confirm-submit-diabetes').dialog({modal: true, resizable: false, buttons: {
 	    'Okay': function() {
 	      $(this).dialog('close');
 	      var data = get_user().serialize();
-	      var prior = parseFloat(self.el.find('#diabetes-table tr:eq(1) td:last').html()) / 100;
-	      var estimate = parseFloat(self.el.find('#diabetes-table tr:last td:last').html()) / 100;
+	      var prior = parseFloat($('#diabetes-table tr:eq(1) td:last').html()) / 100;
+	      var estimate = parseFloat($('#diabetes-table tr:last td:last').html()) / 100;
 	      data = $.extend(data, {prior: prior, estimate: estimate, exercise: 'class_diabetes'});
 	      $.get('/submit/', data, check_submission);
 	    },

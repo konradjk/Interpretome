@@ -30,6 +30,14 @@ div#wrap {
 .required {
   color: red;
 }
+div.multicolumn {
+	-moz-column-width: 150px;
+	-moz-column-gap: 20px;
+	-webkit-column-width: 150px;
+	-webkit-column-gap: 20px;
+	column-width: 150px;
+	column-gap: 20px;
+}
 div#header {
   height: 100px;
   padding: 5px;
@@ -106,6 +114,9 @@ div.main {
 }
 .goog-gauge {
   display: inline-block;
+}
+.google-charts {
+  width: 400px;
 }
 #settings .left {
   width: 30%;
