@@ -1,16 +1,16 @@
 <h2>Explore your genome</h2>
-<p>
-  Load your genome file (upper-right corner) and choose some of the analyses above.
-  Currently, only raw data files from 23andme and Lumigenix (<b>unzipped</b>) are supported.
-</p>
+<li>
+  Load your genome file (upper-right corner) and choose some of the analyses above. Currently, only raw data files from 23andme and Lumigenix (<b>unzipped</b>) are supported.
+</li>
+<li>
 Sample genotype files (and a description of the individuals) can be found <a href="http://stanford.edu/class/gene210/files/data/Genomes/">here</a>.
-<br/>
-<br/>
+</li>
+<li>
 A detailed description of the website design and some of the modules can be found in our
 <a href="http://psb.stanford.edu/psb-online/proceedings/psb12/karczewski.pdf">PSB paper</a>
 as well as in blog posts <a href="http://konradjkarczewski.com/2011/06/14/genome-interpretation-2-0/">here</a>
 and <a href="http://konradjkarczewski.com/2011/06/23/more-on-interpretome/">here</a>.
-<br/>
+</li>
 <br/>
 <h3>Interpretome is intended for <i>educational and research purposes only</i>.</h3>
 <p>
@@ -19,13 +19,20 @@ and <a href="http://konradjkarczewski.com/2011/06/23/more-on-interpretome/">here
   or for any errors or omissions: consult your physician with any medical concerns.
   We retain copyright to the materials herein.
   By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
-</p>
-For more information, please read the
+  For more information, please read the full
 <span class='link' onclick='$("#terms").dialog({
   modal: true, width: "80%", buttons: {
     "Close": function() {$(this).dialog("close");}
   }});'>Terms and Conditions</span>.
+</p>
 <br/>
+<h3>How are my data kept private?</h3>
+<p>
+  Your genome will not be sent to any server, it remains on your computer.
+  This website will make requests to a database that only contain "rsid" (without genotypes) and "population" (self-reported in the top-right) information.
+  At no point will any genotypes be sent across the wires (all computation will be done in the browser).
+  Some exercises may have an option to submit personal information, including genotypes or results of analyses, which will be anonymously stored on a secure server.
+</p>
 <br/>
 <div id='not-compatible' class='hidden' style='text-align: center;>'><span style='padding: 10px; color: #FFFFFF; background-color: #FF2222'><strong>Your browser is NOT compatible with the Interpretome! Please use one of the supported browsers</strong></span><br/><br/></div>
 <h4>Compatibility</h4>
@@ -54,7 +61,7 @@ For more information, please read the
 <br/>
 <br/>
 <p>
-  <a href='mailto:konradjk@stanford.edu'>Email us</a> with questions, comments, or concerns.
+  <a href='mailto:help@interpretome.com'>Email us</a> with questions, comments, or concerns.
 </p>
 <div id='about' title='About the Interpreteam' class='dialog hidden'>
   The Interpretome platform was developed for the Stanford University course on
