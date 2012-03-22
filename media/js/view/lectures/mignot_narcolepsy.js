@@ -19,7 +19,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -40,9 +40,9 @@ window.GenericView = Backbone.View.extend({
           or_total += count_genotype(v['genotype'], v['risk'])*Math.log(v['odds_ratio']);
         }
       }
-      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+      $(self.table_id + " > tbody").append(_.template(self.table_template, v));
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     
@@ -51,7 +51,7 @@ window.GenericView = Backbone.View.extend({
   
   finish: function(or_total) {
     $('#mignot_narcolepsy_count').html(or_total.toFixed(2));
-    this.el.find('#mignot_narcolepsy_chart').show();
+    $('#mignot_narcolepsy_chart').show();
   }
 });
 });

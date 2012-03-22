@@ -21,7 +21,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -76,7 +76,7 @@ window.GenericView = Backbone.View.extend({
       });
     });
     
-    this.el.find('#longevity_table').show();
+    $('#longevity_table').show();
     $('#table-options').show();
     
     this.finish(el_probabilities, el_alleles, dbsnps, extended_dbsnps);
@@ -99,7 +99,7 @@ window.GenericView = Backbone.View.extend({
         r_squared: extended_dbsnps[dbsnp].r_squared,
         or: el_odds, ror: el_running_odds[i + 1], rp: el_running_probability[i + 1]
       };
-      self.el.find('#longevity_table').append('<tr><td>' + 
+      $('#longevity_table').append('<tr><td>' + 
         _.map(
           ['dbsnp', 'alleles', 'genotype', 'imputed_from', 'r_squared', 'or', 'ror', 'rp'], 
           function(v) {
@@ -109,19 +109,19 @@ window.GenericView = Backbone.View.extend({
         ).join('</td><td>') + '</td></tr>'
       );
     });
-    this.el.find('#longevity_table').append(
+    $('#longevity_table').append(
       '<tr>' + 
       '<td class="key"><strong>Probability of extreme longevity:</strong>' +
       '</td><td></td><td></td><td></td><td></td><td></td><td></td>' +
       '<td class="value">' + 
-      self.el.find('#longevity_table tr:last td:last').text() + '</td></tr>'
+      $('#longevity_table tr:last td:last').text() + '</td></tr>'
     );
     var chart = new google.visualization.LineChart(
       document.getElementById('longevity_chart')
     );
     
     chart.draw(data, {
-      width: 0.9 * this.el.find('.main').width(), 
+      width: 800, 
       height: 400, 
       title: 'Probability of Extreme Longevity',
       fontSize: 14, vAxis: {
@@ -131,7 +131,7 @@ window.GenericView = Backbone.View.extend({
       }
     });      
     
-    this.el.find('#submit-longevity').parent().show();  
+    $('#submit-longevity').parent().show();  
   }
 });
 });

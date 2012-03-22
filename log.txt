@@ -27,3 +27,52 @@ yep
 None
 yep
 test
+select pop_name, minlon, minlat, frequency from
+  (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="C") a
+  join interpretome_ancestry.alfred_populations using (pop_uid)
+
+    select pop_name, minlon, minlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+{'strand': u'-'}
+
+    select pop_name, minlon, minlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+-
+
+    select pop_name, minlon, minlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rs679783" and allele_name="G") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="4988235"
+select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="rs4988235"
+select site_name from interpretome_ancestry.alfred_polymorphism where site_uid ="4988235"
+select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="rs4988235"
+select site_name from interpretome_ancestry.alfred_polymorphism where site_uid ="{'alfred_uid': u'SI001784U'}"
+select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="rs4988235"
+select site_name from interpretome_ancestry.alfred_polymorphism where site_uid ="SI001784U"
+select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="rs4988235"
+select site_name from interpretome_ancestry.alfred_polymorphism where site_uid ="SI001784U"
+
+    select pop_name, minlon, maxlon, minlat, maxlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="rsintron 13 C/T (-13910 ) SNP" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+
+    select pop_name, minlon, maxlon, minlat, maxlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="intron 13 C/T (-13910 ) SNP" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+
+    select pop_name, minlon, maxlon, minlat, maxlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="intron 13 CT (-13910 ) SNP" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  
+
+    select pop_name, minlon, maxlon, minlat, maxlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="intron 13 CT (-13910 ) SNP" and allele_name="C") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  

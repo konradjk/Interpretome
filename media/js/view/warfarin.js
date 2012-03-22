@@ -26,15 +26,15 @@ window.WarfarinView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-    this.el.append(response);
-    this.el.find('button').button();
+    $(this.el).append(response);
+    $('button').button();
     this.warfarinDoseTemplate = $('#warfarin-dose-template').html();
-	  this.el.find('.submit > div').hide();
-    this.el.find('#race').buttonset();
-    this.el.find('#enzyme').buttonset();
-    this.el.find('#amiodarone').buttonset();
-    this.el.find('#weight_units').buttonset();
-    this.el.find('#height_units').buttonset();
+	  $('.submit > div').hide();
+    $('#race').buttonset();
+    $('#enzyme').buttonset();
+    $('#amiodarone').buttonset();
+    $('#weight_units').buttonset();
+    $('#height_units').buttonset();
     $('#table-options').hide();
 	  match_style(this.el);
     this.has_loaded = true;
@@ -91,7 +91,7 @@ window.WarfarinView = Backbone.View.extend({
     output['genetic_multiplier'] = genetic_multiplier;
     output['genetic_value'] = value;
     output['feature'] = feature;
-    this.el.find('#warfarin-table').append(_.template(this.warfarinDoseTemplate, output));
+    $('#warfarin-table').append(_.template(this.warfarinDoseTemplate, output));
   },
   
   clear_snps: function() {
@@ -103,9 +103,9 @@ window.WarfarinView = Backbone.View.extend({
   
   click_warfarin_dose: function(event) {
     this.clear_snps();
-    var raw_age = this.el.find('#age-textarea').val();
-    var raw_height = this.el.find('#height-textarea').val();
-    var raw_weight = this.el.find('#weight-textarea').val();
+    var raw_age = $('#age-textarea').val();
+    var raw_height = $('#height-textarea').val();
+    var raw_weight = $('#weight-textarea').val();
     var raw_race = $('#race label[aria-pressed="true"]').attr('for');
     var raw_enzyme = $('#enzyme label[aria-pressed="true"]').attr('for');
     var raw_amiodarone = $('#amiodarone label[aria-pressed="true"]').attr('for');
@@ -167,7 +167,7 @@ window.WarfarinView = Backbone.View.extend({
     results['clinical_total'] = 4.0376;
     results['genetic_total'] = 5.6044;
     
-    this.el.find('#warfarin-table').show();
+    $('#warfarin-table').show();
     results = this.calculate_and_print_factor('Age (in decades)', results, -0.2546, -0.2614, decades);
     results = this.calculate_and_print_factor('Height (in cm)', results, 0.0118, 0.0087, user.height);
     results = this.calculate_and_print_factor('Weight (in kg)', results, 0.0134, 0.0128, user.weight);
@@ -271,32 +271,32 @@ window.WarfarinView = Backbone.View.extend({
   },
   
   check_warfarin: function(){
-    this.el.find('.required').hide();
+    $('.required').hide();
     if (window.App.check_genome() == false) return false;
     user = get_user();
     var works = true;
     if (user.age == null) {
-      this.el.find('#please-enter-age').show('slow');
+      $('#please-enter-age').show('slow');
       works = false;
     }
     if (user.height == null) {
-      this.el.find('#please-enter-height').show('slow');
+      $('#please-enter-height').show('slow');
       works = false;
     }
     if (user.weight == null) {
-      this.el.find('#please-enter-weight').show('slow');
+      $('#please-enter-weight').show('slow');
       works = false;
     }
     if (user.race == null) {
-      this.el.find('#please-select-race').show('slow');
+      $('#please-select-race').show('slow');
       works = false;
     }
     if (user.enzyme == null) {
-      this.el.find('#please-select-enzyme').show('slow');
+      $('#please-select-enzyme').show('slow');
       works = false;
     }
     if (user.amiodarone == null) {
-      this.el.find('#please-select-amiodarone').show('slow');
+      $('#please-select-amiodarone').show('slow');
       works = false;
     }
     return works;

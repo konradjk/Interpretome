@@ -30,11 +30,11 @@ window.PaintingView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
-	  this.el.find('button').button();
+	  $(this.el).append(response);
+	  $('button').button();
     $('#painting_options').buttonset();
-    this.el.find('#advanced-painting').accordion({autoHeight: true, minHeight: 1000, collapsible: true, active: false});
-    this.el.find('#painting-genome').dialog({modal: true, resizable: false, autoOpen: false});
+    $('#advanced-painting').accordion({autoHeight: true, minHeight: 1000, collapsible: true, active: false});
+    $('#painting-genome').dialog({modal: true, resizable: false, autoOpen: false});
     $('#painting-bar').progressbar();
     
     $('#smoothing-slider').slider({

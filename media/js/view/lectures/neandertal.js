@@ -19,7 +19,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -41,11 +41,11 @@ window.GenericView = Backbone.View.extend({
         total_index += count;
         v['count'] = count;
         v['genotype'] = snp.genotype;
-        self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+        $(self.table_id + " > tbody").append(_.template(self.table_template, v));
         total += 2;
       }
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     
@@ -67,7 +67,7 @@ window.GenericView = Backbone.View.extend({
         yellowFrom:total/8, yellowTo: total/4, minorTicks: 5};
     chart.draw(data, options);
     
-    this.el.find('#neandertal_chart').show();
+    $('#neandertal_chart').show();
   }
 });
 });

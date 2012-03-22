@@ -34,7 +34,7 @@ window.PCAView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  
 	  $('button').button();
 	  $('.help > div').show();
@@ -151,7 +151,7 @@ window.PCAView = Backbone.View.extend({
       if ($('#popres_level label[aria-pressed="true"]').attr('for') == 'popres_2') {
         my_color = 'rgba(0, 0, 0, 1)';
       }
-      self.series_data.push({ name: user, color: my_color, marker: { symbol: 'square', radius: 8 }, data: [[pc1[user], pc2[user]]]});
+      self.series_data.push({ name: user, color: my_color, marker: { symbol: 'square', radius: 6 }, data: [[pc1[user], pc2[user]]]});
     });
     this.pc1_var = response['variances']['pc' + $('#pcx-axis option:selected').val()]*100;
     this.pc2_var = response['variances']['pc' + $('#pcy-axis option:selected').val()]*100;
@@ -178,7 +178,7 @@ window.PCAView = Backbone.View.extend({
     xnum = $('#pcx-axis option:selected').val();
     ynum = $('#pcy-axis option:selected').val();
     
-    chart = new Highcharts.Chart({
+    pca_chart = new Highcharts.Chart({
     chart: {
          renderTo: 'pca-plot', 
          defaultSeriesType: 'scatter',

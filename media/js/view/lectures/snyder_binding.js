@@ -19,7 +19,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -37,11 +37,11 @@ window.GenericView = Backbone.View.extend({
       $.each(array, function(i, v) {
         if (snp != undefined && v['genotype'] == snp['genotype']) {
           _.extend(v, snp);
-          self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+          $(self.table_id + " > tbody").append(_.template(self.table_template, v));
         }
       });
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     

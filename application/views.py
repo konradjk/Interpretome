@@ -314,6 +314,43 @@ def get_painting_params(request):
   
   return http.HttpResponse(simplejson.dumps(response), mimetype = "application/json")
 
+def get_snps_on_map(request):
+  dbsnps = helpers.check_dbsnp_array(request.GET.get('dbsnps', None))
+  cursor = connections['default'].dict_cursor()
+  output = {}
+  for dbsnp in dbsnps:
+    query = 'select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="rs%s"' % dbsnp
+    output[dbsnp] = cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(output), mimetype = "application/json")
+
+def get_hgdp_allele_frequencies(request):
+  dbsnp = helpers.check_dbsnp(request.GET.get('dbsnp', None))
+  ref = helpers.check_base(request.GET.get('reference', None))
+  cursor = connections['default'].dict_cursor()
+  query = 'select alfred_uid from interpretome_ancestry.alfred_variant_info where rs_number ="rs%s"' % dbsnp
+  cursor.execute(query)
+  uid = cursor.fetchone()
+  if uid is None:
+    return http.HttpResponseBadRequest()
+  query = 'select site_name from interpretome_ancestry.alfred_polymorphism where site_uid ="%s"' % uid['alfred_uid']
+  cursor.execute(query)
+  site_name = cursor.fetchone()['site_name'].replace('/', '')
+  if site_name is None:
+    return http.HttpResponseBadRequest()
+  query = 'select strand from ucsc_snp130 where rsid=%s' % dbsnp
+  cursor.execute(query)
+  strand = cursor.fetchone()['strand']
+  if strand == '-':
+    ref = helpers.flip_allele(ref)
+  query = '''
+    select pop_name, minlon, maxlon, minlat, maxlat, frequency from
+    (select * from interpretome_ancestry.alfred where site_name="%s" and allele_name="%s") a
+    join interpretome_ancestry.alfred_populations using (pop_uid)
+  ''' % (site_name, ref)
+  cursor.execute(query)
+  data = cursor.fetchall()
+  return http.HttpResponse(simplejson.dumps(data), mimetype = "application/json")
+  
 def get_allele_frequencies(request):
   dbsnps = helpers.check_dbsnp_array(request.GET.get('snps', None))
   population = helpers.check_population(request.GET.get('population', None))

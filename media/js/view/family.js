@@ -19,8 +19,8 @@ window.FamilyView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
-	  this.el.find('button').button();
+	  $(this.el).append(response);
+	  $('button').button();
     match_style(this.el);
     this.has_loaded = true;
   },

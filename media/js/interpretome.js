@@ -184,7 +184,7 @@ function check_submission(response){
 
 function match_style(el) {
   $('.secondary-color').css('color', get_secondary_color());
-  el.find('.ui-button-text').addClass('small-button');
+  $(el).find('.ui-button-text').addClass('small-button');
 }
 
 function compare_arrays(a1, a2) {

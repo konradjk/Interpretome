@@ -20,7 +20,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -40,7 +40,7 @@ window.GenericView = Backbone.View.extend({
     
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+      $(self.table_id + " > tbody").append(_.template(self.table_template, v));
       
       if (v['genotype'] != '??'){
         var count = count_genotype(v['genotype'], v['ancestral']);
@@ -50,7 +50,7 @@ window.GenericView = Backbone.View.extend({
         total += 2;
       }
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     
@@ -75,7 +75,7 @@ window.GenericView = Backbone.View.extend({
         yellowFrom:total/4, yellowTo: total/2, minorTicks: 5};
     chart.draw(data, options);
     
-    this.el.find('#selection_chart').show();
+    $('#selection_chart').show();
     
   }
 });

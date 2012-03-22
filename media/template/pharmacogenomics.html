@@ -95,7 +95,14 @@
     (and corresponds to the evidence level at PharmGKB).
     Additional annotations can be found at <a href='http://www.pharmgkb.org'>PharmGKB</a>.
     <br/><br/>
-    In the "rare" variant section, you can
+    In the "rare" variant section, data for all rare variants that are
+    below the selected allele freqeuncy threshold (but found in dbSNP)
+    and in a gene that has a known interaction with a drug.
+    <br/>
+    These effect of variants is then predicted using PolyPhen, which assigns a "score" based on various properties of the variant
+    (described <a href="http://www.ncbi.nlm.nih.gov/pubmed/20354512">here</a>).
+    This score is then converted to a designation of "benign," "possibly damaging," or "probably damaging."
+    This is simply a prediction of the variant for the function of the gene, and may not have any relation to the gene's relationship with the drug.
     <br/><br/>
     Note that these annotations (curated or predicted) are not intended as diagnoses.
     They are based on published scientific evidence, but have not been evaluated by the FDA for clinical decision making.

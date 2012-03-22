@@ -25,10 +25,10 @@ window.SimilarityView = Backbone.View.extend({
     
   loaded: function(response) {
     $('#tabs').tabs('select', '#similarity');
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  
 	  // Widget initialization.
-	  this.el.find('button').button();
+	  $('button').button();
 	  $('#table-options').hide();
     
     $('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});

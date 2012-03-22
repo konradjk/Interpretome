@@ -12,19 +12,18 @@
 
     <link rel='stylesheet' type='text/css' href='/media/css/interpretome.css'>
 
-    <link rel='stylesheet' type='text/css'
-    href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
+    <link rel='stylesheet' type='text/css' href='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/themes/flick/jquery-ui.css' />
 
-    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js'>
+    <script type='text/javascript' src='/media/js/utils/jquery-1.7.1.min.js'>
     </script>
-    <script type='text/javascript' src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js'>
+    <script type='text/javascript' src='/media/js/utils/jquery-ui.min.js'>
     </script>
-    <script type='text/javascript' src='http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js'>
+    <script type='text/javascript' src='/media/js/utils/jquery.tmpl.min.js'>
     </script>
     <script type="text/javascript" src="/media/js/jquery/jquery.tablesorter.min.js"></script>
-    <script type='text/javascript' src='http://documentcloud.github.com/underscore/underscore-min.js'>
+    <script type='text/javascript' src='/media/js/utils/underscore-min.js'>
     </script>
-    <script type='text/javascript' src='http://documentcloud.github.com/backbone/backbone.js'>
+    <script type='text/javascript' src='/media/js/utils/backbone-min.js'>
     </script>
     <script type="text/javascript" src='/media/js/jquery/theme_switcher_tool.js'>
     </script>
@@ -67,9 +66,12 @@
     </script>
     <script type='text/javascript' src='/media/js/sylvester.js'>
     </script>
-    <script type='text/javascript' src='/media/js/highcharts.js'>
+    <script type='text/javascript' src='/media/js/highcharts_2.2.0.js'>
     </script>
-    <script type="text/javascript" src="https://www.google.com/jsapi">
+    <!--<script type="text/javascript"-->
+    <!--  src="http://maps.googleapis.com/maps/api/js?key=AIzaSyCVa-mkXhJMpBiAzRZoM3xWHPY-ye8YwwA&sensor=false">-->
+    <!--</script>-->
+    <script type="text/javascript" src="https://www.google.com/jsapi?key=AIzaSyCVa-mkXhJMpBiAzRZoM3xWHPY-ye8YwwA">
     </script>
     <script type="text/javascript">
       google.load('visualization', '1', {'packages': ['corechart', 'gauge']});
@@ -189,22 +191,13 @@
                   We assume no responsibility for any injury or damage to persons or property arising out of or related to any use of interpretome annotations
                   or for any errors or omissions: consult your physician with any medical concerns.
                   We retain copyright to the materials herein.
-                  By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
-                </p>
+                  By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation
+                  and that you accept the full
+                  <span class='link' onclick='$("#terms").dialog({
+                    modal: true, width: "80%", buttons: {
+                      "Close": function() {$(this).dialog("close");}
+                    }});'>Terms and Conditions</span>.
                 <br/>
-                <h3>How is my data kept private?</h3>
-                <p>
-                  Your genome will not be sent to any server, it remains on your computer.
-                  This website will make requests to a database that only contain "rsid" (without genotypes) and "population" (self-reported in the top-right) information.
-                  At no point will any genotypes be sent across the wires (all computation will be done in the browser).
-                </p>
-                <br>
-                <p>
-                  Some exercises may have an option to submit personal information, including genotypes or results of analyses.
-                  Entry of your data is not required and all information will be anonymously stored on a secure server.
-                  However, there is a theoretical possibility that this information can be intercepted and misused.
-                  If you are accessing this site on an unecrypted WiFi network, any party may observe the data sent over the connection.
-                </p>
                 <br/>
                 Please feel free to <a href='mailto:help@interpretome.com'>email us</a> with questions, comments, or concerns.
                 <br/>
@@ -432,7 +425,7 @@
         Nothing was submitted.
       </div>
       <div id='footer'>
-        &copy; 2011 Karczewski, Tirrell, Kim, and the Interpreteam
+        &copy; 2011-2012 Karczewski, Tirrell, Kim, and the Interpreteam
         <br />
         <span class='link' onclick='$("#terms").dialog({
           modal: true, width: "80%", buttons: {
@@ -449,6 +442,22 @@
 	          We retain copyright to the materials herein.
 	          By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
 	        </p>
+          <br/>
+          <p>
+            Recipients acknowledge that this distribution is made available as a 
+            research courtesy, "as is", potentially with defects, without any obligation 
+            on the part of The Board of Trustees of the Leland Stanford Junior 
+            University to provide support, services, or repair.
+            THE BOARD OF TRUSTEES OF THE LELAND STANFORD JUNIOR UNIVERSITY DISCLAIMS ALL 
+            WARRANTIES, EXPRESS OR IMPLIED, WITH REGARD TO THIS SOFTWARE, INCLUDING 
+            WITHOUT LIMITATION ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR 
+            A PARTICULAR PURPOSE, AND IN NO EVENT SHALL THE BOARD OF TRUSTEES OF THE 
+            LELAND STANFORD JUNIOR UNIVERSITY BE LIABLE FOR ANY SPECIAL, INDIRECT OR 
+            CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, 
+            DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, TORT (INCLUDING 
+            NEGLIGENCE) OR STRICT LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE 
+            USE OR PERFORMANCE OF THIS SOFTWARE.
+          </p>
 	        <br/>
 	        <h3>How are my data kept private?</h3>
 	        <p>

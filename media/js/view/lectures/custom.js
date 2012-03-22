@@ -25,7 +25,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
 	  this.counts_table_template = $(this.counts_template_id).html();
 	  this.header_template = $(this.table_header_template_id).html();
@@ -42,10 +42,10 @@ window.GenericView = Backbone.View.extend({
     var countcolidx = [];
     var countcolname = {};
     n = window.App.custom_exercise.head.length;
-    this.el.find(this.table_header_id).append('<th>dbSNP</th>');
-    this.el.find(this.table_header_id).append('<th>Genotype</th>');
-    this.el.find(this.table_header_id).append('<th>Imputed from</th>');
-    this.el.find(this.table_header_id).append('<th>R<sup>2</sup></th>');
+    $(this.table_header_id).append('<th>dbSNP</th>');
+    $(this.table_header_id).append('<th>Genotype</th>');
+    $(this.table_header_id).append('<th>Imputed from</th>');
+    $(this.table_header_id).append('<th>R<sup>2</sup></th>');
     $.each(window.App.custom_exercise.head.slice(1, n), function(i ,v) {
       lv = v.toLowerCase();
       if( lv.slice(0, 6) == 'count(' && lv[lv.length-1] == ')'){
@@ -53,10 +53,10 @@ window.GenericView = Backbone.View.extend({
         countcolidx.push(i);
         counts[i] = 0;
         countcolname[i] = realv;
-        self.el.find(self.table_header_id).append('<th>'+realv+'</th>');
+        $(self.table_header_id).append('<th>'+realv+'</th>');
       }
       else {
-        self.el.find(self.table_header_id).append('<th>'+v+'</th>');
+        $(self.table_header_id).append('<th>'+v+'</th>');
       }
     });
     $.each(response['snps'], function(i, v) {
@@ -72,16 +72,16 @@ window.GenericView = Backbone.View.extend({
            counts[i] += count_genotype(v['genotype'], v[value]);
         }
       });
-      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, {row:output}));
+      $(self.table_id + " > tbody").append(_.template(self.table_template, {row:output}));
     });
     if (countcolidx.length > 0) {
       for(i in countcolidx) {
         idx = countcolidx[i];
-        this.el.find(this.counts_table_id).append(_.template(this.counts_table_template, {colname:countcolname[idx], colcount:counts[idx]}));
+        $(this.counts_table_id).append(_.template(this.counts_table_template, {colname:countcolname[idx], colcount:counts[idx]}));
       }
-      this.el.find(this.counts_section_id).show();
+      $(this.counts_section_id).show();
     }
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     

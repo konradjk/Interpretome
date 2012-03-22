@@ -19,7 +19,7 @@ window.GenericView = Backbone.View.extend({
   },
     
   loaded: function(response) {
-	  this.el.append(response);
+	  $(this.el).append(response);
 	  this.table_template = $(this.template_id).html();
   },
   
@@ -36,11 +36,11 @@ window.GenericView = Backbone.View.extend({
     var east_asian_count = 0;
     $.each(response['snps'], function(i, v) {
       _.extend(v, extended_dbsnps[i]);
-      self.el.find(self.table_id + " > tbody").append(_.template(self.table_template, v));
+      $(self.table_id + " > tbody").append(_.template(self.table_template, v));
       european_count += count_genotype(v['genotype'], v['european_allele']);
       east_asian_count += count_genotype(v['genotype'], v['east_asian_allele']);
     });
-    this.el.find(this.table_id).show();
+    $(this.table_id).show();
     $(this.table_id).tablesorter();
     $('#table-options').show();
     
@@ -50,7 +50,7 @@ window.GenericView = Backbone.View.extend({
   finish: function(european_count, east_asian_count) {
     $('#tang_ancestry_european_count').html(european_count);
     $('#tang_ancestry_east_asian_count').html(east_asian_count);
-    this.el.find('#tang_ancestry_chart').show();
+    $('#tang_ancestry_chart').show();
   }
 });
 });
