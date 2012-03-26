@@ -12,6 +12,8 @@ import MySQLdb.cursors
 import helpers
 from django.db.backends.mysql import base
 
+dbsnp_table = 'dbsnp.snp130'
+
 def dict_cursor(self):
   cursor = self._cursor()
   cursor.close()
@@ -376,9 +378,9 @@ def get_reference_alleles(request):
   
   for dbsnp in dbsnps:
     query = '''
-      SELECT strand, refncbi FROM dbsnp.ucsc_snp130
+      SELECT strand, refncbi FROM %s
       WHERE rsid=%s
-    ''' % (dbsnp)
+    ''' % (dbsnp_table, dbsnp)
     cursor = connections['default'].dict_cursor()
     cursor.execute(query)
     data = cursor.fetchone()
@@ -393,9 +395,9 @@ def get_chrom_pos(request):
   info = {}
   for dbsnp in dbsnps:
     query = '''
-      SELECT chrom, chromstart, chromend FROM dbsnp.ucsc_snp130
+      SELECT chrom, chromstart, chromend FROM %s
       WHERE rsid=%s
-    ''' % (dbsnp)
+    ''' % (dbsnp_table, dbsnp)
     cursor = connections['default'].dict_cursor()
     cursor.execute(query)
     data = cursor.fetchone()
