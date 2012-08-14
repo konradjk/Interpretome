@@ -1,0 +1,22 @@
+/* styles for javascript disabled Popup-EditForm */
+
+#editpreview {
+	margin:5px 0; 	
+	border:3px solid #aaf; 
+	background:#ffc;
+	}
+.previewheader {
+	border-bottom:2px solid #aaf; 
+	padding:5px; 
+	background:#eef; 
+	}
+.previewcontent { 
+	padding:0 1em; 
+	}	
+.previewfooter {
+	border-top:2px solid #aaf; 
+	padding:5px;
+	background:#eef; 
+	}
+
+.togglebutton { display:none; }

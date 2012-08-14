@@ -1,0 +1,11 @@
+version=pmwiki-2.2.30 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0
+author=Utopiah
+charset=UTF-8
+csum=nginx on Windows
+host=85.171.160.186
+name=PmWiki.Requirements
+rev=54
+targets=Cookbook.Standalone,Cookbook.WikiOnAStick
+text=(:Summary:Pre-requisites for running the PmWiki wiki engine:)(:Audience: administrators (basic) :)%0aPrerequisites for running the PmWiki wiki engine:%0a# [[http://php.net/ | PHP]] 4.3 or later%0a** [[http://gophp5.org/ | PHP 5]] or later is recommended%0a# Some sort of webserver that can run PHP scripts.%0a%0aPmWiki has been reported to work with the following OS/webserver combinations:%0a* Apache 1.3 or 2.0, on roughly anything (Unix, Linux, Windows, and Mac OS/X)%0a** [[http://httpd.apache.org/ | Apache 2.2]] or later is recommended%0a* lighttpd (1.4.19 php-fastcgi ssl) on Linux%0a* nginx (0.8.47) on Windows%0a* Microsoft Internet Information Server, on Windows%0a* Linux + [[http://www.litespeedtech.com/|LiteSpeedWeb Server]] Standard Edition %0a* appWeb (a small, php-enabled webserver) executing on a Linksys NSLU2 Network Storage Link device%0a%0aPmWiki has been reported not to work on:%0a* Mac OS before Mac OS X because there's no PHP available%0a* Specific Release Candidate builds of PHP 5.3 for Windows may not work correctly with passwords%0a%0aThe [[(Cookbook:)Standalone]] recipe provides a special, bare-bones webserver application that can be used to run PmWiki in places where another webserver isn't available.%0aPmWiki can also be run from a [[Cookbook:WikiOnAStick | USB drive]].%0a
+time=1315670897

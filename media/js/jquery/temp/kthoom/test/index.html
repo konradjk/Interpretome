@@ -1,0 +1,193 @@
+<html>
+<head>
+  <title>Unit Tests for kthoom</title>
+  <link rel="stylesheet" href="qunit/qunit.css" type="text/css"/>  
+  <script src="qunit/jquery.js"></script>
+  <script type="text/javascript" src="qunit/qunit.js"></script>  
+  <script type="text/javascript" src="../bitjs/binary.js"></script>
+  <script type="text/javascript" src="../decode.js"></script>
+  <script type="text/javascript" src="../bitjs/unzip.js"></script>
+  <script type="text/javascript">
+  $(function() {
+  	// log function
+  	QUnit.log = function(result, message) {
+		if (window.console && window.console.log) {
+			window.console.log(result +' :: '+ message);
+		}
+	};
+	
+	module("Helper Functions");
+
+	test("Test createBinaryString()", function() {
+		expect(7);
+		equal(typeof createBinaryString([65,66,67]), typeof "");
+		equal(createBinaryString([65,66,67]).length, 3);
+		equal(createBinaryString([65,66,67]), "ABC");
+		equal(createBinaryString([97,98,99]), "abc");
+		equal(createBinaryString([0,1,2]), "\u0000\u0001\u0002");
+		equal(createBinaryString([126,127,128,129]), "\u007e\u007f\u0080\u0081");
+		equal(createBinaryString([253,254,255]), "\u00fd\u00fe\u00ff");
+	});
+	
+	test("Test binaryValueToString()", function() {
+		expect(14);
+		// minimum required length
+		equal(binaryValueToString(0),"0");
+		equal(binaryValueToString(1),"1");
+		equal(binaryValueToString(3),"11");
+		equal(binaryValueToString(8),"1000");
+		equal(binaryValueToString(24),"11000");
+		equal(binaryValueToString(256),"100000000");
+		equal(binaryValueToString(257),"100000001");		
+
+		// zero-padded to length
+		equal(binaryValueToString(0,3),"000");
+		equal(binaryValueToString(1,3),"001");
+		equal(binaryValueToString(3,5),"00011");
+		equal(binaryValueToString(8,9),"000001000");
+		equal(binaryValueToString(24,6),"011000");
+		equal(binaryValueToString(256,10),"0100000000");
+		equal(binaryValueToString(257,10),"0100000001");		
+	});
+
+	module("Binary Streams");
+	
+	test("Test ByteStream", function() {
+		expect(9);
+		var bstream = new bitjs.io.ByteStream(createBinaryString([65,66,67,68,69,70]));
+		equal(typeof bstream, typeof {});
+		
+		// test peek number, checking endianness
+		equal(bstream.peekNumber(1), 65);
+		equal(bstream.peekNumber(2), (66<<8)|65);
+		equal(bstream.peekNumber(4), (68<<24)|(67<<16)|(66<<8)|65);
+		
+		// test readNumber
+		equal(bstream.readNumber(1), 65);
+		equal(bstream.readNumber(1), 66);
+		equal(bstream.readNumber(2), (68<<8)|67);
+		
+		// test peekString
+		equal(bstream.peekString(2), "EF");
+		equal(bstream.readString(2), "EF");
+	});
+	
+	test("Test BitStream", function() {
+		expect(5);
+		
+		var bstream = new bitjs.io.BitStream(createBinaryString([0x2D, 0x6E]));
+		equal(typeof bstream, typeof {});
+		
+		// test peek and read bits
+		equal(bstream.peekBits(3), 5);
+		equal(bstream.readBits(3), 5);
+		
+		// test proper peeking and reading of bits over byte boundary
+		equal(bstream.peekBits(7), 69);
+		equal(bstream.readBits(7), 69);
+	});
+	
+	module("Huffman Coding");
+	
+	// see http://tools.ietf.org/html/rfc1951#page-9
+	/*
+            Symbol Length   Code
+            ------ ------   ----
+            A       3        010
+            B       3        011
+            C       3        100
+            D       3        101
+            E       3        110
+            F       2         00
+            G       4       1110
+            H       4       1111	
+	*/
+	test("Test getHuffmanCodes()", function() {
+		expect(19);
+		var hcodes = getHuffmanCodes([3, 3, 3, 3, 3, 2, 4, 4]);
+		equal(typeof hcodes, typeof[]);
+		equal(hcodes.length, 8);
+		
+		equal(typeof hcodes[0], typeof {});
+		
+		// test codes
+		equal(hcodes[0].code, 2);
+		equal(hcodes[1].code, 3);
+		equal(hcodes[2].code, 4);
+		equal(hcodes[3].code, 5);
+		equal(hcodes[4].code, 6);
+		equal(hcodes[5].code, 0);
+		equal(hcodes[6].code, 14);
+		equal(hcodes[7].code, 15);
+		
+		// test lengths
+		equal(hcodes[0].length, 3);
+		equal(hcodes[1].length, 3);
+		equal(hcodes[2].length, 3);
+		equal(hcodes[3].length, 3);
+		equal(hcodes[4].length, 3);
+		equal(hcodes[5].length, 2);
+		equal(hcodes[6].length, 4);
+		equal(hcodes[7].length, 4);		
+	});
+
+/*
+         The Huffman codes for the two alphabets are fixed, and are not
+         represented explicitly in the data.  The Huffman code lengths
+         for the literal/length alphabet are:
+
+                   Lit Value    Bits        Codes
+                   ---------    ----        -----
+                     0 - 143     8          00110000 through
+                                            10111111
+                   144 - 255     9          110010000 through
+                                            111111111
+                   256 - 279     7          0000000 through
+                                            0010111
+                   280 - 287     8          11000000 through
+                                            11000111
+
+*/	
+	test("Test Fixed Huffman Code Table", function() {
+		expect(17);
+		var codeTable = getFixedLiteralTable();
+		equal(typeof codeTable, typeof []);
+		
+		// look up some random values (index is Huffman Code, value is the symbol)
+		
+		// 7-bit codes (256-279)
+		equal(codeTable[0].symbol, 256);
+		equal(codeTable[1].symbol, 257);
+		equal(codeTable[22].symbol, 278);
+		equal(codeTable[23].symbol, 279);
+		
+		// 8-bit codes (0-143)
+		equal(codeTable[48].symbol, 0);
+		equal(codeTable[49].symbol, 1);
+		equal(codeTable[190].symbol, 142);
+		equal(codeTable[191].symbol, 143);
+		
+		// 8-bit codes (280-287)
+		equal(codeTable[192].symbol, 280);
+		equal(codeTable[193].symbol, 281);
+		equal(codeTable[198].symbol, 286);
+		equal(codeTable[199].symbol, 287);
+		
+		// 9-bit codes (144-255)
+		equal(codeTable[400].symbol, 144);
+		equal(codeTable[401].symbol, 145);
+		equal(codeTable[510].symbol, 254);
+		equal(codeTable[511].symbol, 255);
+	});
+	
+  }); 
+  </script>  
+</head>  
+<body>  
+  <h1 id="qunit-header">Unit Tests for kthoom</h1>
+  <h2 id="qunit-banner"></h2>
+  <h2 id="qunit-userAgent"></h2>
+  <ol id="qunit-tests">
+  </ol>
+</body>  
+</html>

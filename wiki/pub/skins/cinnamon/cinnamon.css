@@ -1,0 +1,194 @@
+body {
+font-family: "Dejavu Sans",sans-serif;
+background: #4b0006;
+}
+
+#ccontainer {
+border: 1px solid #dcdcdc;
+width: 85%;
+color: #191919;
+background-color: #ffffff;
+font-size: 95%;
+}
+
+#cwikilogo {
+padding: 5px 3px 5px 3px;
+}
+
+#csearchbox {
+padding: 5px 3px 5px 3px;
+text-align: right;
+font-size: 85%;
+}
+
+#credband {
+color: #ffffff;
+background-color: #78000a;
+font-weight: bold;
+font-size: 95%;
+padding: 4px 3px 4px 3px;
+}
+
+#credband a {
+color: #ffffff;
+font-weight: bold;
+}
+
+#credband a:hover {
+color: #ffffff;
+text-decoration: underline;
+}
+
+#cnavmenu {
+border-right: 1px solid #c8c8c8;
+color: #737373;
+padding: 5px 10px 5px 3px;
+font-size: 85%;
+overflow: hidden;
+width: 22%;
+}
+
+#cnavmenu ul {
+list-style-type: square;
+list-style-image: none;
+}
+
+#cnavmenu a {
+color: #737373;
+}
+
+#cnavmenu a:hover {
+color: #990000;
+text-decoration: underline;
+}
+
+#cpagecontent {
+padding: 5px 3px 5px 10px;
+}
+
+#cpagefooter {
+border-top: 1px solid #d9d9d9;
+color: #6e6e6e;
+font-size: 78%;
+text-align: center;
+padding: 5px 3px 5px 3px;
+}
+
+#wikiedit textarea {
+width: 100%;
+}
+
+a {
+text-decoration: none;
+color: #990000;
+}
+
+a:visited {
+color: #00665d;
+}
+
+a:active {
+color: #665d00;
+}
+
+a:hover {
+text-decoration: underline;
+color: #ff2200;
+}
+
+a.createlinktext {
+color: #ff0000;
+text-decoration: underline;
+border-bottom: none;
+}
+
+a.createlinktext:hover {
+color: #ff0000;
+text-decoration: underline;
+border-bottom: none;
+}
+
+hr {
+height: 1px;
+color: #000000;
+background-color: #000000;
+border: 0;
+margin: 0.2em 0 0.3em 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+font-weight: bold;
+margin: 0;
+padding-top: 1px;
+padding-bottom: 1px;
+}
+
+h1 {
+font-size: 130%;
+color: #650009;
+}
+
+h2 {
+font-size: 120%;
+color: #650009;
+}
+
+h3 {
+font-size: 110%;
+color: #650009;
+}
+
+h4 {
+font-size: 100%;
+color: #650009;
+}
+
+h1 code, h2 code, h3 code, h4 code {
+color: #000000;
+}
+
+h1 pre, h2 pre, h3 pre, h4 pre {
+color: #000000;
+}
+
+h5 {
+font-size: 90%;
+}
+
+h6 {
+font-size: 80%;
+}
+
+ul {
+list-style-type: square;
+list-style-image: url("bullet.gif");
+margin: 0 0 0 20px;
+padding: 0;
+}
+
+ul.historylist {
+list-style-image: none;
+}
+
+ol {
+margin: 0 0 0 27px;
+padding:0;
+list-style-image: none;
+}
+
+li {
+margin-bottom: 0;
+}
+
+code {
+font-size: 107%;
+overflow: auto;
+}
+
+pre {
+border: 1px solid #999999;
+background-color: #f5f5f5;
+padding: 1px 2px 1px 2px;
+font-size: 107%;
+overflow: auto;
+}

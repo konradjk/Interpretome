@@ -1,0 +1,12 @@
+version=pmwiki-2.2.30 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (X11; Linux x86_64; rv:5.0) Gecko/20100101 Firefox/5.0
+author=Petko
+charset=UTF-8
+csum=links to pages not in the distribution should be absolute
+ctime=1176363304
+host=85.171.160.186
+name=PmWiki.Version
+rev=10
+targets=PmWiki.PageVariables,SiteAdmin.Status,PmWiki.BasicVariables
+text=(:Summary: Determining and displaying the current version of PmWiki ({$Version}):)%0a!! Obtaining the PmWiki version%0aUse the [@{$Version}@] [[page variable(s)]] to display the current version of PmWiki.%0a%0aSee the [[SiteAdmin.Status]] page for the current version and version number.%0a%0aFor example%0a(:markup:)%0aThis wiki installation is running PmWiki {$Version}, version number {$VersionNum}.%0a-%3cThe default group is {$DefaultGroup}.%0a-%3cThe default name is {$DefaultName}.%0a-%3cThe site group is {$SiteGroup}%0a(:markupend:)%0a%0aSee also [[basic variables]].%0a%0aThe script @@version.php@@  contains the declaration of the version number.%0a%0a!! Obtaining recipe versions%0aThe [[(PmWiki:)Site Analyzer]] can be used to display the current version of %0a[[Cookbook(:/)]] recipes.%0a%0aSee also [[Cookbook:RecipeCheck]]%0a%0a%0a
+time=1315670897

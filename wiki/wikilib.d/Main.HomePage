@@ -1,0 +1,11 @@
+version=pmwiki-2.2.32 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows NT 6.1; rv:5.0) Gecko/20100101 Firefox/5.0
+author=Rogutės
+charset=UTF-8
+csum=Remove a space between a link and a dot (looks bad when the lone dot line-wraps).
+host=78.62.122.124
+name=Main.HomePage
+rev=202
+targets=PmWiki.DocumentationIndex,PmWiki.InitialSetupTasks,PmWiki.BasicEditing,Main.WikiSandbox
+text=Welcome to PmWiki!%0a%0aA local copy of PmWiki's%0adocumentation has been installed along with the software,%0aand is available via the [[PmWiki/documentation index]].  %0a%0aTo continue setting up PmWiki, see [[PmWiki/initial setup tasks]].%0a%0aThe [[PmWiki/basic editing]] page describes how to create pages%0ain PmWiki.  You can practice editing in the [[wiki sandbox]].%0a%0aMore information about PmWiki is available from http://www.pmwiki.org.%0a
+time=1316331993

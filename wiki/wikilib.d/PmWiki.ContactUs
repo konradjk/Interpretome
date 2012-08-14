@@ -1,0 +1,11 @@
+version=pmwiki-2.2.35 ordered=1 urlencoded=1
+author=Petko
+charset=UTF-8
+csum=
+ctime=1276999784
+name=PmWiki.ContactUs
+rev=15
+targets=PmWiki.Petko,PITS.PITS,PmWiki.MailingLists
+text=(:title Contact us:)(:Summary:How to reach the PmWiki developers and community:)%0aThis page contains information about some ways to contact us.%0a%0aThe primary author of PmWiki is Dr. Patrick R. Michaud (Pm) who can be contacted at http://www.pmichaud.com.%0a%0aThe current core developer of PmWiki and webmaster of pmwiki.org is [[PmWiki:Petko|Petko Yotov]] who can be contacted via e-mail at [[(mailto:)5ko@5ko.fr]].%0a%0aFor security bug disclosures please [[mailto:5ko@5ko.fr?cc=pmichaud@pobox.com&subject=PmWiki+security+disclosure|e-mail Petko with cc: to Pm]].%0a%0aYou can report bugs to our [[(PITS:)PITS]] issue tracking system.%0a%0aIf you have questions about the software, you can ask them on the [[(http://)www.pmwiki.org]] site talk pages.%0aYou can also join our public [[(PmWiki:)mailing lists]].%0a%0a
+time=1321094933
+title=Contact us

@@ -1,0 +1,140 @@
+/* CSS Document */
+/*===================  COLORS  ===================
+# c-gold.css  part of the Triad skin for Pmwiki
+#================== gold theme =================*/
+
+body { background:#660000; }
+#outer-box { border:1px solid #003466; }
+#left-box { background: url(../images/brown-brd-right.jpg) right repeat-y; } /*left: right border img */
+#outer-box { background:#6F3F0B url(../images/brown-brd-left.jpg) repeat-y; }/*left: left border img + background */
+#center-box, #right-box, #footnavbox {background:url(../images/gold-grad.gif) bottom left fixed repeat-x #ffe199; } /* main background color */
+
+a:link   { color:#009;}
+a:visited{ color:#009;}
+a:active { color:#009;}
+a:hover  { color:#900;}
+
+#header { background:#fc0 url(../images/gold-top.jpg) repeat-x; /* header background image */
+          xborder-bottom:1px solid #376EA4; }
+#header a { color:#900; }
+#header .inputbutton a {color:#006;}
+#header {color:#009;}
+
+#topnav, #toggleright input, #toggleleft input {
+		 background:#a80000; } /* toplink bar background color */
+#topnav { border-bottom:1px solid #ff9;  }
+#topnav a, #topnav ul li { color:#fff; }
+#topnav li a:hover, #topnav li a:active  {
+        color: #fff; background: #000080; } /* hover colors */
+
+#toggleright input, #toggleleft input {
+        color:#fff;
+        border:none;
+}
+#toggleleft input { border-right:1px solid #fff }
+#toggleright input { border-left:1px solid #fff }
+
+#toggleright input:hover, #toggleleft input:hover { background:#000080; }
+
+#titlebar a { color:#900; }
+#titlebar a:hover { color:#009; }
+
+#contentbox { background:#fff;
+              border:1px solid #003466; }
+
+#content h1, #content h2, #content h3,
+#content h4, #content h5, #content h6 { color:#900; }
+
+.quickref { background:#eef }
+
+#sidebar p, #sidebar h1, #sidebar h2, #sidebar h3, #sidebar h4 { color:#ff9 }
+#sidebar .sidehead, #sidebar p.sidehead a.wikilink { color:#ff9 } /*#5F5F30*/
+
+#sidebar h1 a:link, #sidebar h1 a:visited { color:#FFC27F; }
+#sidebar h1 a:hover, #sidebar h1 a:active,
+#sidebar a:link, #sidebar a:visited { color:#d0d0d0; }
+#sidebar a:hover, #sidebar a:active { color:#fff; text-decoration:none; }
+#sidebar p.sidehead a.wikilink:hover  { color:#fff; background: #000080; } /* hover colors */
+#sidebar p.sidehead a.wikilink:active { color:#fff; background: #000080; }
+#sidebar li a:hover, #sidebar li a:active  {
+        color: #fff; background: #000080; } /* hover colors */
+/*#sidebar li, #sidebar h1 { border-bottom: 1px solid #999; }  menu lines */
+/* border-top:1px adds horizontal lines for second level list elements: */
+#sidebar ul ul li  { border-top:0px solid #999; border-bottom:0;}
+#sidebar a.selflink { color:#fff }
+#sidebar a:hover.selflink { background:none; color:#fff }
+#sidebarfooter { border-top:0px solid #999; }
+
+.inputbox, .inputtext { background: #FFF3D6;
+            border-top:1px solid #99c;
+            border-left:1px solid #99c;
+            border-right:1px solid #eee;
+            border-bottom:1px solid #eee; }
+.inputbox:hover, .inputbox:focus { color:#000; background:#fff; }
+/* comment next six lines to get a standard button */
+.inputbutton {color:#000066; background:#FFD980;
+            border-top:1px solid #eef;
+            border-left:1px solid #eef;
+            border-right:1px solid #99c;
+            border-bottom:1px solid #99c;}
+.inputbutton:hover { color:#000080; background:#fff }
+
+.navbuttons li a {  }
+.navbuttons li a:hover, #footaction li a:active { color:#000080; background:#fff }
+.navbuttons li a, a.fontsizer{
+            background:#FFD980;
+            color:#006;
+            border-top:1px solid #eee;
+            border-left:1px solid #eee;
+            border-right:1px solid #99c;
+            border-bottom:1px solid #99c;}
+
+#footer-box { border-top:1px solid #003466;
+        background:#eee url(../images/gold-foot.jpg) repeat-x;}
+
+#content ul { list-style-image: url(../images/bullet7.gif); }
+#rightbar ul { list-style:none; }
+
+#rightbar a.fontsizer, #header-box a.fontsizer  {
+        background:#FFD980; color:#009;
+        border-top:0;
+        border-left:0;
+        border-bottom:1px solid #1D5183;
+        border-right:1px solid #1D5183;}
+#content a.fontsizer { background:#FFD980; }
+#sidebar a.fontsizer { background:#90510E; }
+#header-box a.fontsizer:hover,
+#rightbar a.fontsizer:hover,
+#sidebar a.fontsizer:hover,
+#content a.fontsizer:hover { background:#000080; color:#fff; }
+
+#sidebar  p { color:#eee; }
+
+.clip, .news { border:1px solid #003B62;
+        color:#000;
+        background:#FFF3D6 url(../images/gold-clip-left.jpg) repeat-y;
+        padding:0 8px 5px 8px;
+        margin-bottom:5px; }
+
+#sidebar .sideclip { background:#FFF3D6;
+        border:1px solid #003B62;
+        color:#000;
+        padding:2px 0px;
+        margin:5px 5px 0 5px; }
+#sidebar .sideclip p, #sidebar .sideclip h4 {
+        color:#000;
+        line-height:1.2em;}
+#sidebar .sideclip a { color:#009; text-decoration:underline; }
+
+#sidebar .trailmenu ul li a { color:#efe; }
+#sidebar .trailmenu ul ul li a { color:#afa; }
+#sidebar .trailmenu ul ul ul li a { color:#faa; }
+
+#editpreview { border-color:#FAAF00; background:#fff; }
+.previewheader, .previewfooter, #edithelp{ border-color:#FAAF00; background:#FFF3D6;}
+
+/* comment message boxes */
+.messagehead, .messageheader, .messagefooter { background:#FFD980; }
+.messageauthor { background:#FFD980; }
+.messagesubject { background:#FFE8B3; }
+.messageitem, .messagetext, .bquote { background:#FFF3D6; }

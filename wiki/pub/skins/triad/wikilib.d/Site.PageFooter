@@ -1,0 +1,11 @@
+version=pmwiki-2.0.beta39 ordered=1
+newline=²
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.7.8) Gecko/20050511 Firefox/1.0.4
+author=Hans
+host=127.0.0.1
+name=Site.PageFooter
+rev=3
+targets=PmWikiAdmin.PageFooter
+text=%center%[[Site.Triad-Configuration|skin config]] ''** {$Version} **''
+time=1119398166
+

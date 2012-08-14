@@ -1,0 +1,12 @@
+version=pmwiki-2.2.15 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2
+author=
+charset=ISO-8859-1
+csum=
+ctime=1142346980
+host=127.0.0.1
+name=Site.Popup-EditQuickRef
+rev=0
+targets=PmWiki.Tables,PmWiki.TextFormattingRules,PmWiki.DocumentationIndex,PmWiki.TableDirectives
+text=>>id=edithelp class=quickref%3c%3c%0a%25target=_blank%25[[PmWiki/Text Formatting Rules]] - [[PmWiki/Documentation Index]] \\%0a%25target=_blank%25'''Tables:''' [[PmWiki/Tables|Simple Tables]] - [[PmWiki/Table Directives]] \\%0a'''Paragraphs:''' seperated by empty line; \\%0a'''[=->=]''' to indent text, '''[=-%3c=]''' hanging text \\%0a'''Line break:''' '''[=\\=]''' or '''[=[[%3c%3c]]=]''' \\%0a'''Lists:''' '''*''' for bullet lists, '''#''' for numbered lists, \\%0a''':'''term''':'''definition for definition lists \\%0a'''Emphasis:''' [=''italics''=], [='''bold'''=], [='''''bold italics'''''=], \\%0a[=@@typewriter@@=] (monospaced) \\%0a'''Links:''' [=[[another page]]=], [=[[another page | link text]]=], \\%0a[=[[http://www.example.com]]=], [=[[#anchor]]=] \\%0a'''Groups:''' [=[[Group/Page]]=] displays Page, \\%0a[=[[Group.Page]]=] displays Group.Page, \\%0a[=[[Group(.Page)]]=] displays Group \\%0a'''Separators:''' '''!''', '''!!''', '''!!!''' for headings, '''[=----=]''' for horizontal line, '''[======]''' for double hor. line \\%0a'''Change size:''' [=[+...+]=] is bigger, [=[-...-]=] is smaller, \\%0a'''[='^=]'''superscript'''[=^'=]''', '''[='_=]'''subscript'''[=_'=]''' \\%0a'''Prevent formatting:''' [=[=...=]=]%0a>>%3c%3c
+time=1270244326

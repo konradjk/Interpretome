@@ -1,0 +1,91 @@
+<!DOCTYPE html 
+	PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>$HTMLTitleFmt</title>
+	<meta http-equiv="Content-Type" content="text/html" />
+	$PmWikiCoreStylesFmt
+<!--HTMLHeader-->
+
+</head>
+
+<body $BodyAttrFmt>
+ <script type='text/javascript' ><!--
+   document.cookie = 'javascript=1; path=/';
+   if (fontSize) { fontSize.fontSizeInit();}
+//   document.write("<a href='#'></a >");
+ --></script>
+<table id="outer-box" border="0" cellspacing="0" cellpadding="0" >
+<tr>
+<td id="header-box" colspan="3" valign="top">
+
+<!--PageHeaderFmt-->
+ <div id='header' class='pageheader'><!--wiki:{$PageHeader} $Group.PageHeader $SiteGroup.PageHeader-->
+  <div class="clearer"><!-- this is a clearer div --></div>
+ </div>
+<!--/PageHeaderFmt-->
+
+<!--PageTopMenuFmt-->
+ <div id="topnavbox">
+  <div id="topnav" class="nav">
+   <div id="toggleleft">$LeftToggleFmt</div>
+   <div id="toggleright">$RightToggleFmt</div>
+	  	<!--wiki:{$PageTopMenu} $Group.PageTopMenu $SiteGroup.PageTopMenu-->
+ </div></div>
+<!--/PageTopMenuFmt-->
+</td>
+</tr>
+
+<tr>
+<!--PageLeftFmt-->
+<td id="left-box" valign="top">
+ <div id='sidebar'>$CompatibilityNotice
+  <div id='sidebarpage'><!--wiki:{$SideBar} $Group.SideBar $SiteGroup.SideBar--></div>
+  <div id="sidebarfooter">
+   <!--wiki:{$SideBarFooter} $Group.SideBarFooter $SiteGroup.SideBarFooter-->
+  </div>
+ </div>
+</td><!-- end div left -->
+<!--/PageLeftFmt-->
+<td id="center-box" valign="top">
+ <div id="contentbox">
+
+<!--PageTitleFmt-->
+  <div id= 'titlebarbox'>
+   <div id='titlebar' >
+	   <!--wiki:$FullName-TitleBar {$TitleBar} $Group.TitleBar $SiteGroup.TitleBar-->
+	 </div>
+	</div>
+<!--/PageTitleFmt-->
+  <div id='content'>
+
+<!--PageText-->
+	  <div class="clearer"><!-- this is a clearer div --></div>
+	</div>
+ </div><!-- end div contentbox -->
+<!--PageFootMenuFmt-->
+ <div id ='footnavbox'>
+  <div id='footnav' class='navbuttons'><!--wiki:{$PageFootMenu} $Group.PageFootMenu $SiteGroup.PageFootMenu--></div>
+ </div>
+<!--/PageFootMenuFmt-->
+</td><!-- end div center -->
+
+<!--PageRightFmt-->
+<td id="right-box" valign="top">
+  <div id="rightbar"><!--wiki:$FullName-RightBar {$RightBar} $Group.RightBar $SiteGroup.RightBar--></div>
+</td><!-- end div right -->
+<!--/PageRightFmt-->
+</tr>
+
+<tr>
+<!--PageFooterFmt-->
+ <td id="footer-box" colspan="3" valign="top">
+	<div id="footer"><!--wiki:{$PageFooter} $Group.PageFooter $SiteGroup.PageFooter--></div>
+ </td>
+<!--/PageFooterFmt-->
+</tr>
+</table><!-- end div outer -->
+<!--HTMLFooter-->
+</body>
+</html>

@@ -1,0 +1,360 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+
+<title>Interactive Demo of figue</title>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<style>
+
+div {
+	padding: 0;
+	margin: 0;
+}
+
+body {
+	font-size:9pt;
+	font-family: Arial;
+}
+
+#input_panel {
+	display: block;
+	clear: both;
+	width:800px;
+}
+
+#algo_panel {
+	clear:both;
+	width: 800px;
+}
+#output_panel {
+	display: none;
+	clear:both;
+	text-align: center;
+	width: 800px;
+}
+
+#data_panel {
+	display:table;
+	float: left ;
+	clear: both;
+	width: 100%;
+}
+
+#data {
+	width: 100%;
+	height: 100px;
+}
+
+#param_panel {
+	display:block;
+	float: left;
+	clear: both;
+	width: 100%;
+	margin-top: 10px;
+}
+
+#param_panel #params {
+	display: table-cell;
+}
+
+
+#cluster_button {
+	width: 100% ;
+	height: 4em;
+	display:table ;
+}
+
+</style>
+
+
+<script type="text/javascript" src="figue.js"></script>
+
+
+<script type="text/javascript">
+/* <![CDATA[ */
+
+function updateDS() {
+	var domobj = document.getElementById('datasets') ;
+	var ds = domobj.options[domobj.selectedIndex].value ;
+	if (ds in datasets)
+		document.getElementById('data').value = datasets[ds] ;
+	else
+		document.getElementById('data').value = "" ;
+}
+
+function parseData(data) {
+	var labels = new Array() ;
+	var vectors = new Array() ;
+	lines = data.split("\n") ;
+	for (var i = 0 ; i < lines.length ; i++) {
+		if (lines[i].length == 0)
+			continue ;
+		var elements = lines[i].split(",") ;
+		var label = elements.shift() ;
+		var vector = new Array() ;
+		for (j = 0 ; j < elements.length ; j++)
+			vector.push(parseFloat(elements[j])) ;
+		vectors.push(vector) ;
+		labels.push(label) ;
+	}
+	return {'labels': labels , 'vectors': vectors} ;
+}
+
+function runAlgo() {
+	var domobj = document.getElementById('algo') ;
+	var algo = domobj.options[domobj.selectedIndex].value ;
+	switch (algo) {
+		case 'kmeans': { runKM() ; break ; }
+		case 'hierarchical': { runHC() ; break ; }
+		case 'fcmeans': { runFCM() ; break ; }
+	}
+	document.getElementById('output_panel').style.display = 'block' ;
+} 
+
+function showParamPanel (visiblePanel) {
+	var panelNames = ['km_panel', 'fcm_panel', 'hc_panel'] ;
+	for (var i = 0 ; i < panelNames.length ; i++)
+		document.getElementById(panelNames[i]).style.display = 'none' ; 
+	document.getElementById(visiblePanel).style.display = 'block' ;
+}
+
+function updateAlgo() {
+	var domobj = document.getElementById('algo') ;
+	var algo = domobj.options[domobj.selectedIndex].value ;
+	switch (algo) {
+		case 'kmeans': { showParamPanel('km_panel') ; break ; }
+		case 'hierarchical': { showParamPanel('hc_panel') ; break ;  }
+		case 'fcmeans': { showParamPanel('fcm_panel') ; break ;  }
+	}
+	document.getElementById('text').innerHTML = ""; 
+	document.getElementById('output_panel').style.display = 'none' ;
+} 
+
+function runKM() {
+	var data = parseData (document.getElementById('data').value) ;
+	var vectors = data['vectors'] ;
+	var labels = data['labels'] ;
+	var domobj = document.getElementById('KM-K') ;
+	var K = parseInt (domobj.options[domobj.selectedIndex].value) ;
+  	var clusters = figue.kmeans(K , vectors);
+	
+	var txt ;
+	if (clusters) {
+		txt = "<table border='1'>" ;
+		txt += "<tr><th>Label</th><th>Vector</th><th>Cluster id</th><th>Cluster centroid</th></tr>";
+
+		for (var i = 0 ; i < vectors.length ; i++) {
+			var index = clusters.assignments[i] ;
+			txt += "<tr><td>" + labels[i] + "</td><td>" + vectors[i] + "</td><td>" + index + "</td><td>" + clusters.centroids[index] + "</td></tr>";
+		}
+		txt += "</table>"
+	} else 
+		txt = "No result (too many clusters/too few different instances (try changing K)" ;
+  document.getElementById('text').innerHTML = txt; 
+}
+
+function runHC() {
+	var data = parseData (document.getElementById('data').value) ;
+	var domobj = document.getElementById('space') ;
+	var space = parseInt (domobj.options[domobj.selectedIndex].value) ;
+	var balanced = (radioValue('balanced') === 'true') ;
+	var withLabel = (radioValue('withLabel') === 'true') ;
+	var withCentroid = (radioValue('withCentroid') === 'true') ;
+	var withDistance = (radioValue('withDistance') === 'true') ;
+	var linkage = parseInt (radioValue('linkage')) ;
+	var distance = parseInt (radioValue('distance')) ;
+	root = figue.agglomerate(data['labels'], data['vectors'] , distance, linkage) ;
+	var pre = document.getElementById('text') ;
+	var text = root.buildDendogram(space, balanced, withLabel,withCentroid,withDistance);
+	if( document.all ) { pre.innerText = text ; } else { pre.innerHTML = text ; }
+}
+
+function runFCM() {
+	var data = parseData (document.getElementById('data').value) ;
+	var vectors = data['vectors'] ;
+	var labels = data['labels'] ;
+	var domobj = document.getElementById('FCM-K') ;
+	var K = parseInt (domobj.options[domobj.selectedIndex].value) ;
+	var fuzziness = parseInt (document.getElementById('fuzziness').value) ;
+	var epsilon = parseInt (document.getElementById('epsilon').value) ;
+  	
+	var clusters = figue.fcmeans(K, vectors, epsilon, fuzziness);
+	
+	var txt ;
+	if (clusters) {
+		txt = "<table border='1'>" ;
+		txt += "<tr><th>Cluster id</th><th>Cluster centroid</th></tr>";
+
+		for (var i = 0 ; i < K ; i++) {
+			txt += "<tr><td>" + i + "</td><td>" + clusters.centroids[i] + "</td></tr>";
+		}
+		txt += "</table>"
+		txt += "<br/>"
+		txt += clusters.membershipMatrix ;
+		
+	} else 
+		txt = "No result (too many clusters/too few different instances (try changing K)" ;
+  document.getElementById('text').innerHTML = txt; 
+}
+
+function radioValue(name) {
+	var radios = document.getElementsByName(name) ;
+	for (var i = 0 ; i < radios.length ; i++) 
+		if (radios[i].checked) 
+			return radios[i].value ;
+}
+
+var datasets = {
+	'people': "anna,37,2\nkarin,65,3\njohn,34,2\ntom,38,5\nmarc,38,6\nstephany,38,3\n" ,
+	'firms': "Microsoft,91259,60420\nIBM,400000,98787\nSkype,700,716\nSAP,48000,11567\nYahoo,14000,6426\neBay,15000,8700\n" 
+} ;
+
+
+window.onload = function() {
+	updateDS();
+	updateAlgo();
+} 
+/* ]]> */
+</script>
+
+</head>
+
+<body>
+
+
+<div id="input_panel">
+
+<div id="data_panel">
+<fieldset>
+<legend>Data</legend>
+Enter your data:
+<textarea id="data">
+</textarea>
+<div style="margin-top:10px">
+Or use an existing dataset:
+<select id="datasets" onchange="updateDS();">
+<option value="none">-</option>
+<option value="people" selected>People (age, children)</option>
+<option value="firms">Firms (size, revenue)</option>
+</select>
+</div>
+</fieldset>
+</div>
+
+<div id="algo_panel">
+<fieldset id="algorithms">
+<legend>Clustering algorithm</legend>
+<select id="algo" onchange="updateAlgo();">
+<option value="hierarchical" selected>Hierarchical clustering</option>
+<option value="kmeans">K-means</option>
+<option value="fcmeans">Fuzzy C-means (Experimental)</option>
+</select>
+</fieldset>
+</div>
+
+
+<div id="param_panel">
+
+<div id="km_panel">
+<fieldset id="km_params">
+<legend>Control panel</legend>
+Number of clusters (K):
+<select id="KM-K">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4" selected="selected">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+</select>
+</fieldset>
+</div>
+
+<div id="fcm_panel">
+<fieldset id="fcm_params">
+<legend>Control panel</legend>
+Number of clusters (K):
+<select id="FCM-K">
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4" selected="selected">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+<option value="7">7</option>
+<option value="8">8</option>
+<option value="9">9</option>
+</select>
+<br/>
+Epsilon: <input id="epsilon" value="0.3" size="5" />	
+<br/>
+Fuzziness: <input id="fuzziness" value="2" size="5" />	
+</fieldset>
+</div>
+
+<div id="hc_panel">
+<fieldset id="hc_params">
+<legend>Control panel</legend>
+Linkage method: 
+<input type="radio" name="linkage" value="0" checked/>Single-linkage
+<input type="radio" name="linkage" value="1" />Complete-linkage
+<input type="radio" name="linkage" value="2" />Average-linkage<br/>
+<br/>
+Distance: 
+<input type="radio" name="distance" value="0" checked/>Euclidian
+<input type="radio" name="distance" value="1" />Manhattan
+<input type="radio" name="distance" value="2" />Maximum<br/>
+<br/>
+Show labels:
+<input type="radio" name="withLabel" value="true" checked/>Yes
+<input type="radio" name="withLabel" value="false" />No <br/>
+<br/>
+Show centroids:
+<input type="radio" name="withCentroid" value="true"/>Yes
+<input type="radio" name="withCentroid" value="false"  checked/>No<br/>
+<br/>
+Show distance:
+<input type="radio" name="withDistance" value="true"/>Yes
+<input type="radio" name="withDistance" value="false"  checked/>No<br/>
+<br/>
+Balance dendogram:
+<input type="radio" name="balanced" value="true" checked/>Yes
+<input type="radio" name="balanced" value="false" />No <br/>
+<br/>
+Minimum spacing between nodes:
+<select id="space">
+<option value="3">3</option>
+<option value="5">5</option>
+<option value="7" selected="selected">7</option>
+<option value="9">9</option>
+</select>
+</fieldset>
+</div>
+
+<div id="cluster_button" style="">
+<div style="display:table-row; width:100%;text-align:center;">
+<div style="vertical-align: middle; display:table-cell;">
+<input type="button" onclick="runAlgo();" value="Cluster data and display assignments" />
+</div>
+</div>
+</div>
+
+
+
+<div id="output_panel">
+<fieldset>
+<legend>Output</legend>
+<pre id="text"> </pre>
+</fieldset>
+</div>
+
+</body>
+
+
+
+
+</html>
+

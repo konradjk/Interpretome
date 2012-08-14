@@ -1,0 +1,9 @@
+version=pmwiki-2.2.0-beta35 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.2) Gecko/20070219 Firefox/2.0.0.2
+author=Hans
+csum=
+host=127.0.0.1
+name=Site.PageTopMenu
+rev=0
+targets=Main.HomePage,Site.PageTopMenu,Site.RecentChanges
+text=>>lnav%3c%3c%0a* [[{$DefaultGroup}|$[Home]]]%0a>>%3c%3c%0a>>rnav%3c%3c%0a* %25rel=nofollow accesskey=$[ak_edit]%25[[{*$FullName}?action=edit | $[Edit] ]]%0a* %25rel=nofollow accesskey=$[ak_history]%25[[{*$FullName}?action=diff | $[History] ]]%0a* %25accesskey=$[ak_recentchanges]%25[[{*$Group}/RecentChanges| $[Recent Changes] ]]%0a>>%3c%3c

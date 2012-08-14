@@ -1,0 +1,10 @@
+version=pmwiki-2.2.0-beta15 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1) Gecko/20061010 Firefox/2.0
+author=Hans
+ctime=1142338051
+host=127.0.0.1
+name=Site.Popup-EditForm
+rev=0
+targets=Site.Popup-EditForm,Site.EditForm
+text=(:noheader:)(:noleft:)(:notitle:)(:notopmenu:)(:noright:)%0a%25rfloat%25(:if enabled ShowHide:)(:showhide div=edithelp init=hide lshow='$[Show Help]' lhide='$[Close Help]':)(:if:)%0a!!!$[Editing] [[{*$Name}?action=browse|{*$FullName}]] %25block class=wikiaction%25%0a(:messages:)%0a(:div id=wikiedit:)%0a(:input e_form:)[[#top]]%0a(:input e_savebutton class=inputbutton:) (:input e_saveeditbutton class=inputbutton:) (:input e_savedraftbutton class=inputbutton:) (:input e_previewbutton class=inputbutton :) (:input e_cancelbutton class=inputbutton:) $[Author]: (:input e_author class=inputbox:)[[%3c%3c]]%0a(:e_guibuttons:)%0a(:input e_textarea :)\\%0a$[Summary]: (:input e_changesummary:)\\%0a(:input e_minorcheckbox:) $[This is a minor edit]\\%0a(:input e_savebutton class=inputbutton:) (:input e_saveeditbutton class=inputbutton:) (:input e_savedraftbutton class=inputbutton:) (:input e_previewbutton class=inputbutton:) (:input e_cancelbutton class=inputbutton:) %0a(:input end:)%0a(:divend:)[[%3c%3c]]%0a(:if [ !enabled ShowHide || !enabled javascript ]:)%0a(:include Site.EditQuickReference:)%0a%0a(:if e_preview:)%0a(:div1 id=editpreview:)%0a>>previewheader%3c%3c%0a[++$[Preview] {*$FullName}++]  &mdash; '''$[Page is unsaved]''' &mdash; (:if [ e_preview && enabled ShowHide ]:)(:showhide div=editpreview init=show lhide='$[Close Preview]' :)(:if e_preview:)%0a>>previewcontent%3c%3c%0a%0a(:e_preview:)%0a%0a>>previewfooter%3c%3c'''$[End of preview] &mdash; $[remember to save]''' &mdash; '''[[#top | $[Top] ]]'''  &mdash; (:if [  e_preview && enabled ShowHide ]:)(:showhide div=editpreview init=show lhide='$[Close Preview]' :)%0a>>%3c%3c%0a(:if e_preview:) %0a(:div1end:)%0a(:if [ enabled ShowHide && enabled javascript ]:)%0a(:include Site.Popup-EditQuickRef:)%0a
+time=1165450640

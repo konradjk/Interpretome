@@ -1,0 +1,10 @@
+version=pmwiki-2.2.0-beta35 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.2) Gecko/20070219 Firefox/2.0.0.2
+author=Hans
+csum=
+host=127.0.0.1
+name=Site.Triad-Configuration
+rev=0
+targets=Site.SideBar,Site.RightBar,Site.StyleOptions,Site.PageHeader,Site.PageTopMenu,Site.TitleBar,Site.PageFootMenu,Site.PageFooter,Site.SideBarFooter,Site.Popup-EditForm,PmWiki.TriadTips,PmWiki.AccessKeys
+text='''Side Menu'''%0a*[[Site/SideBar?action=edit | Edit Site Sidebar]]%0a%0a'''`RightBar page'''%0a*[[Site/RightBar?action=edit| Edit Site RightBar]]%0a%0a'''Style Options'''%0a*[[Site/Style Options]]%0a%0a'''Configuration Pages'''%0a*[[Site/PageHeader?action=edit| Edit Site Page Header]]%0a*[[Site/PageTopMenu?action=edit| Edit Site Page Top Menu]]%0a*[[Site/TitleBar?action=edit| Edit Site TitleBar]]%0a*[[Site/PageFootMenu?action=edit| Edit Site Page Foot Menu]]%0a*[[Site/PageFooter?action=edit| Edit Site Page Footer]]%0a*[[Site/SideBarFooter?action=edit | Edit Site Sidebar Footer]]%0a*[[Site.Popup-EditForm]]%0a%0a'''How to use Triad / Help'''%0a*[[PmWiki/TriadTips]]%0a%0a%0aVarious default site preferences, including [[PmWiki/access keys]] and component sizes:%0a%0a  [=%0a  # Access keys%0a  'ak_edit'          => 'e',     # edit page%0a  'ak_history'       => 'h',     # page history%0a  'ak_recentchanges' => 'c',     # Recent Changes%0a  'ak_save'          => 's',     # save page%0a  'ak_saveedit'      => 'u',     # save and keep editing%0a  'ak_preview'       => 'p',     # preview page%0a  'ak_em'            => 'i',     # emphasized text (italic)%0a  'ak_strong'        => 'b',     # strong text (bold)%0a%0a  # Editing components%0a  'Site.EditForm' => 'Site.Popup-EditForm',%0a  'e_rows' => '20',              # rows in edit textarea%0a  'e_cols' => '90',              # columns in edit textarea%0a  =]%0a%0a
+time=1174299275

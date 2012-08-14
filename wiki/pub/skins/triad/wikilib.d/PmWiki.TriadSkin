@@ -1,0 +1,10 @@
+version=pmwiki-2.1.18 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.0.6) Gecko/20060728 Firefox/1.5.0.6
+author=Hans
+csum=
+host=127.0.0.1
+name=PmWiki.TriadSkin
+rev=0
+targets=
+text=A new skin developed for pmwiki 2 by Hans Bracker [[(http://)softflow.co.uk/design]]%0a%0a!!!Features:%0a* Three column layout with full-width header and footer.%0a* Customisable page sections through wiki pages: header, footer, left sidebar, rightbar, topmenu, footmenu.%0a* Page sections can be turned on and off with markup.%0a* Right and left side bars can be hidden instantly with javascript, to make the content page wider.%0a* Instant text sizing with java script.%0a* One click switch to "Big View" to aid visually impaired users.%0a* Integrated direct printing.%0a* Option to switch styles for different color and font schemes, or to create a layout with fixed or resizable width, with or without outer border. Integrated color support for commentboxplus and forumstyled. %0a* Popup preview in edit mode, no more downscrolling! %0a%0a'''Version: {$SkinVersion}'''
+

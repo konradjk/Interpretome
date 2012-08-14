@@ -1,0 +1,61 @@
+/* BODY {font:x-small 'Verdana'; margin-right:1.5em} */
+/* container for expanding/collapsing content */
+.c  {cursor:hand}
+
+/* button - contains +/-/nbsp */
+.b  {color:red; font-family:'Courier New'; font-weight:bold;
+text-decoration:none}
+
+/* element container */
+.e  {margin-left:1em; text-indent:-1em; margin-right:1em}
+
+/* comment or cdata */
+.k  {margin-left:1em; text-indent:-1em; margin-right:1em}
+
+/* tag */
+.t  {color:#990000}
+
+/* tag in xsl namespace */
+.xt {color:#990099}
+
+/* attribute in xml or xmlns namespace */
+.ns {color:red}
+
+/* attribute in dt namespace */
+.dt {color:green}
+
+/* markup characters */
+.m  {color:blue}
+
+/* text node */
+.tx { font-weight:bold;}
+
+/* multi-line (block) cdata */
+.db {
+   text-indent:0px;
+   margin-left:1em;
+   margin-top:0px;
+   margin-bottom:0px;
+   padding-left:.3em;
+   border-left:1px solid #CCCCCC;
+   font: small Courier;
+   }
+
+/* single-line (inline) cdata */
+.di {font:small Courier}
+
+/* DOCTYPE declaration */
+.d  {color:blue}
+
+/* pi */
+.pi {color:blue}
+
+/* multi-line (block) comment */
+.cb {text-indent:0px; margin-left:1em; margin-top:0px;
+margin-bottom:0px;
+padding-left:.3em; font:small Courier; color:#888888}
+
+/* single-line (inline) comment */
+.ci {font:small Courier; color:#888888}
+pre {margin:0px; display:inline}
+

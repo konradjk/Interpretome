@@ -1,0 +1,10 @@
+version=pmwiki-2.2.0-beta35 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.1.2) Gecko/20070219 Firefox/2.0.0.2
+author=Hans
+csum=
+host=127.0.0.1
+name=Site.PageHeader
+rev=0
+targets=Site.PageHeader
+text=>>rfloat%3c%3c%0a(:if enabled TriadSkin:)(:searchbox label=$[Go] value=$[Search] focus=on size=18:)(:if:)%25right%25(:if equal {$View} standard:)%25inputbutton%25[[{*$Name}?setview=big&setfontsize=110|[-$[Big View]-] ]]%25%25(:if equal {$View} big:) %25inputbutton%25[[{*$Name}?setview=standard&setfontsize=90|[--$[Normal View]--] ]]%25%25 (:if expr enabled FontSizer AND enabled TriadSkin :) [-(:fontsizer:)-](:if:)%0a>>lfloat%3c%3c%0a[[{$ScriptUrl}|{$PageLogoUrl}]]%0a>>%3c%3c%0a
+time=1174176049

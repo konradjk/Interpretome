@@ -1,0 +1,36 @@
+/* styles for javascript enabled Popup EditForm 
+ * adjust values for #editpreview top, left and width to suit your skin 
+ */
+#editpreview {
+	position:absolute; 
+	top:5.5em; 
+	left:15px; 
+	width:96%;
+	border:3px solid #aaf; 
+	background:#fff;
+	}
+* html #editpreview { width:100%; left:2em; }
+.previewheader {
+	border-bottom:2px solid #aaf;
+	padding:5px; 
+	background:#eef; 
+	}
+.previewcontent { 
+	padding:0 1em; 
+	}
+.previewfooter {
+	border-top:2px solid #aaf; 
+	padding:5px;
+	background:#eef; 
+	}
+#edithelp {
+	position:absolute;
+	top:4.5em;
+	right:1em;	
+	width:250px ;
+    padding:3px;
+    background:#fff;
+    border:2px solid #aaf;
+    font-size:0.8em;
+    line-height:130%;
+	}

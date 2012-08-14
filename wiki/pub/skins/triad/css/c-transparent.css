@@ -1,0 +1,129 @@
+/* CSS Document */
+/*===================  COLORS  =========================
+#  c-transparent.css    part of the Triad skin for PmWiki
+#================= transparent theme ====================*/
+
+#outer-box { border:1px solid #999;} 
+
+#left-box { border-right:1px dotted #999;  }
+#right-box { border-left:1px dotted #999;  }
+#center-box {  }
+#footnavbox {  } /* as main background color */
+
+a:link   { color:#009;}
+a:visited{ color:#009;}
+a:active { color:#009;}
+a:hover  { color:#900;}
+
+/* #header { background:#fff  }  set header background image here */
+
+#topnav {  /* background:#fff;  toplink bar background color */
+			border-bottom:1px dotted #999;  }
+#topnav a, #topnav ul li { color:#666; }
+#topnav li a:hover, #topnav li a:active  {
+		color: #009; background: #eee; } /* hover colors */
+
+#titlebar a { color:#900; }
+#titlebar a:hover { xxtext-decoration:none; color:#009; }
+
+#content h1, #content h2, #content h3,
+#content h4, #content h5, #content h6 { color:#900; }
+
+.quickref { background:#eef }
+
+#sidebar p, #sidebar h1, #sidebar h2, #sidebar h3, #sidebar h4 { color:#666 }
+#sidebar .sidehead, #sidebar p.sidehead a.wikilink { color:#666 } /*#5F5F30*/
+#sidebar h1 a:link, #sidebar h1 a:visited { xcolor:#FFC27F; }
+#sidebar h1 a:hover, #sidebar h1 a:active,
+#sidebar a:link, #sidebar a:visited { color:#666;  }
+#sidebar a:hover, #sidebar a:active { color:#009; background: #eee; text-decoration:none; }
+#sidebar p.sidehead a.wikilink:hover  { color:#009; background: #eee; } /* hover colors */
+#sidebar p.sidehead a.wikilink:active { color:#009; background: #fff; }
+/*#sidebar li, #sidebar h1 { border-bottom: 1px solid #999; }  menu lines */
+/* border-top:1px adds horizontal lines for second level list elements: */
+#sidebar ul ul li  { border-top:0px solid #999; border-bottom:0;}
+#sidebar a.selflink { color:#900; }
+#sidebar a:hover.selflink { background:none; color:#009; }
+
+.inputbox, .inputtext { color:#666; background:transparent;
+			border-top:1px solid #99c;
+			border-left:1px solid #99c;
+			border-right:1px solid #eee;
+			border-bottom:1px solid #eee; }
+.inputbox:hover, .inputbox:focus { color:#009; background:#eee; }
+/* comment next six lines to get a standard button */
+.inputbutton {color:#000066; background:transparent;
+			border-top:1px solid #eef;
+			border-left:1px solid #eef;
+			border-right:1px solid #99c;
+			border-bottom:1px solid #99c;}
+.inputbutton:hover { color:#900; background:#ffe }
+
+.nav li a:link, .nav li a:visited { color:#009}
+.nav li a:hover, .nav li a:active {  color:#900; background:#fff }
+
+.navbuttons li a { color:#006; background:transparent; }
+.navbuttons li a:hover, .navbuttons li a:active { color:#900; background:#fff }
+.navbuttons li a {
+			border-top:1px solid #eee;
+			border-left:1px solid #eee;
+			border-right:1px solid #99c;
+			border-bottom:1px solid #99c;}
+
+#footer-box { border-top:1px dotted #999; }
+
+#content ul { list-style-image: url(../images/bullet7.gif); }
+#rightbar ul { list-style:none; }
+
+#rightbar a.fontsizer, #header a.fontsizer  {
+		color:#006;
+		background:transparent;
+		border-top:0;
+		border-left:0;
+		border-bottom:1px solid #1D5183;
+		border-right:1px solid #1D5183;}
+#content a.fontsizer { background:transparent; }
+#sidebar a.fontsizer { background:#eee; }
+#header a.fontsizer:hover { color:#900; background:#fff; }
+#rightbar a.fontsizer:hover { color:#900; background:#fff; }
+#sidebar a.fontsizer:hover { color:#900; background:#fff; }
+#content a.fontsizer:hover { color:#900; background:#fff; }
+
+#toggleright input, #toggleleft input{
+		color:#666;
+		background:transparent;
+		border:none; }
+#toggleleft input { border-right:1px solid #666 }
+#toggleright input { border-left:1px solid #666 }
+#toggleright input:hover, #toggleleft input:hover { color:#009; background:#eee; }
+
+#rightbar { padding:0px 3px 3px 3px; }
+
+.clip, .news { color:#333;
+		background:transparent;
+		padding:3px 8px;
+		margin-top:5px;
+		border-top:1px solid #99c;
+		border-left:1px solid #99c;
+		border-right:2px solid #eee;
+		border-bottom:2px solid #eee; }
+
+#sidebar .sideclip { border:1px solid #999;
+		color:#000;
+		background:#fff;
+		padding:2px 0px;
+		margin:5px 5px 0 5px; }
+#sidebar .sideclip p, #sidebar .sideclip h4 {
+		color:#000;
+		line-height:1.2em;}
+#sidebar .sideclip a { color:blue }
+
+#editpreview { border-color:#B4B4D9; background:#fff; }
+.previewheader, .previewfooter, #edithelp { border-color:#B4B4D9; background:#F5F5FF;}
+
+
+/* comment message boxes */
+.messagehead, .messageheader, .messagefooter { background:#eeeeee; }
+.messageauthor { background:#f7f7f7; }
+.messagesubject { background:#f7f7f7; }
+.messageitem, .messagetext, .bquote { background:#ffffff; }

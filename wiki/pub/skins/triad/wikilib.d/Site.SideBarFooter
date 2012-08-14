@@ -1,0 +1,8 @@
+version=pmwiki-2.1.18 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Windows; U; Windows NT 5.1; en-GB; rv:1.8.0.6) Gecko/20060728 Firefox/1.5.0.6
+author=Hans
+ctime=1157197410
+host=127.0.0.1
+name=Site.SideBarFooter
+rev=0
+text=[[PmWiki/{$SkinRecipeName}]]\\%0apowered by [[PmWiki/PmWiki]]

@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <title>Read a Zip file in Javascript (Demonstration)</title>
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="http://yui.yahooapis.com/3.0.0/build/cssreset/reset-min.css">
+    <style type="text/css" media="screen">
+    * { padding: 0; margin: 0; }
+    * html, body { height: 100%; }
+    body, textarea {
+        font-family: "lucida sans", verdana, arial, helvetica, sans-serif;
+        font-size: 80%;
+    }
+
+    h1 { font-size: 20pt }
+    h2 { font-size: 18pt; font-weight:bold; color: navy }
+    h3 { font-size: 16pt; font-weight:bold; color: #483d8b }
+    h4 { font-size: 14pt; font-weight:bold; color:#C71585; margin-bottom:2px; margin-top:8px; }
+    h5 { font-size: 12pt; font-weight:bold; color:#6495ED; margin-bottom:2px; }
+    h6 { font-size: 10pt; font-weight:bold; color:navy }
+
+    ol {
+        margin-left: 2.5em;
+        padding-left: 0px;
+    }
+    ol li {
+        list-style-type: decimal;
+    }
+
+    body {
+        margin-left: 10px;
+        margin-right: 10px;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    textarea { font-size: 100%;}
+    p { margin-top: 6px; padding: 0 10px 1em; }
+
+    #main {
+        left: 1%;
+        right: 53%;
+        overflow: auto;
+    }
+
+    #report {
+        height:100%;
+    }
+
+    #status {
+        font-size:70%;
+    }
+
+    #reportHolder {
+        left: 48%;
+        right: 1%;
+        overflow: auto;
+        font-size:9pt;font-weight:normal;color:#191970;
+    }
+
+    div.column {
+        border: 1px dotted #666;
+        background-color: #E6E6FA;
+        position: absolute;
+        top: 20px;    /* margin from top */
+        bottom: 20px; /* margin from bottom */
+        padding: 8px;
+    }
+
+    input.tb {
+        margin-left: 8px;
+        margin-right: 8px;
+        width: 94%;
+    }
+
+    .basic div {
+        background-color: #eee;
+    }
+
+    .basic p {
+        margin-bottom : 10px;
+        border: none;
+        text-decoration: none;
+        font-weight: normal;
+        font-size: 12px;
+        margin: 0px;
+        padding: 10px;
+    }
+    .basic a {
+        cursor: pointer;
+        display:block;
+        padding: 5px;
+        margin-top: 0;
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 16px;
+        color: black;
+        background-color: #00a0c6;
+        border-top: 1px solid #FFFFFF;
+        border-bottom: 1px solid #999;
+        background-image: url("jquery/images/AccordionTab0.gif");
+    }
+    .basic a:hover {
+        background-color: white;
+        background-image: url("jquery/images/AccordionTab2.gif");
+    }
+    .basic a.selected {
+        color: black;
+        background-color: #80cfe2;
+        background-image: url("jquery/images/AccordionTab2.gif");
+    }
+    .ui-accordion-header {
+        border: Navy 1px dotted;
+        margin: 4px 4px 4px 4px;
+        padding: 4px 2px 4px 2px;
+        background-color: #eee;
+    }
+
+    .ui-accordion .ui-accordion-content{
+        margin: 4px 4px 4px 4px;
+        padding: 4px 2px 4px 2px;
+        border: Gray 1px dotted;
+        overflow:hidden !important;
+    }
+
+    .ui-state-active { background: #B0C4DE; }
+
+    .ui-accordion-content-active {
+        color: Fuschia;
+        background-color: #F0F8FF;
+    }
+
+
+
+    </style>
+
+    <link rel="stylesheet" type="text/css" href="style/RawXmlAsHtml.css">
+
+    <script type="text/javascript" src='script/RawXmlAsHtml.js'></script>
+    <script type="text/javascript" src='script/ZipFile.complete.js'></script>
+
+    <script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js'></script>
+
+    <script type="text/javascript" src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.2/jquery-ui.min.js'></script>
+
+
+    <script type="text/javascript">
+
+    // --------------------------------------------
+    var Timer = function() {};
+    Timer.prototype = {
+        _start : null,
+        _stop : null,
+        start: function(){
+            var now = new Date();
+            this._start = now.getTime();
+        },
+        stop: function() {
+            var now = new Date();
+            this._stop = now.getTime();
+        },
+        elapsed: function() {
+            return this._stop - this._start;
+        },
+        split: function() {
+            var now = new Date();
+            return now - this._start;
+        }
+    };
+    // --------------------------------------------
+
+
+    function waitCursor() {
+        document.body.style.cursor = 'wait';
+    }
+
+    function defaultCursor() {
+        document.body.style.cursor = 'default';
+    }
+
+    function xmlDocFromText (text) {
+        var xmldoc;
+        if (window.DOMParser) {
+            var parser = new DOMParser();
+            xmldoc = parser.parseFromString(text,"text/xml");
+        }
+        else {
+            xmldoc = new ActiveXObject("Microsoft.XMLDOM");
+            xmldoc.loadXML(text);
+        }
+        return xmldoc;
+    }
+
+    function getXmlDoc (location) {
+        var xhr;
+        if (window.XMLHttpRequest)  {
+            xhr=new XMLHttpRequest();
+        }
+        else {
+            xhr=new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xhr.open("GET",location,false);
+        xhr.send("");
+        return xhr.responseXML;
+    }
+
+    function displayZipStatus(zip) {
+        var status = "";
+        if (zip.status.length  > 0) {
+            status += "<br/>status messages: " + zip.status.length +
+                ':<br/><ol>\n';
+            for (var i=0; i<zip.status.length;  i++) {
+                var msg = zip.status[i];
+                status += "<li style='font-size:x-small;'>" + msg + "</li>\n";
+            }
+            status += "</ol><br/>\n";
+        }
+        else {
+            status += "<br/>no status messages.<br/>";
+        }
+        $("#status").append(status);
+        zip.status = [];  // clear
+    }
+
+    function showZipContent (zip, elapsed) {
+        $('#report').accordion('destroy');
+        // clear
+        //$("#report").html('');
+        $("#report").get(0).innerHTML = '';
+        $("#status").append('Loaded zip, ' + zip.entries.length + ' entries, ' +
+                          Math.floor(elapsed/100)/10.0 +
+                          's  <br/>');
+
+        var extractCount = 0;
+        var extractCallbackMaker = function(id, sz) {
+            // This is a function that returns a function.
+            // The purpose is to get a unique function for
+            // each zip entry.
+            return function (entry, entryContent) {
+                extractCount++;
+                if ((typeof entryContent == "object") &&
+                    (typeof entryContent.description == "string")) {
+                    $("#status").append("entry "+ extractCount + "/" +
+                                        zip.entries.length +
+                                        " exception: " + entryContent.description + "<br/>" +
+                                        " source: " + entryContent.source + "<br/>" +
+                                        " message: " + entryContent.message + "<br/>");
+                }
+                else {
+                    var entryName = entry.name;
+                    var nlength = entryName.length;
+                    var content = "";
+                    if (typeof entryContent == "string") {
+                        if (entry.contentType == JSIO.FileType.XML) {
+                            // handle XML files differently, for purposes of the demo:
+                            // apply a transform to display the XML nicely
+                            try {
+                              var xsl = getXmlDoc("style/RawXmlAsHtml.xslt");
+                              var xml = xmlDocFromText(entryContent);
+
+                              // code for IE
+                              if (window.ActiveXObject) {
+                                  var frag = xml.transformNode(xsl);
+                                  content = document.createElement('span');
+                                  content.innerHTML = frag;
+                              }
+                              // code for Mozilla, Firefox, Opera, etc.
+                              else if (document.implementation && document.implementation.createDocument)  {
+                                  var xsltp = new XSLTProcessor();
+                                  xsltp.importStylesheet(xsl);
+                                  var documentFragment = xsltp.transformToFragment(xml,document);
+                                  //content = documentFragment; // hang!!
+                                  content = documentFragment.firstChild.innerHTML;
+                                  //content = documentFragment.firstChild.textContent;
+                              }
+                              else {
+                                  content = "Cannot do XSL transform. No XML support in browser?";
+                              }
+                            }
+                            catch (exc1a) {
+                              content = "Cannot do XSL transform. Exception: " + exc1a.message + "<br/>";
+                              if (typeof exc1a.source != "undefined") { content += "source: " + exc1a.source + "<br/>"; }
+                            }
+                        }
+                        else {
+                            // arbitrary non-XML text content
+                            content = "<p"+"re style='font-size:x-small'>" +
+                                JSIO.htmlEscape(entryContent) + "</"+"pre>";
+                        }
+                    }
+                    else {
+                        // binary content
+                        content = "<pre style='font-size:x-small'>" +
+                            JSIO.htmlEscape(JSIO.formatByteArray(entryContent)) + "</pre>";
+                    }
+
+                    $("#"+id).html(content);
+
+                    $("#status").append("entry "+ extractCount + "/" +
+                                        zip.entries.length +
+                                        " " + entryName + " " +
+                                        " (" + sz + " bytes) " +
+                                        " lastmod(<span style='color:Gray;font-size:x-small;font-variant:small-caps;'>" +
+                                        entry.lastModified.toString().substring(4) + "</span>)" +
+                                        " " +
+                                        Math.floor(timer.split()/100.00)/10.00 +
+                                        "s<br/>");
+
+                    $('#report').accordion('destroy');
+                    $('#report').accordion({collapsible:true, active:false, autoHeight:false});
+                }
+
+                if (extractCount == zip.entries.length) {
+                    displayZipStatus(zip);
+                    //var n = $('#report').find('*').size();
+                    //var ncache= 0;
+                    //for (var i in jQuery.cache) { ncache++; }
+                    $("#status").append("<br/>Done.<br/><br/>"+
+                                        //n + " elements, " + ncache + " in cache.<br/><br/>" +
+                                        "Click on the headers at the right, to see the content.");
+                    defaultCursor();
+                }
+            };
+        };
+
+        if (zip.entries.length === 0) {
+            defaultCursor();
+            return;
+        }
+
+        var timer = new Timer();
+        timer.start();
+        for (var i=0; i<zip.entries.length; i++) {
+            var entry = zip.entries[i];
+            var entryInfo = "<h4><a>" + entry.name + "</a>&nbsp;"+
+                "<span style='font-size:x-small;'>(" +
+                entry.uncompressedSize +
+                " bytes)</span>" +
+                "</h4>\n<div>";
+
+            // contrive an id for the entry, make it unique
+            var randomId = "id-"+ Math.floor((Math.random() * 1000000000));
+
+            entryInfo += "<h4>Content:</h4><span id='" + randomId +
+                "'></span></div>\n";
+
+            // insert the info for one entry as the last child within the report div
+            $("#report").append(entryInfo);
+
+            // extract asynchronously
+            entry.extract( extractCallbackMaker(randomId, entry.uncompressedSize) );
+        }
+    }
+
+    var ReadFile = function() {
+        $("#status").html("<br/>ZipFile.js version: " + ZipFile.Version + "<br/>");
+        var url= "zips/" + $("#urlToLoad").val();
+        $("#status").append("load: " + url + "<br/>");
+        var timer  = new Timer();
+        var doneReading = function (zip) {
+            try{
+                displayZipStatus(zipFile);
+                showZipContent(zipFile, timer.split());
+            }
+            catch (exc1) {
+                $("#status").append("exception: " + exc1.message + "<br/>source: " + exc1.source + "<br/>");
+                defaultCursor();
+            }
+        };
+        timer.start();
+        waitCursor();
+        var zipFile = new ZipFile(url, doneReading, 1);
+    };
+
+    var ResetUi = function() {
+        $("#status").html("<br/>ZipFile.js version: " + ZipFile.Version + "<br/>");
+        $('#report').accordion('destroy');
+        //$('#report').html('');
+        $('#report').get(0).innerHTML = '';
+        defaultCursor();
+    };
+
+    </script>
+
+  </head>
+
+  <body>
+
+    <div id='main' class='column'>
+    <h1>Read a Zip file with Javascript</h1>
+      <p><b>Select a zip file to read: </b></p>
+    <div style='margin-left:20px;'>
+      <select style='margin:2px 0px 12px 0px;' id="urlToLoad">
+        <option>readme.zip</option>
+        <option>utf8-encoded.zip</option>
+        <option>Sudoku-Sample.xps</option>
+        <option>Emma_Jane-Austen.epub</option>
+        <option>tiny.zip</option>
+        <option>zipWithinZip.zip</option>
+        <option>squish.zip</option>
+        <option>AntarcticaTemps.xlsx</option>
+      </select>
+    </div>
+    <input style='padding:2px;'
+           onclick='ReadFile()' type='button' title='Read the data' value='Load'/>
+    <input style='padding:2px;'
+           onclick='ResetUi()' type='button' title='Clear all messages' value='Reset'/>
+
+    <br/>
+    <div id='status'></div>
+    </div>
+
+
+    <div id='reportHolder' class='column'>
+      <div id='report'> </div>
+    </div>
+  </body>
+
+  <script type="text/javascript">
+    // <!--
+    //http://code.google.com/p/jsdap/source/browse/trunk/xdr.js?r=64
+
+  var IE_HACK = (/msie/i.test(navigator.userAgent) &&
+                 !/opera/i.test(navigator.userAgent));
+
+  if (IE_HACK) {
+
+      var vbScript = '<scr' + 'ipt type="text/vbscript">\n'+
+          '<!-' + '-\n' +
+          'Function BinaryToArray(Binary)\n'+
+          '  Dim i\n'+
+          '  ReDim byteArray(LenB(Binary))\n'+
+          '  For i = 1 To LenB(Binary)\n'+
+          '    byteArray(i-1) = AscB(MidB(Binary, i, 1))\n'+
+          '  Next\n'+
+          '  BinaryToArray = byteArray\n'+
+          'End Function\n'+
+          '--' + '>\n' +
+          '</scr' + 'ipt>';
+
+      //$(vbScript).insertAfter("script:last");
+      document.write(vbScript);
+  }
+  // -->
+  </script>
+
+</html>
+
+

@@ -1,0 +1,32 @@
+/* CSS Document */
+body { background:none #fff; 
+		width:auto; 
+		margin:0; padding:0;
+		font-family:"palatino linotype", palatino, "book antiqua", georgia, times, "times new roman", serif; 
+		}
+		
+#main {	margin:0; 
+		padding:0; }		
+#xxtitlebar, #header,#topnav,#smltopnav,#stdtopnav,.nav,#footnavbox,
+#pagefooter,#footer,#sidebarbox,#sidebar,td#left-box,td#right-box,#rightbar,.noprint {display:none}
+
+#titlebarbox { margin:0 0 0.5em 0; 
+		padding:0 0 0.5em 0; 
+		/*border-bottom:2pt solid #999;*/ }
+#titlebar .pagegroup {padding:0.3em 0.5em 0 0; 
+		font-size:1.3em;}
+#titlebar .pagetitle {padding-bottom:0; 
+		font-size:1.7em;}
+		
+#content {margin:0; 
+		padding:0;
+		font-size:1em}
+a {text-decoration:none; color:black}
+h1 { font-size:24pt; font-weight:600; padding:5px 0}
+h2 { font-size:22pt; font-weight:600;padding-bottom:3px}
+h3 { font-size:20pt; font-weight:600;}
+h4 { font-size:18pt; font-weight:600;}
+h5 { font-size:14pt; font-weight:600;}
+h6 { font-size:12pt; font-weight:600;font-variant:small-caps;}
+
+hr {color:#999;}

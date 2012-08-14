@@ -1,0 +1,30 @@
+version=pmwiki-2.2.36 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+author=
+charset=UTF-8
+csum=
+host=10.39.49.171
+name=Site.SideBar
+passwdedit=@_site_edit
+rev=6
+targets=Main.HomePage,Main.Install
+text=* [[Main/HomePage]]%0a* [[Main/Install]]
+time=1331681135
+author:1331681135=
+diff:1331681135:1331681114:=2c2,19%0a%3c * [[Main/Install]]%0a\ No newline at end of file%0a---%0a> * [[Main/WikiSandbox]]%0a> %0a> %25sidehead%25 [[PmWiki/PmWiki]]%0a> * [[PmWiki/Initial Setup Tasks]]  %0a> * [[PmWiki/Basic Editing]]%0a> * [[PmWiki/Documentation Index]]%0a> * [[PmWiki/FAQ | PmWiki FAQ ]]%0a> * [[PmWiki/PmWikiPhilosophy]]%0a> * [[PmWiki/Release Notes]]%0a> * [[PmWiki/ChangeLog]]%0a> %0a> %25sidehead%25 [[http://www.pmwiki.org | pmwiki.org ]]%0a> * [[Cookbook:CookbookBasics | Cookbook (addons) ]]%0a> * [[Cookbook:Skins | Skins (themes) ]]%0a> * [[PITS:PITS | PITS (issue tracking) ]]%0a> * [[PmWiki/Mailing Lists]]%0a> %0a> %25right%25 [-[[Site.SideBar?action=edit | edit SideBar]]-]%0a\ No newline at end of file%0a
+host:1331681135=10.39.49.171
+author:1331681114=
+diff:1331681114:1331680851:=2,19c2%0a%3c * [[Main/WikiSandbox]]%0a%3c %0a%3c %25sidehead%25 [[PmWiki/PmWiki]]%0a%3c * [[PmWiki/Initial Setup Tasks]]  %0a%3c * [[PmWiki/Basic Editing]]%0a%3c * [[PmWiki/Documentation Index]]%0a%3c * [[PmWiki/FAQ | PmWiki FAQ ]]%0a%3c * [[PmWiki/PmWikiPhilosophy]]%0a%3c * [[PmWiki/Release Notes]]%0a%3c * [[PmWiki/ChangeLog]]%0a%3c %0a%3c %25sidehead%25 [[http://www.pmwiki.org | pmwiki.org ]]%0a%3c * [[Cookbook:CookbookBasics | Cookbook (addons) ]]%0a%3c * [[Cookbook:Skins | Skins (themes) ]]%0a%3c * [[PITS:PITS | PITS (issue tracking) ]]%0a%3c * [[PmWiki/Mailing Lists]]%0a%3c %0a%3c %25right%25 [-[[Site.SideBar?action=edit | edit SideBar]]-]%0a\ No newline at end of file%0a---%0a> * [[Main/Install]]%0a\ No newline at end of file%0a
+host:1331681114=10.39.49.171
+author:1331680851=
+diff:1331680851:1331680844:=2c2,19%0a%3c * [[Main/Install]]%0a\ No newline at end of file%0a---%0a> * [[Main/WikiSandbox]]%0a> %0a> %25sidehead%25 [[PmWiki/PmWiki]]%0a> * [[PmWiki/Initial Setup Tasks]]  %0a> * [[PmWiki/Basic Editing]]%0a> * [[PmWiki/Documentation Index]]%0a> * [[PmWiki/FAQ | PmWiki FAQ ]]%0a> * [[PmWiki/PmWikiPhilosophy]]%0a> * [[PmWiki/Release Notes]]%0a> * [[PmWiki/ChangeLog]]%0a> %0a> %25sidehead%25 [[http://www.pmwiki.org | pmwiki.org ]]%0a> * [[Cookbook:CookbookBasics | Cookbook (addons) ]]%0a> * [[Cookbook:Skins | Skins (themes) ]]%0a> * [[PITS:PITS | PITS (issue tracking) ]]%0a> * [[PmWiki/Mailing Lists]]%0a> %0a> %25right%25 [-[[Site.SideBar?action=edit | edit SideBar]]-]%0a\ No newline at end of file%0a
+host:1331680851=10.39.49.171
+author:1331680844=
+diff:1331680844:1331680829:=2,19c2%0a%3c * [[Main/WikiSandbox]]%0a%3c %0a%3c %25sidehead%25 [[PmWiki/PmWiki]]%0a%3c * [[PmWiki/Initial Setup Tasks]]  %0a%3c * [[PmWiki/Basic Editing]]%0a%3c * [[PmWiki/Documentation Index]]%0a%3c * [[PmWiki/FAQ | PmWiki FAQ ]]%0a%3c * [[PmWiki/PmWikiPhilosophy]]%0a%3c * [[PmWiki/Release Notes]]%0a%3c * [[PmWiki/ChangeLog]]%0a%3c %0a%3c %25sidehead%25 [[http://www.pmwiki.org | pmwiki.org ]]%0a%3c * [[Cookbook:CookbookBasics | Cookbook (addons) ]]%0a%3c * [[Cookbook:Skins | Skins (themes) ]]%0a%3c * [[PITS:PITS | PITS (issue tracking) ]]%0a%3c * [[PmWiki/Mailing Lists]]%0a%3c %0a%3c %25right%25 [-[[Site.SideBar?action=edit | edit SideBar]]-]%0a\ No newline at end of file%0a---%0a> * [[Main/Install]]%0a\ No newline at end of file%0a
+host:1331680844=10.39.49.171
+author:1331680829=
+diff:1331680829:1331680762:=2c2,4%0a%3c * [[Main/Install]]%0a\ No newline at end of file%0a---%0a> * [[Main/Install]]%0a> %0a> %25right%25 [-[[Site.SideBar?action=edit | edit SideBar]]-]%0a\ No newline at end of file%0a
+host:1331680829=10.39.49.171
+author:1331680762=
+diff:1331680762:1125550800:=2c2,17%0a%3c * [[Main/Install]]%0a---%0a> * [[Main/WikiSandbox]]%0a> %0a> %25sidehead%25 [[PmWiki/PmWiki]]%0a> * [[PmWiki/Initial Setup Tasks]]  %0a> * [[PmWiki/Basic Editing]]%0a> * [[PmWiki/Documentation Index]]%0a> * [[PmWiki/FAQ | PmWiki FAQ ]]%0a> * [[PmWiki/PmWikiPhilosophy]]%0a> * [[PmWiki/Release Notes]]%0a> * [[PmWiki/ChangeLog]]%0a> %0a> %25sidehead%25 [[http://www.pmwiki.org | pmwiki.org ]]%0a> * [[Cookbook:CookbookBasics | Cookbook (addons) ]]%0a> * [[Cookbook:Skins | Skins (themes) ]]%0a> * [[PITS:PITS | PITS (issue tracking) ]]%0a> * [[PmWiki/Mailing Lists]]%0a
+host:1331680762=10.39.49.171

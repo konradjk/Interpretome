@@ -1,0 +1,138 @@
+/* CSS Document */
+/*===================  COLORS  =======================
+# c-seagreen.css    part of the Triad skin for Pmwiki
+#================== seagreen theme ==================*/
+
+body { background:#C6DBB2; }
+#outer-box { border:1px solid #43562E; }
+#left-box { background: url(../images/seagreen-brd-right.jpg) right repeat-y; } /*left: right border img */
+#outer-box { background:#516737 url(../images/seagreen-brd-left.jpg) repeat-y; }/*left: left border img + background */
+#center-box, #right-box, #footnavbox { background:#B0C796; } /* main background color */
+
+a:link   { color:#009;}
+a:visited{ color:#009;}
+a:active { color:#009;}
+a:hover  { color:#900;}
+
+#header { background:#BED0E4 url(../images/seagreen-top.jpg) repeat-x; /* header background image */ }
+
+#topnav {  background:#58713D; /* toplink bar background color */
+			border-bottom:1px solid #fff;  }
+#topnav a, #topnav ul li { color:#fff; }
+#topnav li a:hover, #topnav li a:active  {
+		color: #fff; background: #900; } /* hover colors */
+
+#titlebar a { color:#900; }
+#titlebar a:hover { color:#009; }
+
+#contentbox { background:#fff;
+			  border:1px solid #43562E; }
+
+#content h1, #content h2, #content h3,
+#content h4, #content h5, #content h6 { color:#900; }
+
+.quickref { background:#eef }
+
+#sidebar p, #sidebar h1, #sidebar h2, #sidebar h3, #sidebar h4 { color:#ff9 }
+#sidebar .sidehead, #sidebar p.sidehead a.wikilink { color:#ff9 } /*#5F5F30*/
+
+#sidebar h1 a:link, #sidebar h1 a:visited { color:#FFC27F; }
+#sidebar h1 a:hover, #sidebar h1 a:active,
+#sidebar a:link, #sidebar a:visited { color:#d0d0d0; }
+#sidebar a:hover, #sidebar a:active { color:#fff; text-decoration:none; }
+#sidebar p.sidehead a.wikilink:hover  { color:#fff; background: #900; } /* hover colors */
+#sidebar p.sidehead a.wikilink:active { color:#fff; background: #900; }
+#sidebar li a:hover, #sidebar li a:active  {
+		color: #fff; background: #900; } /* hover colors */
+/*#sidebar li, #sidebar h1 { border-bottom: 1px solid #999; }  menu lines */
+/* border-top:1px adds horizontal lines for second level list elements: */
+#sidebar ul ul li  { border-top:0px solid #999; border-bottom:0;}
+#sidebar a.selflink { color:#fff }
+#sidebar a:hover.selflink { background:none; color:#fff }
+#sidebarfooter { border-top:0px solid #999; }
+
+.inputbox, .inputtext { background: #EBF1E4;
+			border-top:1px solid #999;
+			border-left:1px solid #999;
+			border-right:1px solid #eee;
+			border-bottom:1px solid #eee; }
+.inputbox:hover, .inputbox:focus { color:#000; background:#fff; }
+/* comment next six lines to get a standard button */
+.inputbutton {color:#000066; background:#D5E1C7;
+			border-top:1px solid #eee;
+			border-left:1px solid #eee;
+			border-right:1px solid #999;
+			border-bottom:1px solid #999;}
+.inputbutton:hover { color:#900; background:#ffe }
+
+.navbuttons li a {  }
+.navbuttons li a:hover, #footaction li a:active { color:#900; background:#fff }
+.navbuttons li a, a.fontsizer{
+			background:#D5E1C7;
+			color:#006;
+			border-top:1px solid #eee;
+			border-left:1px solid #eee;
+			border-right:1px solid #999;
+			border-bottom:1px solid #999;}
+
+#footer-box { border-top:1px solid #43562E;
+  	    background:#eee url(../images/seagreen-foot.jpg) repeat-x;}
+
+#content ul { list-style-image: url(../images/bullet7.gif); }
+#rightbar ul { list-style:none; }
+
+#rightbar a.fontsizer, #header-box a.fontsizer  {
+		color:#eee;
+		background:#58713D;
+		border-top:0;
+		border-left:0;
+		border-bottom:1px solid #1D5183;
+		border-right:1px solid #1D5183;}
+#content a.fontsizer { background:#D5E1C7; }
+#sidebar a.fontsizer { background:#58713D; }
+#rightbar a.fontsizer:hover { background:#900; }
+#sidebar a.fontsizer:hover { background:#900; }
+#content a.fontsizer:hover { background:#fff; color:#900; }
+
+#sidebar  p { color:#eee; }
+
+.clip, .news { border:1px solid #43562E;
+		color:#000;
+		background:#EBF1E4 url(../images/seagreen-clip-left.jpg) repeat-y;
+		padding:0 8px 5px 8px;
+		margin-bottom:5px; }
+
+#sidebar .sideclip { border:1px solid #003B62;
+		color:#000;
+		background:#EBF1E4;
+		padding:2px 0px;
+		margin:5px 5px 0 5px;
+		font-size:0.85em;}
+#sidebar .sideclip p, #sidebar .sideclip h4 {
+		color:#000;
+		line-height:1.2em;}
+#sidebar .sideclip a { color:blue }
+
+#toggleright input, #toggleleft input{
+		color:#fff;
+		background:#58713D;
+		border:none;
+}
+#toggleleft input { border-right:1px solid #fff }
+#toggleright input { border-left:1px solid #fff }
+
+#toggleright input:hover, #toggleleft input:hover { background:#900; }
+
+#sidebar .trailmenu ul li a { color:#efe; }
+#sidebar .trailmenu ul ul li a { color:#afa; }
+#sidebar .trailmenu ul ul ul li a { color:#faa; }
+
+#editpreview { border-color:#637E44; background:#fff; }
+.previewheader, .previewfooter, #edithelp { border-color:#637E44; background:#EBF1E4;}
+
+
+/* comment message boxes */
+.messagehead, .messageheader, .messagefooter { background:#D5E1C7; }
+.messageauthor { background:#DDEAD2; }
+.messagesubject { background:#DDEAD2; }
+.messageitem, .messagetext, .bquote { background:#EBF1E4; }

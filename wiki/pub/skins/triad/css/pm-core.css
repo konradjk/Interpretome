@@ -1,0 +1,59 @@
+/* pmwiki-core styles */
+/* last update: 2010-04-20
+
+/* wikistyles */
+.frame  { border:1px solid #cccccc; padding:4px; background-color:#f9f9f9; }
+.lfloat { float:left; margin-right:0.5em; }
+.rfloat { float:right; margin-left:0.5em; }
+
+/* pmwiki */
+ul, ol, pre, dl, p { margin-top:0px; margin-bottom:0px; }
+.vspace { margin-top:1.33em; }
+.indent { margin-left:40px; }
+.outdent { margin-left:40px; text-indent:-40px; }
+a.createlinktext { text-decoration:none; border-bottom:1px dotted gray; }
+a.createlink { text-decoration:none; position:relative; top:-0.5em;
+  font-weight:bold; font-size:smaller; border-bottom:none; }
+img { border:0px; }
+
+/* markup */
+  table.markup { border:2px dotted #ccf; width:90%; }
+  td.markup1, td.markup2 { padding-left:10px; padding-right:10px; }
+  table.vert td.markup1 { border-bottom:1px solid #ccf; }
+  table.horiz td.markup1 { width:23em; border-right:1px solid #ccf; }
+  table.markup caption { text-align:left; }
+  div.faq p, div.faq pre { margin-left:2em; }
+  div.faq p.question { margin:1em 0 0.75em 0; font-weight:bold; }
+
+/* pagerev */
+.diffbox { border:1px #999999 solid; margin-top:1.33em; }
+.diffauthor { font-weight:bold; }
+.diffchangesum { font-weight:bold; }
+.difftime { font-family:verdana,sans-serif; font-size:66%; 
+  background-color:#dddddd; }
+.difftype { clear:both; font-family:verdana,sans-serif; 
+  font-size:66%; font-weight:bold; }
+.diffadd { border-left:5px #99ff99 solid; padding-left:5px; }
+.diffdel { border-left:5px #ffff99 solid; padding-left:5px; }
+.diffrestore { clear:both; font-family:verdana,sans-serif; 
+  font-size:66%; margin:1.5em 0px; }
+.diffmarkup { font-family:monospace; } 
+.diffmarkup del { background:#ffff99; text-decoration: none; }
+.diffmarkup ins { background:#99ff99; text-decoration: none; }
+
+/* q&a */
+p.question { margin-top: 2.0em; }
+p.question:first-letter {
+    float: left;
+    font-family: Old English, Georgia, serif;
+    color: #777777;
+    font-size: 200%;
+    line-height: 1.0em;
+    margin-right: 0.2em; }
+
+/* simuledit */
+.editconflict { color:green; 
+  font-style:italic; margin-top:1.33em; margin-bottom:1.33em; }
+  
+/* vardoc */
+a.varlink { text-decoration:none; }

@@ -1,0 +1,47 @@
+/* CSS Document file handheld.css */
+
+body { background:#D5E2F2; 
+		width:100%; 
+		margin:0; 
+		padding:0;
+		font-size:1em;
+		font-family: Verdana, Helvetica, sans-serif;
+}
+				
+#xxtitlebar, #xheader,#topnav,#smltopnav,#stdtopnav,.nav,#xfootnavbox,
+#pagefooter,#footer,#sidebarbox,#sidebar,td#left-box,td#xright-box,#xrightbar,.noprint {display:none}
+
+table, tbody, tr, td, th { display: block; }
+
+
+#titlebarbox { margin:0 0 0.5em 0; 
+		padding:0 0 0.5em 0; 
+		/*border-bottom:2pt solid #999;*/ }
+#titlebar .pagegroup {padding:0.3em 0.5em 0 0; 
+		font-size:1.0em;}
+#titlebar .pagetitle {padding-bottom:0; 
+		font-size:1.3em;}
+		
+#content {margin:0; 
+		padding:0;
+		font-size:1em
+		}
+
+h1 { font-size:1.5em; }
+h2 { font-size:1.3em; }
+h3 { font-size:1.2em; }
+h4 { font-size:1.1em; }
+h5 { font-size:1.0em; }
+h6 { font-size:1.0em; }
+
+
+#content textarea { width:auto; }
+
+#content pre, #content code {   
+    white-space: pre-wrap;       /* CSS-3                  */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999    */
+    white-space: -pre-wrap;      /* Opera 4-6              */
+    white-space: -o-pre-wrap;    /* Opera 7                */
+    _white-space: pre; 
+  }
+

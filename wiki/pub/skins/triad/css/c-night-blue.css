@@ -1,0 +1,167 @@
+/* CSS Document */
+/*===================  COLORS  =================================================
+# c-night-blue.css
+# night blue color theme
+# part of the Triad skin for Pmwiki
+#=============================================================================*/
+
+body { background:#112; }
+
+#outer-box {
+	color:#A0A0CF;
+	border:1px solid #535766; /* #003466; */
+	background:#224 url(../images/night-blue2.jpg);
+}
+
+a:link { color:#9cf; }
+a:visited { color:#99c; }
+a:hover { color:#6f9; }
+a:active { color:#0f9; }
+
+/* header background image */
+#header { }
+
+/* PageTopMenu bar background color */
+#topnav {
+	/* border-top:1px solid #535766; */
+	border-bottom:1px solid #535766;
+	/* background:#112; */
+}
+#topnav a, #topnav ul li { color:#A0A0CF;}
+
+#topnav li a:hover, #topnav li a:active { color: #0f9; background: #232D48;} /* hover colors */
+
+#titlebar a { color:#ccc; }
+#titlebar a:hover { color:#fc6; }
+
+.pagetitle { border-top: none;
+	border-bottom: 3px double #aaa;
+	background: transparent;
+	}
+
+#contentbox {
+	color:#ccc;
+	border:1px solid #535766;
+	background:#232D48 url(../images/night-blue1.jpg);
+	}
+
+#content h1, #content h2, #content h3,
+#content h4, #content h5, #content h6 { color:#fc6; }
+
+.quickref { background:#eef }
+
+#sidebar p, #sidebar h1, #sidebar h2, #sidebar h3, #sidebar h4 { color:#A0A0CF; }
+#sidebar .sidehead, #sidebar p.sidehead a.wikilink { color:#A0A0CF; }
+
+#sidebar h1 a:link, #sidebar h1 a:visited { color:#FFC27F; }
+#sidebar h1 a:hover, #sidebar h1 a:active,
+#sidebar a:link, #sidebar a:visited { color:#A0A0CF; }
+#sidebar a:hover, #sidebar a:active { color:#0f9; text-decoration:none; }
+
+#sidebar p.sidehead a.wikilink:hover  { color:#0f9; background: #232D48; } /* hover colors */
+#sidebar p.sidehead a.wikilink:active { color:#fff; background: #232D48; }
+/*#sidebar p.sidehead a.wikilink:active { color:#fff; background: #900; }*/
+#sidebar li a:hover, #sidebar li a:active { color: #0f9; background:#232D48; } /* hover colors */
+
+/*#sidebar li, #sidebar h1 { border-bottom: 1px solid #535766; }  menu lines */
+/* border-top:1px adds horizontal lines for second level list elements: */
+#sidebar ul ul li  { border-top:0px solid #999; border-bottom:0;}
+#sidebar a.selflink { color:#fff }
+#sidebar a:hover.selflink { background:none; color:#fff }
+#sidebarfooter { border-top:0px solid #999; }
+
+.inputbox, .inputtext { color:#A0A0CF; background: #232D48;
+			border-top:1px solid #535766;
+			border-left:1px solid #535766;
+			border-right:1px solid #ACA899;
+			border-bottom:1px solid #ACA899;
+			}
+.inputbox:hover, .inputbox:focus { color:#000; background:#dbeefd;
+}
+
+/* comment out next 7 lines to get a standard button */
+.inputbutton {
+			color:#B5CFE0; background:#232D48;
+			border-top:1px solid #535766;
+			border-left:1px solid #535766;
+			border-right:1px solid #ACA899;
+			border-bottom:1px solid #ACA899;}
+.inputbutton:hover { color:#6f9; background:#224 }
+
+/*#footnav li a {color:#A0A0CF; background:#232D48; }*/
+.navbuttons li a {  }
+.navbuttons li a:hover, #footaction li a:active, a.fontsizer:hover { color:#6f9; background:#224 }
+.navbuttons li a, a.fontsizer {
+	color:#A0A0CF; background:#232D48;
+	border-top:1px solid #535766;
+	border-left:1px solid #535766;
+	border-right:1px solid #ACA899;
+	border-bottom:1px solid #ACA899;
+		}
+
+#footnavbox {  }
+
+#footer-box {
+/*	border-top:1px solid #003466;*/
+	background:#fc0 url(../images/night-blue2.jpg) repeat-x; /* header background image */
+}
+
+#content ul { list-style-image: url(../images/bullet7.gif); }
+#rightbar ul { list-style:none; }
+#rightbar h1, h2, h3, h4 { color:#D2D5F6 }
+
+#content a.fontsizer { background:#eee; }
+#sidebar a.fontsizer { background:#1D5183; }
+#rightbar a.fontsizer:hover { background:#900; }
+#sidebar a.fontsizer:hover { background:#900; }
+#content a.fontsizer:hover { background:#fff; color:#900; }
+
+.clip, .news { border:1px solid #003B62;
+		color:#ccc;
+		background:#224 url(../images/night-blue1.jpg);
+		border:1px solid #535766;
+		padding:0 8px 5px 8px;
+		margin-bottom:5px;
+}
+
+#sidebar .sideclip,
+#rightbar .sideclip {
+	border:1px solid #535766;
+	background:#232D48;
+	color:#ccc;
+	padding:2px;
+	margin:5px 5px 0 5px;
+	font-size:0.85em;
+}
+#sidebar .sideclip p, #sidebar .sideclip h4,
+#rightbar .sideclip p, #rightbar .sideclip h4 {
+	color:#A0A0CF;
+	line-height:1.2em;
+}
+#sidebar .sideclip a, #rightbar .sideclip a { color:#A0A0CF; }
+
+#toggleright input, #toggleleft input{
+		color:#A0A0CF;
+		background:none;
+		border:none;
+}
+#toggleleft input { border-right:1px solid #A0A0CF }
+#toggleright input { border-left:1px solid #A0A0CF }
+
+#toggleright input:hover, #toggleleft input:hover { color:#6f9; background:#232D48; }
+
+code, pre { color:#0c0;}
+.bquote { color:#ccc; border-color: #535766;}
+
+/* For: Site.Popup-EditForm */
+#editpreview { border-color:#A0A0CF; background:#224 url(../images/night-blue1.jpg); }
+.previewheader { border-bottom:2px solid #ccc; background:#224 url(../images/night-blue2.jpg);}
+.previewfooter { border-top:2px solid #ccc; background:#224 url(../images/night-blue2.jpg); }
+#edithelp { color:#A0A0CF; border:2px solid #ccc; background:#224 url(../images/night-blue1.jpg); }
+
+
+/* comment message boxes */
+.messagehead, .messageheader, .messagefooter { background:#1C243B; }
+.messageauthor { background:#1F2941; }
+.messagesubject { background:#1F2941; }
+.messageitem, .messagetext, .bquote { background:#232D48; }

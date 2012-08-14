@@ -1,0 +1,30 @@
+<table id='kim_aging_table' class='results-table hidden'>
+  <thead>
+  <tr>
+    <th class='dbsnp'>dbSNP</th>
+    <th class='dbsnp'>Genotype</th>
+    <th>Alleles</th>
+    <th>Risk allele</th>
+    <th>Odds ratio</th>
+    <th>Gene</th>
+    <th>P-Value</th>
+    <th class='imputed'>Imputed from</th>
+    <th class='rsq'>R<sup>2</sup></th>
+  </tr>
+  </thead>
+  <tbody>
+  <script id='kim_aging_template' type='text/template'>
+    <tr>
+      <td class='key'><%= dbsnp %></td>
+      <td class='value'><%= genotype %></td>
+      <td><%= alleles %></td>
+      <td><%= longevity_allele %></td>
+      <td><%= odds_ratio %></td>
+      <td><%= gene %></td>
+      <td><%= p_value %></td>
+      <td class='imputed'><%= imputed_from %> <%= explain %></td>
+      <td class='rsq'><%= r_squared %></td>
+    </tr>
+  </script>
+  </tbody>
+</table>

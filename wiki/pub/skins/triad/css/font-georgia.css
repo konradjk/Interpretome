@@ -1,0 +1,76 @@
+/* CSS Document */
+/*
+#=================================================================
+# font-georgia.css   part of the Triad skin for Pmwiki
+#================================================================*/
+
+/*======= Master font sizes =========*/
+#content  { font-size: 115%; }
+#header   { font-size: 100%; }
+#titlebar { font-size: 100%; }
+#rightbar { font-size: 90%; } /* percent of #content*/
+#sidebar  { font-size: 85%; } 
+#topnav   { font-size: 85%; } 
+#footnav  { font-size: 85%; }
+#footer   { font-size: 85%; }
+/*=============================*/
+
+body { font-family: Georgia, Times, "Times New Roman", serif; }
+
+/*monospaced (code) font */
+code, pre { font-size: 0.9em; font-family: "Courier New", Courier, monospace; }
+
+textarea { font-size: 0.9em; }
+.inputbox { font-size: 0.9em; }
+
+.pagegroup { font-family: Verdana, Lucida, Geneva, Helvetica, Arial, sans-serif; 
+			 font-weight:600; }
+
+#content h1, #content h2, #content h3, 
+#content h4, #content h5, #content h6,
+#titlebar h1, #titlebar h2, #titlebar h3, 
+#titlebar h4, #titlebar h5, #titlebar h6 { 
+			font-weight:500; 
+			line-height:133%;}
+
+#content h1, #titlebar h1 { font-size:2.1em; letter-spacing:.02em; }
+#content h2, #titlebar h2 { font-size:1.9em; border-bottom:1px solid; margin-bottom:0.2em; }
+#content h3, #titlebar h3 { font-size:1.5em; }
+#content h4, #titlebar h4 { font-size:1.3em; font-style:italic }
+#content h5, #titlebar h5 { font-size:1.1em; }
+#content h6, #titlebar h6 { font-size:1.0em; font-variant:small-caps;}
+
+#sidebar h1 { font-size:1.1em; }
+#sidebar h2 { font-size:1.05em; }
+#sidebar h3 { font-size:1.0em; }
+#sidebar h4 { font-size:1.1em; }
+#sidebar h5 { font-size:1.05em; }
+#sidebar h6 { font-size:1.0em; }
+p.sidehead { font-size:1.1em; font-weight:700; }
+
+
+#topnav, #sidebar,  #footnav, #footer, #header .inputbutton a, .fsbox { 
+		font-family: Verdana, Lucida, Geneva, Helvetica, Arial, sans-serif; } 
+
+#rightbar h1 { font-size:1.7em }
+#rightbar h2 { font-size:1.5em }
+#rightbar h3 { font-size:1.3em }
+#rightbar h4 { font-size:1.2em }
+
+#sideheader { font-size: 220%; } /*to counteract sidebar fontsize*/
+#header, #sideheader { 
+	font-weight:500; 
+	font-family: Georgia, Times, "Times New Roman", serif;
+}
+#header h1, #header h2, 
+#header h3, #header h4,
+#header h5, #header h6,
+#sideheader h1, #sideheader h2, 
+#sideheader h3, #sideheader h4,
+#sideheader h5, #sideheader h6 { 
+		font-weight:500; margin:0 2px 2px 0;
+		line-height:100%; 
+}
+.sideclip { font-family: Georgia, Times, "Times New Roman", serif;
+		font-size:90%; }
+.togglebox { font-family: Verdana, Geneva, Helvetica, Arial, sans-serif;  }

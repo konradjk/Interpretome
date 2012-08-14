@@ -1,0 +1,72 @@
+/* ********** LAYOUT STYLES ********** 	
+	Skeleton lifted from the 3-col content first code, by Paul O'Brien
+	http://www.pmob.co.uk/temp/3colfixedtest_sourcenone.htm
+	Resident Sitepoint CSS Guru Extraordinaire. Thanks Paul!
+	http://www.pmob.co.uk/ 
+	
+	Adjusted for Triad skin
+*/ 
+/* MAIN LAYOUT */
+/* commented backslash hack v2 \*/ 
+html, body { height:100%;  } /*set to 98% if body padding:10px*/
+/* end hack */ 
+body {  margin:0; padding:0px 0;  } /*set body padding:10px for page border */
+
+.clearer {height:1px; clear:both; margin-top:-1px;}
+
+#outer-box { width:100%; /*set to ca. width:778px; for fixed width page */
+		height:100%; margin:0 auto;}
+#header-box { height:1px;  }
+#left-box {	 }  /*set left sidebar width. Variable is set in skin.php for this */ 
+#right-box {  } /*set rightbar width. Variable is set in skin.php for this */
+#footer-box { height:1px; }
+* html #footer-box { height:50px; } /*min footer height for IE*/
+
+/* ********** LAYOUT STYLES ********** */
+#center-box { padding:3px 3px 0 3px;}
+#rightbar { padding:0px 5px 5px 1px; }
+#sidebar { margin-top:3px; 
+		   padding:0 3px; }
+
+#header { padding:5px 5px 5px 10px; 
+		  margin:0;
+		  min-height:1%; } /* IE7 seems to need this */
+* html #header { height:1% } /*for IE6 and below */
+
+#topnavbox {margin:0; padding:0; }
+#topnav { margin:0; padding:0; min-height:1.5em;}
+* html #topnav { margin:0; padding:1px 0 0 0; height:1.5em; } /*for IE */
+
+.togglebox  { cursor:pointer; cursor:hand; 
+			  font-size:.85em; 
+			  padding:0; margin-top:1px; }
+#toggleright { float:right; margin:0 0 1px 0px; }
+#toggleleft  { float:left;	margin:0 0 1px 0px; }
+
+#content { padding:1em; }
+
+/* hides rule from IE5-Mac \*/
+* html #titlebar { height:1%; } 
+* html #contentbox { height:1%; }
+/* End IE5-Mac hack */
+
+/* class styles for divs in TitleBar page */
+.pagegroup {  
+		margin:0;		 
+		padding:5px 1em 0 1em; 
+		}
+.pagetitle { 
+		margin:0.2em 1em;
+		padding:0.3em 0; 
+		border-top: 3px double #ccc; 
+		border-bottom: 3px double #ccc;
+		}
+h1,h2,h3,h4,h5,h6 { margin:0; }
+		
+#header a, #titlebar a, #pagegroup a, #pagetitle a {text-decoration:none;}
+
+#footnav { padding:7px 5px 15px 5px;   }
+#footer { padding:5px 1em; }
+
+
+

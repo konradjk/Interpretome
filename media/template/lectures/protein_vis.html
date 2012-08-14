@@ -1,0 +1,49 @@
+<h3>Lookup an RSID to visualize its position on a protein (coding variants only)</h3>
+<br/>
+<textarea id='vis_snp_lookup' rows='1' cols='12'>429358</textarea>
+<br/>
+<button id="get_vis_info" type='submit' class='small-button'>Get Variant Info</button>
+<br/><br/>
+<table id='protein_vis_table' class='results-table hidden'>
+  <thead>
+  <tr>
+    <th>dbSNP</th>
+    <th>Genotype</th>
+    <th>Reference</th>
+    <th>Gene</th>
+    <th>Mutation</th>
+    <th>PolyPhen2</th>
+    <th>GERP</th>
+    <th>Reference</th>
+    <th>Imputed From</th>
+    <th>R<sup>2</sup></th>
+  </tr>
+  </thead>
+  <tbody>
+
+  <script id='protein_vis_template' type='text/template'>
+    <tr>
+      <td class='key'><%= data.dbsnp %></td>
+      <td class='value'><%= data.genotype %></td>
+      <td><%= data.reference %></td>
+      <td><%= data.genename %></td>
+      <td><%= data.aaref %><%= data.aa_position %><%= data.aaalt %></td>
+      <td><%= data.polyphen2_pred %></td>
+      <td><%= data.gerp_rs %></td>
+      <td class='aa_position hidden'><%= data.aa_position %></td>
+      <td><%= data.imputed_from %></td>
+      <td><%= data.r_squared %></td>
+    </tr>
+  </script>
+  </tbody>
+</table>
+
+<br/><br/>
+<span id="pdb-chooser" class='hidden'>
+Choose PDB ID to visualize: <select id='pdb-options' name='pdb-options'/>
+</span>
+<button id="show_vis" type='submit' class='small-button hidden'>Show Visualization</button>
+<br/><br/>
+<div id="protein_vis_space"> </div>
+
+<div id="vis_controls"></div>

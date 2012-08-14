@@ -1,0 +1,14 @@
+version=pmwiki-2.2.36 ordered=1 urlencoded=1
+agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_3) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.79 Safari/535.11
+author=
+charset=UTF-8
+csum=
+host=10.39.49.171
+name=Main.HomePage
+rev=203
+targets=
+text=Welcome to the Interpretome wiki!%0a
+time=1331680817
+author:1331680817=
+diff:1331680817:1316331993:=1c1,12%0a%3c Welcome to the Interpretome wiki!%0a---%0a> Welcome to PmWiki!%0a> %0a> A local copy of PmWiki's%0a> documentation has been installed along with the software,%0a> and is available via the [[PmWiki/documentation index]].  %0a> %0a> To continue setting up PmWiki, see [[PmWiki/initial setup tasks]].%0a> %0a> The [[PmWiki/basic editing]] page describes how to create pages%0a> in PmWiki.  You can practice editing in the [[wiki sandbox]].%0a> %0a> More information about PmWiki is available from http://www.pmwiki.org.%0a
+host:1331680817=10.39.49.171

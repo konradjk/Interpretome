@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>$WikiTitle - {$Title}</title>
+<meta http-equiv="Content-Language" content="English" />
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+<link rel='stylesheet' href='$SkinDirUrl/cinnamon.css' type='text/css'/>
+<!--HTMLHeader-->
+</head>
+<body><a name='topofpage'></a>
+<table id='ccontainer' align='center'>
+<tr>
+<!--PageHeaderFmt-->
+<td id='cwikilogo'>
+<a href='{$ScriptUrl}'><img src='$PageLogoUrl' alt='$WikiTitle' border='0' /></a>
+</td>
+<td id='csearchbox'>
+<form action='{$ScriptUrl}'>
+<input type='hidden' name='n' value='{$FullName}' />
+<input type='hidden' name='action' value='search' />
+<a href='{$ScriptUrl}/$[{$SiteGroup}/Search]'>$[Search]</a>:
+<input type='text' name='q' value='' class='inputbox searchbox' />
+<input type='submit' class='inputbutton searchbutton' value='$[Go]' /></form><br />
+<!--PageActionFmt-->
+<a rel="nofollow" href="$PageUrl">$[View]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=edit">$[Edit]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=attr">$[Attributes]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=diff">$[History]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=upload">$[Attach]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=print" target="_blank">$[Print]</a>&nbsp; 
+</td>
+<!--/PageHeaderFmt-->
+</tr><tr>
+<!--PageTitleFmt-->
+<td id='credband' colspan='2'>
+<a href='{$ScriptUrl}/{$Group}'>{$Group}</a> / {$Title}
+</td>
+</tr><tr>
+<!--PageLeftFmt-->
+<td id='cnavmenu' valign='top'>
+<!--wiki:{$Group}.SideBar {$SiteGroup}.SideBar-->
+</td>
+<!--/PageLeftFmt-->
+<td id='cpagecontent' valign='top'>
+<!--PageText-->
+</td>
+</tr><tr>
+<!--PageFooterFmt-->
+<td id='cpagefooter' colspan='2'>
+<a href='topofpage'>&uarr; Top</a>&nbsp; 
+<a rel="nofollow" href="$PageUrl">$[View]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=edit">$[Edit]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=attr">$[Attributes]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=diff">$[History]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=upload">$[Attach]</a>&nbsp; 
+<a rel="nofollow" href="{$PageUrl}?action=print" target="_blank">$[Print]</a>&nbsp; 
+<br />
+This page was last modified on {$LastModified}
+</td>
+</tr>
+</table>
+<!--HTMLFooter-->
+</body>
+</html>
