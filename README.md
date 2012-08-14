@@ -14,6 +14,22 @@ Installation
 
 Terms and Conditions
 --------------------
+Copyright 2012 Karczewski, Tirrell, Kim, and the Interpreteam
+
+Licensed under the Apache License, Version 2.0 (the "License"),
+with additional clauses as noted below;
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+Additional clauses:
 Interpretome is intended for educational and research purposes only.
 No information should be considered diagnostic and as with any genetic testing service, the interpretation is not regulated by the FDA. We assume no responsibility for any injury or damage to persons or property arising out of or related to any use of interpretome annotations or for any errors or omissions: consult your physician with any medical concerns. We retain copyright to the materials herein. By using this website, you agree that you accept these terms and are aware of the risks and benefits of genome interpretation.
 

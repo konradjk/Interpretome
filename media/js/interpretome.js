@@ -14,6 +14,8 @@ $(function() {
   window.Painting = new PaintingView();
   window.Family = new FamilyView();
   
+  window.Bingo = new BingoView();
+  
   window.App = new AppView();
   window.App.custom_exercise = new CustomExercise();
   //window.App.user_db = window.openDatabase("interpretome-genomes-2", "1.0", "Genomes", 100000000);
@@ -40,6 +42,7 @@ $(function() {
   $('#loading-genome').dialog({modal: true, resizable: false, autoOpen: false});
   
   $('#looking-up').dialog({modal: true, resizable: false, autoOpen: false});
+  $('#loading-data').dialog({modal: true, resizable: false, autoOpen: false});
   $('#imputing-lots').dialog({modal: true, resizable: false, autoOpen: false});
   $('#confirm-submit-snps').dialog({modal: true, resizable: false, autoOpen: false});
   $('#thank-you').dialog(

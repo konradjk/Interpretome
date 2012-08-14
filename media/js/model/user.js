@@ -135,7 +135,7 @@ function User(username) {
     return this.snps[dbsnp];
   }
   
-  this.lookup_snps = function(callback, args, all_dbsnps, comments) {    
+  this.lookup_snps = function(callback, args, all_dbsnps, comments, extra_info) {
     $('#looking-up').dialog('open');
     var lookup_dbsnps = [];
     var extended_snps = {};
@@ -155,7 +155,7 @@ function User(username) {
         self.set_genotype(extended_snps[v], self.lookup(v).genotype);
       }
     });
-    if (lookup_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
+    if (lookup_dbsnps.length == 0) return this.got_phases(callback, args, all_dbsnps, extended_snps, {}, extra_info);
     var self = this;
     $.post(
       '/lookup/linked/', {
@@ -163,12 +163,12 @@ function User(username) {
         dbsnps: lookup_dbsnps.join(','),
         ld_cutoff: get_ld_cutoff()
       }, function(response) {
-        return self.got_linked(callback, args, all_dbsnps, extended_snps, response);
+        return self.got_linked(callback, args, all_dbsnps, extended_snps, response, extra_info);
       }
     );
   },
   
-  this.got_linked = function(callback, args, all_dbsnps, extended_snps, response) {
+  this.got_linked = function(callback, args, all_dbsnps, extended_snps, response, extra_info) {
     var unimputable_dbsnps = [];
     var request_dbsnps = [];
     var user_dbsnps = [];
@@ -190,19 +190,19 @@ function User(username) {
     });
     
     if (request_dbsnps.length == 0) 
-      return this.got_phases(callback, args, all_dbsnps, extended_snps, {});
+      return this.got_phases(callback, args, all_dbsnps, extended_snps, {}, extra_info);
     var self = this;
     $.post(
       '/lookup/impute/', {
         population: self.population,
         dbsnps: request_dbsnps.join(','), user_dbsnps: user_dbsnps.join(',')
       }, function(response) {
-        return self.got_phases(callback, args, all_dbsnps, extended_snps, response);
+        return self.got_phases(callback, args, all_dbsnps, extended_snps, response, extra_info);
       }
     );
   },
   
-  this.got_phases = function(callback, args, all_dbsnps, extended_snps, response) {
+  this.got_phases = function(callback, args, all_dbsnps, extended_snps, response, extra_info) {
     var self = this;
     
     imputable_genotypes = {};
@@ -220,7 +220,12 @@ function User(username) {
       });
     }
     $('#looking-up').dialog('close');
-    return callback(args, all_dbsnps, extended_snps);
+    if (extra_info == undefined) {
+      return callback(args, all_dbsnps, extended_snps);
+    } else {
+      return self.get_reference_alleles(callback, args, all_dbsnps, extended_snps);
+    }
+    
   },
   
   this.get_reference_alleles = function(callback, args, all_dbsnps, extended_snps) {
@@ -266,6 +271,22 @@ function User(username) {
       }, function(response){
         $.each(response, function(i, v){
           if (v != null) self.set_chrom_pos(extended_snps[i], v['chrom'], v['chromstart'], v['chromend']);
+        });
+        return callback(args, all_dbsnps, extended_snps);
+      }
+    );
+  },
+  
+  this.get_damaging_info = function(callback, args, all_dbsnps, extended_snps) {
+    var self = this;
+    $.get(
+      '/lookup/get_damaging_info/', {
+        snps: all_dbsnps.join()
+      }, function(response) {
+        $.each(response, function(i, v){
+          if (v != null) {
+            _.extend(extended_snps[i], v);
+          }
         });
         return callback(args, all_dbsnps, extended_snps);
       }

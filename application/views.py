@@ -7,12 +7,18 @@ from django.db import connections
 from django.utils import simplejson
 from django import shortcuts
 import random
+import string
+import tempfile
+import os
+import subprocess
+from stat import *
 
 import MySQLdb.cursors
 import helpers
 from django.db.backends.mysql import base
 
-dbsnp_table = 'dbsnp.snp130'
+dbsnp_db = 'dbsnp'
+dbsnp_table = dbsnp_db + '.snp135_hg19'
 
 def dict_cursor(self):
   cursor = self._cursor()
@@ -404,7 +410,53 @@ def get_chrom_pos(request):
     info[dbsnp] = data
   return http.HttpResponse(simplejson.dumps(info), mimetype = "application/json")
 
+def get_vis_info(request):
+  dbsnp = helpers.check_int(request.GET.get('dbsnp', None))
+  cursor = connections['default'].dict_cursor()
+  query = 'SELECT DISTINCT protein_acc, aa_position FROM %s.b135_SNPContigLocusId_37_3 WHERE snp_id=%s' % (dbsnp_db, dbsnp)
+  cursor.execute(query)
+  output = {}
+  output[dbsnp] = {}
+  data = cursor.fetchone()
+  if data['protein_acc'] == '':
+    return http.HttpResponse(simplejson.dumps(output), mimetype = "application/json")
+  query = '''
+    SELECT b.mapped_id AS pdb FROM (
+      SELECT * FROM interpretome_exercises.HUMAN_9606_idmapping WHERE type="RefSeq" AND mapped_id LIKE "%s%%"
+    ) a
+    JOIN interpretome_exercises.HUMAN_9606_idmapping b USING (internal_id) WHERE b.type="PDB"
+  ''' % data['protein_acc']
+  cursor.execute(query)
+  data['pdbs'] = [x['pdb'] for x in cursor.fetchall()]
+  data['dbsnp'] = dbsnp
+  output[dbsnp] = data
+  return http.HttpResponse(simplejson.dumps(output), mimetype = "application/json")
+
+def get_damaging_info(request):
+  dbsnps = helpers.check_dbsnp_array(request.GET.get('snps', None))
+  output = {}
+  if dbsnps is None:
+    return http.HttpResponseBadRequest()
+  cursor = connections['default'].dict_cursor()
   
+  for dbsnp in dbsnps:
+    query = '''
+      SELECT chrom FROM %s
+      WHERE rsid=%s
+    ''' % (dbsnp_table, dbsnp)
+    cursor.execute(query)
+    chrom = cursor.fetchone()
+    if chrom is not None and chrom['chrom'] is not None:
+      query = '''
+        SELECT * FROM public_coding.dbNSFP1_3_chr%s
+        WHERE unisnp_ids LIKE "%%rs%s%%"
+      ''' % (chrom['chrom'], dbsnp)
+      cursor.execute(query)
+      data = cursor.fetchone()
+      if data is not None:
+        output[dbsnp] = data
+  return http.HttpResponse(simplejson.dumps(output), mimetype = "application/json")
+
 def submit(request):
   request_dict = request.GET.copy()
   try:
@@ -533,6 +585,49 @@ def get_individuals(request):
   cursor.execute(query)
   output = helpers.create_snp_dict(cursor.fetchall())
   return http.HttpResponse(simplejson.dumps(output), mimetype = 'application/json')
-  
+
+def get_bingo_info(request):
+  query = "SELECT * FROM interpretome_exercises.bingo ORDER BY rand() LIMIT 25"
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  data = {}
+  for i in ('a', 'b', 'c', 'd', 'e'):
+    for j in map(str, range(1,6)):
+      if i + j == 'c3':
+        data[i + j] = 'FREE SPACE'
+      else:
+        data[i + j] = cursor.fetchone()['entry']
+  return http.HttpResponse(simplejson.dumps(data), mimetype = 'application/json')
+
+def get_playing_bingo(request):
+  query = "SELECT DISTINCT id FROM interpretome_exercises.bingo_players WHERE submit_time > DATE_SUB( NOW(), INTERVAL 20 MINUTE)"
+  cursor = connections['default'].dict_cursor()
+  return http.HttpResponse(simplejson.dumps(cursor.execute(query)), mimetype = 'application/json')
+
+def playing_bingo(request):
+  id = helpers.check_int(request.GET.get('id', None))
+  query = "INSERT INTO interpretome_exercises.bingo_players VALUES ('%s', NOW())" % id
+  cursor = connections['default'].dict_cursor()
+  cursor.execute(query)
+  return http.HttpResponse(simplejson.dumps(None), mimetype = 'application/json')
+
+def get_bingo_image(request):
+  raw_html_request = request.GET.get('html', None)
+  name_request = request.GET.get('name', None)
+  if name_request is not None:
+    html_request = '<html><body><h3>' + name_request + "'s Biology of Genomes Bingo Card (Play at www.interpretome.com)</h3>" + str(raw_html_request) + '</body></html>'
+  else:
+    html_request = '<html><body>' + str(raw_html_request) + '</body></html>'
+  f = tempfile.NamedTemporaryFile(suffix='.html', delete=False)
+  f.write(html_request)
+  f.flush()
+  os.chmod(f.name, 0666)
+  f.close()
+  png_name = "".join(random.sample(string.letters + string.digits, 6)) + '.png'
+  if name_request is not None:
+    png_name = name_request + "_" + png_name
+  subprocess.Popen(['/usr/local/bin/wkhtmltoimage', '-n', '-f', 'png', f.name, '/opt/local/www/interpretome/media/graphics/bingo/' + png_name])
+  return http.HttpResponse(simplejson.dumps('http://esquilax.stanford.edu/media/graphics/bingo/' + png_name), mimetype = 'application/json')
+
 def index(request):
   return shortcuts.render_to_response('application/interpretome.html', {})

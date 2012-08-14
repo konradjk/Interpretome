@@ -15,7 +15,8 @@ window.AppController = Backbone.Router.extend({
     'painting': 'painting',
     'family': 'family',
     
-    'terms': 'terms'
+    'terms': 'terms',
+    'bingo': 'bingo'
   },
   
   start: function() {
@@ -58,6 +59,9 @@ window.AppController = Backbone.Router.extend({
   
   terms: function() {
     this.render_or_show(window.Terms);
+  },
+  bingo: function() {
+    this.render_or_show(window.Bingo);
   },
 
   render_or_show: function(controller) {

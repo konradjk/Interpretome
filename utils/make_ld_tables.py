@@ -63,7 +63,7 @@ def main(argv):
     
     db.execute('CREATE INDEX `dbSNP1` ON var_ld_data.ld_%s (dbSNP1)' % (population))
     db.execute('CREATE INDEX `dbSNP2` ON var_ld_data.ld_%s (dbSNP2)' % (population))
-    db.execute('CREATE INDEX `rsid` ON var_hapmap.hapmap_phased_%s (rsid)' % (population))
+    db.execute('CREATE INDEX `dbSNP` ON var_hapmap.hapmap_phased_%s (dbSNP)' % (population))
 
 def create_ld_table(db, population):
     create_query = '''

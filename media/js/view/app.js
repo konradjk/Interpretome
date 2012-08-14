@@ -32,6 +32,7 @@ window.AppView = Backbone.View.extend({
   
   reverse_routes: {
     'start' : 'start',
+    'bingo' : 'bingo',
     
     'lookup' : 'lookup',
     
@@ -146,7 +147,7 @@ window.AppView = Backbone.View.extend({
     });
     
     // You can also use _.include([...], value);
-    if (module == 'start' || module == 'lookup' || module == 'explore' || module == undefined) {
+    if (module == 'start' || module == 'lookup' || module == 'explore' || module == undefined || module == 'bingo') {
       $('#module-arrow').hide(speed);
       if (module != undefined) {
         window.location.hash = '#' + module;
@@ -169,7 +170,7 @@ window.AppView = Backbone.View.extend({
       x = cookies[i].substr(0, cookies[i].indexOf("="));
       y = cookies[i].substr(cookies[i].indexOf("=")+1);
       x = x.replace(/^\s+|\s+$/g,"");
-      if (x == 'remembered' && y == 'true') {
+      if (x == 'remembered' && y == 'checked') {
         return true;
       }
     }

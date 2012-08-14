@@ -12,6 +12,12 @@ urlpatterns = patterns('interpretome.application.views',
   (r'lookup/get_reference_alleles/$', 'get_reference_alleles'),
   (r'lookup/get_allele_frequencies/$', 'get_allele_frequencies'),
   (r'lookup/get_chrom_pos/$', 'get_chrom_pos'),
+  (r'lookup/get_damaging_info/$', 'get_damaging_info'),
+  
+  (r'^get_bingo_info/$', 'get_bingo_info'),
+  (r'^playing_bingo/$', 'playing_bingo'),
+  (r'^get_playing_bingo/$', 'get_playing_bingo'),
+  (r'^get_bingo_image/$', 'get_bingo_image'),
   
   (r'^get_snps_on_map/$', 'get_snps_on_map'),
   (r'^get_hgdp_allele_frequencies/$', 'get_hgdp_allele_frequencies'),
@@ -30,5 +36,6 @@ urlpatterns = patterns('interpretome.application.views',
   
   (r'^get_rare_variants/$', 'get_rare_variants'),
   (r'^get_drug_targets/$', 'get_drug_targets'),
-  (r'^get_polyphen_scores/$', 'get_polyphen_scores')
+  (r'^get_polyphen_scores/$', 'get_polyphen_scores'),
+  (r'^get_vis_info/$', 'get_vis_info')
 )

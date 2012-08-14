@@ -76,3 +76,37 @@ select site_name from interpretome_ancestry.alfred_polymorphism where site_uid =
     (select * from interpretome_ancestry.alfred where site_name="intron 13 CT (-13910 ) SNP" and allele_name="C") a
     join interpretome_ancestry.alfred_populations using (pop_uid)
   
+yay
+it works
+/tmp/tmp6fDvjM
+/tmp/tmpJOnNSa
+/tmp/tmpUTSAWA
+/tmp/tmpy8r5_1
+/tmp/tmp6wue22.html
+/tmp/tmpAPi33H.html
+/tmp/tmplzG3vg.html
+/tmp/tmpRgHaOZ.html
+/tmp/tmpvgOw0S.html
+/tmp/tmpCzghud.html
+/tmp/tmp6vO6kw.html
+/tmp/tmpAYh2GR.html
+/tmp/tmphlS6Dl.html
+/tmp/tmpOGipIj.html
+/tmp/tmpNdwheK.html
+/tmp/tmpeuF7Q3.html
+/tmp/tmpkRuVqL.html
+out was : 
+out was : Mon Apr 30 16:45:46 esquilax.stanford.edu wkhtmltoimage[53106] <Error>: kCGErrorFailure: Set a breakpoint @ CGErrorBreakpoint() to catch errors as they are logged.
+Loading page (1/2)
+[>                                                           ] 0%[======>                                                     ] 10%[==============================>                             ] 50%[============================================================] 100%Rendering (2/2)                                                    
+[>                                                           ] 0%[===============>                                            ] 25%Error: Could not write to output file
+out was : 
+out was : Mon Apr 30 16:46:20 esquilax.stanford.edu wkhtmltoimage[53113] <Error>: kCGErrorFailure: Set a breakpoint @ CGErrorBreakpoint() to catch errors as they are logged.
+Loading page (1/2)
+[>                                                           ] 0%[======>                                                     ] 10%[==============================>                             ] 50%[============================================================] 100%Rendering (2/2)                                                    
+[>                                                           ] 0%[===============>                                            ] 25%[============================================================] 100%Done
+out was : 
+out was : Mon Apr 30 16:46:28 esquilax.stanford.edu wkhtmltoimage[53117] <Error>: kCGErrorFailure: Set a breakpoint @ CGErrorBreakpoint() to catch errors as they are logged.
+Loading page (1/2)
+[>                                                           ] 0%[======>                                                     ] 10%[==============================>                             ] 50%[============================================================] 100%Rendering (2/2)                                                    
+[>                                                           ] 0%[===============>                                            ] 25%[============================================================] 100%Done

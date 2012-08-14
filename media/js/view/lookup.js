@@ -215,6 +215,7 @@ window.LookupView = Backbone.View.extend({
         var print_snp = user.blank_extended_snp(v);
         print_snp['imputed_from'] = 'DELETED';
         print_snp['genotype'] = 'Was: ' + user.lookup(v).genotype;
+        print_snp['map'] = '';
         $('#lookup-snps-table').append(
           _.template(self.lookup_snp_template, print_snp)
         );

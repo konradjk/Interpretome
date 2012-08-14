@@ -7,7 +7,8 @@ window.PaintingView = Backbone.View.extend({
   all_positions: [],
   
   events: {
-    'click #compute-painting': 'click_compute_painting'
+    'click #compute-painting': 'click_compute_painting',
+    'click #submit-to-twitter' : 'click_submit_to_twitter'
   },
 
   initialize: function() {
@@ -18,7 +19,7 @@ window.PaintingView = Backbone.View.extend({
       'init_probs', 'get_prior', 'calculate_painting',
       'assign_population', 'update_counter',
       'compute_weighted_average',
-      'paint_chromosomes',
+      'paint_chromosomes', 'click_submit_to_twitter',
       'paint_chromosome',
       'paint_legend',
       'smooth_positions'
@@ -538,6 +539,10 @@ window.PaintingView = Backbone.View.extend({
         });
       });
     });
+  },
+  
+  click_submit_to_twitter: function() {
+    canvas.toDataURL();
   }
 });
 });
