@@ -1,3 +1,4 @@
 *.pyc
 MyProject.komodoproject
 media/misc/*
+media/graphics/bingo/*
