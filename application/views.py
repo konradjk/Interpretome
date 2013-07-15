@@ -587,14 +587,14 @@ def get_individuals(request):
   return http.HttpResponse(simplejson.dumps(output), mimetype = 'application/json')
 
 def get_bingo_info(request):
-  query = "SELECT * FROM interpretome_exercises.bingo ORDER BY rand() LIMIT 25"
+  query = "SELECT * FROM interpretome_exercises.bingo_bog13 ORDER BY rand() LIMIT 25"
   cursor = connections['default'].dict_cursor()
   cursor.execute(query)
   data = {}
   for i in ('a', 'b', 'c', 'd', 'e'):
     for j in map(str, range(1,6)):
       if i + j == 'c3':
-        data[i + j] = 'FREE SPACE'
+        data[i + j] = 'FREE SPACE (Ewan Birney asks a question)'
       else:
         data[i + j] = cursor.fetchone()['entry']
   return http.HttpResponse(simplejson.dumps(data), mimetype = 'application/json')
@@ -615,7 +615,7 @@ def get_bingo_image(request):
   raw_html_request = request.GET.get('html', None)
   name_request = request.GET.get('name', None)
   if name_request is not None:
-    html_request = '<html><body><h3>' + name_request + "'s Biology of Genomes Bingo Card (Play at www.interpretome.com)</h3>" + str(raw_html_request) + '</body></html>'
+    html_request = '<html><body><h3>' + name_request + "'s #pgmg12 Bingo Card (Play at www.interpretome.com)</h3>" + str(raw_html_request) + '</body></html>'
   else:
     html_request = '<html><body>' + str(raw_html_request) + '</body></html>'
   f = tempfile.NamedTemporaryFile(suffix='.html', delete=False)

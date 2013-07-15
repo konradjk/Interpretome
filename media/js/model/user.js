@@ -101,7 +101,9 @@ function User(username) {
       raw_genotypes = tokens[9].split(':')[0].split(/[\|\\\/]/);
       genotype = options[raw_genotypes[0]] + options[raw_genotypes[1]];
       
-      user.snps[dbsnp] = {genotype: genotype};
+
+      localStorage[dbsnp] = genotype;
+      //user.snps[dbsnp] = {genotype: genotype};
     }
     if (percent == 100){
       $('#loading-genome').dialog('close');
