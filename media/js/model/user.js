@@ -35,16 +35,30 @@ function User(username) {
   this.add_genotype_snps = function(lines, user, percent, snps) {
     user.set_counter(percent, snps);
     var regex = new RegExp(/^rs/);
+    var atcg = new RegExp(/[ATCGDI\-]+/);
     for (i in lines){
       line = $.trim(lines[i]);
       if (line.indexOf('#') == 0 || line == '') continue;
       
       var tokens = _.map(line.split(/\s+/), $.trim);
       var dbsnp = parseInt(tokens[0].replace(regex, ''));
-      
-      user.snps[dbsnp] = {genotype: tokens[3]};
+      var gt = tokens[3];
+      if (gt != undefined) {
+        gt = gt.toUpperCase();
+        if (atcg.test(gt)) {
+          user.snps[dbsnp] = {genotype: gt};
+        }
+      }
     }
     if (percent == 100){
+      total_loaded = Object.keys(user.snps).length;
+      if (total_loaded < 100000) {
+        $('#num-snps-total').text(total_loaded);
+        $("#few-snps-loaded").dialog({
+          modal: true, width: "50%", buttons: {
+            "Close": function() {$(this).dialog("close");}
+        }});
+      }
       $('#loading-genome').dialog('close');
     }
   }
