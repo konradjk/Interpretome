@@ -211,7 +211,11 @@ window.PCAView = Backbone.View.extend({
             states: { hover: { marker: { enabled: false } } }
          }
       },
-      series: this.series_data
+      series: this.series_data,
+      exporting: {
+          sourceHeight : 1000,
+          sourceWidth: 1500
+      }
     });
     $('#pca-chart-options').show();
   },

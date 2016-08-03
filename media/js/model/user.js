@@ -45,6 +45,9 @@ function User(username) {
       var gt = tokens[3];
       if (gt != undefined) {
         gt = gt.toUpperCase();
+        if (tokens[4] != undefined) {
+            gt += tokens[4].toUpperCase();
+        }
         if (atcg.test(gt)) {
           user.snps[dbsnp] = {genotype: gt};
         }

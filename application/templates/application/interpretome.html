@@ -68,8 +68,10 @@
     </script>
     <script type='text/javascript' src='/media/js/sylvester.js'>
     </script>
-    <script type='text/javascript' src='/media/js/highcharts_2.2.0.js'>
-    </script>
+<!--    <script type='text/javascript' src='/media/js/highcharts_2.2.0.js'>
+    </script> -->
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
     <script type='text/javascript' src='/media/js/jmol/Jmol.js'>
     </script>
     <!--<script type='text/javascript' src='/media/js/canvas_image/canvas2image.js'>-->
@@ -427,8 +429,8 @@
         </div>
       </div>
       <div id='few-snps-loaded' title='Warning' class='dialog hidden'>
-        <b>Warning</b>: Only <span id="num-snps-total"></span> SNPs were loaded. Perhaps you tried to load a zipped file, or an unsupported file type?
-        Note that we do not support FTDNA at this time.
+        <b>Warning: Only <span id="num-snps-total"></span> SNPs were loaded.</b> Perhaps you tried to load a zipped file, or an unsupported file type?
+        <b>Note that we do not support FTDNA at this time.</b> You may continue to explore the site with these variants, but the results may be unreliable.
         <br/>
         <br/>
       </div>
